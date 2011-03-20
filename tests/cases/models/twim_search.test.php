@@ -88,4 +88,11 @@ class TwimSearchTestCase extends CakeTestCase {
         $this->assertIdentical($this->Search->request['uri']['query'], array('q' => '', 'page' => 1, 'rpp' => 200));
     }
 
+    public function test_serach_get_all_results() {
+        $this->Search->getDataSource()->expectCallCount('request', 2);
+        $this->Search->getDataSource()->setReturnValueAt(0, 'request', array('result' => array(1)));
+        $this->Search->getDataSource()->setReturnValueAt(1, 'request', array('result' => array()));
+        $this->Search->find('twitter');
+    }
+
 }

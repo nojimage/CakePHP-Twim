@@ -53,13 +53,18 @@ class TwimSearch extends TwimAppModel {
         if (!empty($options['limit']) && empty($options['rpp'])) {
             $options['rpp'] = $options['limit'];
         }
-        if (empty($options['page']) || empty($options['rpp'])) {
+
+        if (empty($options['page']) && empty($options['limit'])) {
             $options['page'] = 1;
-            $options['rpp'] = 200;
+            $options['limit'] = 200;
             $results = array();
-            while (($page = $this->find($type, $options)) != false) {
-                $results = array_merge($results, $page);
-                $options['page']++;
+            try {
+                while (($page = $this->find($type, $options)) != false) {
+                    $results = array_merge($results, $page);
+                    $options['page']++;
+                }
+            } catch (Exception $e) {
+
             }
             return $results;
         }
@@ -70,7 +75,8 @@ class TwimSearch extends TwimAppModel {
         if (array_key_exists($type, $this->allowedFindOptions)) {
             $this->request['uri']['query'] = array_intersect_key($options, array_flip($this->allowedFindOptions[$type]));
         }
-        return parent::find('all', $options);
+
+        return Set::extract('/results/.', parent::find('all', $options));
     }
 
 }
