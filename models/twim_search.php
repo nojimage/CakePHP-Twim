@@ -16,7 +16,7 @@
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link    　http://php-tips.com/
  * @since   　File available since Release 1.0
- * @see http://apiwiki.twitter.com/Twitter-Search-API-Method%3A-search
+ * @see http://dev.twitter.com/doc/get/search
  *
  */
 class TwimSearch extends TwimAppModel {

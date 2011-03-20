@@ -20,7 +20,7 @@
  *
  */
 App::import('Model', array('Twim.TwimAppModel'));
-App::import('Datasource', array('Twitter.TwitterSource'));
+App::import('Datasource', array('Twim.TwimSource'));
 
 class TestTwimAppModel extends TwimAppModel {
 
@@ -33,20 +33,20 @@ class TwimTestOauth extends TestTwimAppModel {
 
 }
 
-class TestTwimAppModelTwitterSource extends TwitterSource {
+class TestTwimAppModelTwimSource extends TwimSource {
     
 }
 
 ConnectionManager::create('test_twitter',
                 array(
-                    'datasource' => 'Twitter.TwitterSource',
+                    'datasource' => 'Twim.TwimSource',
                     'oauth_consumer_key' => 'cvEPr1xe1dxqZZd1UaifFA',
                     'oauth_consumer_secret' => 'gOBMTs7Rw4Z3p5EhzqBey8ousRTwNDvreJskN8Z60',
         ));
 
 ConnectionManager::create('test_twitter2',
                 array(
-                    'datasource' => 'TestTwimAppModelTwitterSource',
+                    'datasource' => 'TestTwimAppModelTwimSource',
                     'oauth_consumer_key' => 'testConsumerKey',
                     'oauth_consumer_secret' => 'testConsumerSecret',
         ));
@@ -72,7 +72,7 @@ class TwimAppModelTestCase extends CakeTestCase {
 
     function test_construct_with_ds() {
         $this->Twim = ClassRegistry::init(array('class' => 'TestTwimAppModel', 'ds' => 'test_twitter2'));
-        $this->assertIsA($this->Twim->getDataSource(), 'TestTwimAppModelTwitterSource');
+        $this->assertIsA($this->Twim->getDataSource(), 'TestTwimAppModelTwimSource');
         $this->assertIdentical($this->Twim->getDataSource()->config['oauth_consumer_key'], 'testConsumerKey');
     }
 

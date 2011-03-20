@@ -20,7 +20,7 @@
  *
  */
 App::import('Model', 'Twim.TwimSearch');
-App::import('Datasource', array('Twitter.TwitterSource'));
+App::import('Datasource', array('Twim.TwimSource'));
 
 class TestTwimSearch extends TwimSearch {
 
@@ -29,7 +29,7 @@ class TestTwimSearch extends TwimSearch {
 
 }
 
-Mock::generatePartial('TwitterSource', 'MockTwimSearchTwitterSource', array('request'));
+Mock::generatePartial('TwimSource', 'MockTwimSearchTwimSource', array('request'));
 
 /**
  *
@@ -39,7 +39,7 @@ class TwimSearchTestCase extends CakeTestCase {
 
     public function startTest() {
         ConnectionManager::create('test_twitter',
-                        array('datasource' => 'MockTwimSearchTwitterSource'));
+                        array('datasource' => 'MockTwimSearchTwimSource'));
 
         $this->Search = ClassRegistry::init('Twim.TestTwimSearch');
     }

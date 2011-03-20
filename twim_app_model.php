@@ -19,7 +19,7 @@ App::import('Model', 'Twitter.TwitterAppModel');
  * @link    　http://php-tips.com/
  * @since   　File available since Release 1.0
  *
- * @property TwitterSource $Source
+ * @property TwimSource $Source
  */
 class TwimAppModel extends TwitterAppModel {
 
@@ -32,8 +32,28 @@ class TwimAppModel extends TwitterAppModel {
     }
 
     /**
+     * Adds the datasource to the connection manager if it's not already there,
+     * which it won't be if you've not added it to your app/config/database.php
+     * file.
      *
-     * @return TwitterSource
+     * @param $id
+     * @param $table
+     * @param $ds
+     */
+    public function __construct($id = false, $table = null, $ds = null) {
+
+        $sources = ConnectionManager::sourceList();
+
+        if (!in_array('twitter', $sources)) {
+            ConnectionManager::create('twitter', array('datasource' => 'Twim.TwimSource'));
+        }
+
+        parent::__construct($id, $table, $ds);
+    }
+
+    /**
+     *
+     * @return TwimSource
      */
     public function getDataSource() {
         return ConnectionManager::getDataSource($this->useDbConfig);
@@ -54,15 +74,17 @@ class TwimAppModel extends TwitterAppModel {
         parent::onError();
 
         // == throw Expection
-        $message = $this->getDataSource()->Http->response['body'];
+        if ($this->getDataSource()->config['throw_exception']) {
+            $message = $this->getDataSource()->Http->response['body'];
 
-        if (!empty($this->response['error'])) {
-            $message = $this->response['error'];
+            if (!empty($this->response['error'])) {
+                $message = $this->response['error'];
+            }
+
+            throw new RuntimeException(
+                    $message,
+                    $this->getDataSource()->Http->response['status']['code']);
         }
-
-        throw new RuntimeException(
-                $message,
-                $this->getDataSource()->Http->response['status']['code']);
     }
 
 }
