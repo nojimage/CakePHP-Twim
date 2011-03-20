@@ -1,5 +1,7 @@
 <?php
 
+App::import('Model', 'Twitter.TwitterAppModel');
+
 /**
  * Twim Base Model
  *
@@ -19,11 +21,7 @@
  *
  * @property TwitterSource $Source
  */
-class TwimAppModel extends Object {
-
-    public $name;
-    public $alias;
-    public $useDbConfig = 'twitter';
+class TwimAppModel extends TwitterAppModel {
 
     public function __get($name) {
         return ClassRegistry::init('Twim.Twim' . $name);
@@ -46,33 +44,25 @@ class TwimAppModel extends Object {
         return $this;
     }
 
-    /**
-     *
-     * @param string $ds
-     */
-    public function __construct($ds = 'twitter') {
+    public function setDataSourceConfig($config = array()) {
+        parent::setDataSourceConfig($config);
+        return $this;
+    }
 
-        if (is_array($ds)) {
-            extract(array_merge(
-                            array(
-                                'ds' => $this->useDbConfig,
-                                'name' => $this->name, 'alias' => $this->alias
-                            ),
-                            $ds
-            ));
+    public function onError() {
+
+        parent::onError();
+
+        // == throw Expection
+        $message = $this->getDataSource()->Http->response['body'];
+
+        if (!empty($this->response['error'])) {
+            $message = $this->response['error'];
         }
 
-        if ($this->name === null) {
-            $this->name = (isset($name) ? $name : get_class($this));
-        }
-
-        if ($this->alias === null) {
-            $this->alias = (isset($alias) ? $alias : $this->name);
-        }
-
-        ClassRegistry::addObject($this->alias, $this);
-
-        $this->setDataSource($ds);
+        throw new RuntimeException(
+                $message,
+                $this->getDataSource()->Http->response['status']['code']);
     }
 
 }

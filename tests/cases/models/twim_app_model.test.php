@@ -20,7 +20,7 @@
  *
  */
 App::import('Model', array('Twim.TwimAppModel'));
-App::import('Datasource', array('Twim.TwitterSource'));
+App::import('Datasource', array('Twitter.TwitterSource'));
 
 class TestTwimAppModel extends TwimAppModel {
 
@@ -39,7 +39,7 @@ class TestTwimAppModelTwitterSource extends TwitterSource {
 
 ConnectionManager::create('test_twitter',
                 array(
-                    'datasource' => 'Twim.TwitterSource',
+                    'datasource' => 'Twitter.TwitterSource',
                     'oauth_consumer_key' => 'cvEPr1xe1dxqZZd1UaifFA',
                     'oauth_consumer_secret' => 'gOBMTs7Rw4Z3p5EhzqBey8ousRTwNDvreJskN8Z60',
         ));
@@ -67,22 +67,22 @@ class TwimAppModelTestCase extends CakeTestCase {
     }
 
     function test_construct() {
-        $this->assertIdentical($this->Twim->getDataSource()->oauth_consumer_key, 'cvEPr1xe1dxqZZd1UaifFA');
+        $this->assertIdentical($this->Twim->getDataSource()->config['oauth_consumer_key'], 'cvEPr1xe1dxqZZd1UaifFA');
     }
 
     function test_construct_with_ds() {
         $this->Twim = ClassRegistry::init(array('class' => 'TestTwimAppModel', 'ds' => 'test_twitter2'));
         $this->assertIsA($this->Twim->getDataSource(), 'TestTwimAppModelTwitterSource');
-        $this->assertIdentical($this->Twim->getDataSource()->oauth_consumer_key, 'testConsumerKey');
+        $this->assertIdentical($this->Twim->getDataSource()->config['oauth_consumer_key'], 'testConsumerKey');
     }
 
     function test_getDataSource() {
-        $this->assertIdentical($this->Twim->getDataSource()->oauth_consumer_key, 'cvEPr1xe1dxqZZd1UaifFA');
+        $this->assertIdentical($this->Twim->getDataSource()->config['oauth_consumer_key'], 'cvEPr1xe1dxqZZd1UaifFA');
     }
 
     function test_setDataSource() {
-        $this->assertIdentical($this->Twim->getDataSource()->oauth_consumer_key, 'cvEPr1xe1dxqZZd1UaifFA');
-        $this->assertIdentical($this->Twim->setDataSource('test_twitter2')->getDataSource()->oauth_consumer_key, 'testConsumerKey');
+        $this->assertIdentical($this->Twim->getDataSource()->config['oauth_consumer_key'], 'cvEPr1xe1dxqZZd1UaifFA');
+        $this->assertIdentical($this->Twim->setDataSource('test_twitter2')->getDataSource()->config['oauth_consumer_key'], 'testConsumerKey');
     }
 
     function test_loadTwimModel() {
