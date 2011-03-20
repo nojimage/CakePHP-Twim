@@ -18,6 +18,9 @@
  * @since   　File available since Release 1.0
  * @see http://dev.twitter.com/doc/get/search
  *
+ * NOTICE: Search API "from_user_id" doesn't match up with the proper Twitter "user_id"
+ * see http://code.google.com/p/twitter-api/issues/detail?id=214
+ *
  */
 class TwimSearch extends TwimAppModel {
 
