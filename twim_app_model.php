@@ -24,7 +24,12 @@ App::import('Model', 'Twitter.TwitterAppModel');
 class TwimAppModel extends TwitterAppModel {
 
     public function __get($name) {
-        return ClassRegistry::init('Twim.Twim' . $name);
+        $model = ClassRegistry::init('Twim.Twim' . $name);
+        if (is_subclass_of($model, __CLASS__)) {
+            // override datasource config
+            $model->setDataSourceConfig($this->getDataSource()->config);
+        }
+        return $model;
     }
 
     public function __set($name, $value) {
@@ -59,8 +64,8 @@ class TwimAppModel extends TwitterAppModel {
         return ConnectionManager::getDataSource($this->useDbConfig);
     }
 
-    public function setDataSource($name) {
-        $this->useDbConfig = $name;
+    public function setDataSource($dataSource) {
+        parent::setDataSource($dataSource);
         return $this;
     }
 
