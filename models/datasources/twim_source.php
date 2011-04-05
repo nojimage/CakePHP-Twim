@@ -39,6 +39,48 @@ class TwimSource extends TwitterSource {
     );
 
     /**
+     * Overrides RestSource constructor to use the OAuth extension to CakePHP's
+     * default HttpSocket class to issue the requests.
+     *
+     * If no config is passed into the constructor, i.e. the config is not in
+     * app/config/database.php check if any config is in the config directory of
+     * the plugin, or in the configure class and use that instead.
+     *
+     * @param array $config
+     */
+    public function __construct($config = null) {
+
+        if (!is_array($config)) {
+            $config = array();
+        }
+
+        // Default config
+        $defaults = array(
+            'datasource' => 'Twim.TwimSource',
+        );
+
+        // Try and import the plugins/twim/config/twitter_config.php file and
+        // merge the config with the defaults above
+        if (App::import(array('type' => 'File', 'name' => 'Twim.TWITTER_CONFIG', 'file' => 'config' . DS . 'twitter_config.php'))) {
+            $TWITTER_CONFIG = new TWITTER_CONFIG();
+            if (isset($TWITTER_CONFIG->twitter)) {
+                $defaults = array_merge($defaults, $TWITTER_CONFIG->twitter);
+            }
+        }
+
+        // Add any config from Configure class that you might have added at any
+        // point before the model is instantiated.
+        if (($configureConfig = Configure::read('Twitter.config')) != false) {
+            $defaults = array_merge($defaults, $configureConfig);
+        }
+
+        $config = array_merge($defaults, $config);
+
+        App::import('Vendor', 'Twim.HttpSocketOauth');
+        parent::__construct($config, new HttpSocketOauth());
+    }
+
+    /**
      * Enable Cache
      *
      * @params mixed $config
