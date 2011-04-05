@@ -21,7 +21,7 @@ App::import('Datasource', 'Twitter.TwitterSource');
  * @see       http://dev.twitter.com/doc
  *
  */
-class TwimSource extends TwitterSource {
+class TwimSource extends RestSource {
 
     /**
      *
@@ -96,6 +96,60 @@ class TwimSource extends TwitterSource {
         $this->setConfig(array('refresh_cache' => true));
     }
 
+
+  /**
+   * Adds in common elements to the request such as the host and extension and
+   * OAuth params from config if not set in the request already
+   *
+   * @param AppModel $model The model the operation is called on. Should have a
+   *  request property in the format described in HttpSocket::request
+   * @return mixed Depending on what is returned from RestSource::request()
+   */
+  protected function _request(&$model) {
+
+    // If auth key is set and not false, fill the request with auth params from
+    // config if not already present in the request and set the method to OAuth
+    // to trigger HttpSocketOauth to sign the request
+    if (array_key_exists('auth', $model->request)
+    && $model->request['auth'] !== false) {
+
+      if (!is_array($model->request['auth'])) {
+        $model->request['auth'] = array();
+      }
+      if (!isset($model->request['auth']['method'])) {
+        $model->request['auth']['method'] = 'OAuth';
+      }
+      $oAuthParams = array(
+        'oauth_consumer_key',
+        'oauth_consumer_secret',
+        'oauth_token',
+        'oauth_token_secret',
+      );
+      foreach ($oAuthParams as $oAuthParam) {
+        if (!isset($model->request['auth'][$oAuthParam])) {
+          $model->request['auth'][$oAuthParam] = $this->config[$oAuthParam];
+        }
+      }
+    }
+
+    // Set default host, N.B. some API calls use api.twitter.com, in which case
+    // they should be set in the individual model call
+    if (!isset($model->request['uri']['host'])) {
+      $model->request['uri']['host'] = 'api.twitter.com';
+    }
+
+    // Append '.json' to path if not already got an extension
+    if (strpos($model->request['uri']['path'], '.') === false) {
+      $model->request['uri']['path'] .= '.json';
+    }
+
+    // Get the response from calling request on the Rest Source (it's parent)
+    $response = parent::request($model);
+
+    return $response;
+
+  }
+
     /**
      * Request API and process responce
      *
@@ -117,7 +171,7 @@ class TwimSource extends TwitterSource {
 
         if (empty($response)) {
 
-            $response = parent::request($model);
+            $response = $this->_request($model);
 
             if ($this->_cacheable($model->request)) {
                 // save Cache, only GET method
