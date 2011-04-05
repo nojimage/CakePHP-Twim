@@ -5,11 +5,11 @@ App::import('Model', array('Twim.Twim'));
 class TestTwim extends Twim {
 
     public $alias = 'Twim';
-    public $useDbConfig = 'test_twitter';
+    public $useDbConfig = 'test_twitter_twim';
 
 }
 
-ConnectionManager::create('test_twitter',
+ConnectionManager::create('test_twitter_twim',
                 array(
                     'datasource' => 'Twim.TwimSource',
                     'oauth_consumer_key' => 'cvEPr1xe1dxqZZd1UaifFA',

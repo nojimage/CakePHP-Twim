@@ -197,6 +197,7 @@ class TwimStatusTestCase extends CakeTestCase {
     // =========================================================================
     public function test_tweet_and_delete_real() {
         $this->Status = new TwimStatus();
+        $this->Status->setDataSourceConfig();
         $data = array(
             'TwimStatus' => array(
                 'text' => 'test tweet ' . time(),

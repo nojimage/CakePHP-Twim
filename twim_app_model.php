@@ -25,10 +25,6 @@ class TwimAppModel extends TwitterAppModel {
 
     public function __get($name) {
         $model = ClassRegistry::init('Twim.Twim' . $name);
-        if (is_subclass_of($model, __CLASS__)) {
-            // override datasource config
-            $model->setDataSourceConfig($this->getDataSource()->config);
-        }
         return $model;
     }
 

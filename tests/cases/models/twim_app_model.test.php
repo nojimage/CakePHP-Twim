@@ -25,11 +25,13 @@ App::import('Datasource', array('Twim.TwimSource'));
 class TestTwimAppModel extends TwimAppModel {
 
     public $alias = 'TwimAppModel';
-    public $useDbConfig = 'test_twitter';
+    public $useDbConfig = 'test_twitter_app';
 
 }
 
 class TwimTestOauth extends TestTwimAppModel {
+
+    public $useDbConfig = 'test_twitter2';
 
 }
 
@@ -37,7 +39,7 @@ class TestTwimAppModelTwimSource extends TwimSource {
     
 }
 
-ConnectionManager::create('test_twitter',
+ConnectionManager::create('test_twitter_app',
                 array(
                     'datasource' => 'Twim.TwimSource',
                     'oauth_consumer_key' => 'cvEPr1xe1dxqZZd1UaifFA',
@@ -77,6 +79,7 @@ class TwimAppModelTestCase extends CakeTestCase {
     }
 
     function test_getDataSource() {
+        $this->assertIsA($this->Twim->getDataSource(), 'TwimSource');
         $this->assertIdentical($this->Twim->getDataSource()->config['oauth_consumer_key'], 'cvEPr1xe1dxqZZd1UaifFA');
     }
 
@@ -87,6 +90,7 @@ class TwimAppModelTestCase extends CakeTestCase {
 
     function test_loadTwimModel() {
         $this->assertIsA($this->Twim->TestOauth, 'TwimTestOauth');
+        $this->assertIdentical($this->Twim->TestOauth->getDataSource()->config['oauth_consumer_key'], 'testConsumerKey');
     }
 
 }
