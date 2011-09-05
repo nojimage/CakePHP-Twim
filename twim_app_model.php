@@ -1,7 +1,5 @@
 <?php
 
-App::import('Model', 'Twitter.TwitterAppModel');
-
 /**
  * Twim Base Model
  *
@@ -18,10 +16,37 @@ App::import('Model', 'Twitter.TwitterAppModel');
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link    　http://php-tips.com/
  * @since   　File available since Release 1.0
- *
+ * @original  https://github.com/neilcrookes/CakePHP-Twitter-API-Plugin
+ **/
+/*
  * @property TwimSource $Source
  */
-class TwimAppModel extends TwitterAppModel {
+class TwimAppModel extends AppModel {
+
+    /**
+     * The datasource all models in the plugin use.
+     *
+     * @var string
+     */
+    public $useDbConfig = 'twitter';
+
+    /**
+     * The models in the plugin get data from the web service, so they don't need
+     * a table.
+     *
+     * @var string
+     */
+    public $useTable = false;
+
+    /**
+     * Methods in the models result in HTTP requests using the HttpSocket. So
+     * rather than do all the heavy lifting in the datasource, we set the various
+     * params of the request in the individual model methods. This ties the model
+     * to the data layer, but these models are especially for this datasource.
+     *
+     * @var array
+     */
+    public $request = array();
 
     public function __get($name) {
         $model = ClassRegistry::init('Twim.Twim' . $name);
@@ -66,7 +91,11 @@ class TwimAppModel extends TwitterAppModel {
     }
 
     public function setDataSourceConfig($config = array()) {
-        parent::setDataSourceConfig($config);
+        $ds = $this->getDataSource($this->useDbConfig);
+        if (!is_array($ds->config)) {
+            $ds->config = array($ds->config);
+        }
+        $ds->config = array_merge($ds->config, $config);
         return $this;
     }
 

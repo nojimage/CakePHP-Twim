@@ -1,7 +1,7 @@
 <?php
 
 App::import('Core', array('Cache'));
-App::import('Datasource', 'Twitter.TwitterSource');
+App::import('Datasource', 'Rest.RestSource');
 
 /**
  * Twitter API Datasource
