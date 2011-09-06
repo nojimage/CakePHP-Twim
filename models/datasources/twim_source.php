@@ -1,6 +1,6 @@
 <?php
 
-App::import('Core', array('Cache'));
+App::import('Core', array('Cache', 'ConnectionManager'));
 App::import('Datasource', 'Rest.RestSource');
 
 /**
