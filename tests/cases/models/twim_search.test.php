@@ -25,7 +25,7 @@ App::import('Datasource', array('Twim.TwimSource'));
 class TestTwimSearch extends TwimSearch {
 
     public $alias = 'TwimSearch';
-    public $useDbConfig = 'test_twitter';
+    public $useDbConfig = 'test_twitter_search';
 
 }
 
@@ -38,7 +38,7 @@ Mock::generatePartial('TwimSource', 'MockTwimSearchTwimSource', array('request')
 class TwimSearchTestCase extends CakeTestCase {
 
     public function startTest() {
-        ConnectionManager::create('test_twitter',
+        ConnectionManager::create('test_twitter_search',
                         array('datasource' => 'MockTwimSearchTwimSource'));
 
         $this->Search = ClassRegistry::init('Twim.TestTwimSearch');

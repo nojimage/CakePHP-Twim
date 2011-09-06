@@ -25,7 +25,7 @@ App::import('Datasource', array('Twim.TwimSource'));
 class TestTwimTrend extends TwimTrend {
 
     public $alias = 'TwimTrend';
-    public $useDbConfig = 'test_twitter';
+    public $useDbConfig = 'test_twitter_trend';
 
 }
 
@@ -38,7 +38,7 @@ Mock::generatePartial('TwimSource', 'MockTwimTrendTwimSource', array('request'))
 class TwimTrendTestCase extends CakeTestCase {
 
     public function startTest() {
-        ConnectionManager::create('test_twitter',
+        ConnectionManager::create('test_twitter_trend',
                         array('datasource' => 'MockTwimTrendTwimSource'));
 
         $this->Trend = ClassRegistry::init('Twim.TestTwimTrend');

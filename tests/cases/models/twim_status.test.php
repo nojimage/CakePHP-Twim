@@ -25,7 +25,7 @@ App::import('Datasource', array('Twim.TwimSource'));
 class TestTwimStatus extends TwimStatus {
 
     public $alias = 'TwimStatus';
-    public $useDbConfig = 'test_twitter';
+    public $useDbConfig = 'test_twitter_status';
 
 }
 
@@ -33,12 +33,12 @@ Mock::generatePartial('TwimSource', 'MockTwimStatusTwimSource', array('request')
 
 /**
  *
- * @property TwimStatus $Trend
+ * @property TwimStatus $Status
  */
 class TwimStatusTestCase extends CakeTestCase {
 
     public function startTest() {
-        ConnectionManager::create('test_twitter',
+        ConnectionManager::create('test_twitter_status',
                         array('datasource' => 'MockTwimStatusTwimSource'));
 
         $this->Status = ClassRegistry::init('Twim.TestTwimStatus');

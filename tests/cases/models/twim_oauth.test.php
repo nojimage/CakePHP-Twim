@@ -25,7 +25,7 @@ App::import('Datasource', array('Twim.TwimSource'));
 class TestTwimOauth extends TwimOauth {
 
     public $alias = 'TwimOauth';
-    public $useDbConfig = 'test_twitter';
+    public $useDbConfig = 'test_twitter_oauth';
 
 }
 
@@ -37,9 +37,18 @@ Mock::generatePartial('TwimSource', 'MockTwimOauthTwimSource', array('request'))
  */
 class TwimOauthTestCase extends CakeTestCase {
 
+    public function startCase() {
+        ClassRegistry::flush();
+    }
+
     public function startTest() {
-        ConnectionManager::create('test_twitter', array(
+        ConnectionManager::create('test_twitter_oauth', array(
             'datasource' => 'MockTwimOauthTwimSource',
+        ));
+        ConnectionManager::create('test_twitter_oauth_app', array(
+            'datasource' => 'Twim.TwimSource',
+            'oauth_consumer_key' => 'cvEPr1xe1dxqZZd1UaifFA',
+            'oauth_consumer_secret' => 'gOBMTs7Rw4Z3p5EhzqBey8ousRTwNDvreJskN8Z60',
         ));
 
         $this->Oauth = ClassRegistry::init('Twim.TestTwimOauth');
@@ -73,6 +82,7 @@ class TwimOauthTestCase extends CakeTestCase {
     public function testGetRequestToken_real() {
         ClassRegistry::flush();
         $this->Oauth = ClassRegistry::init('Twim.TwimOauth');
+        $this->Oauth->setDataSource('test_twitter_oauth_app');
         $result = $this->Oauth->getRequestToken();
         $this->assertTrue(isset($result['oauth_token']));
         $this->assertTrue(isset($result['oauth_token_secret']));
@@ -112,6 +122,7 @@ class TwimOauthTestCase extends CakeTestCase {
     public function testGetAccessToken_real() {
         ClassRegistry::flush();
         $this->Oauth = ClassRegistry::init('Twim.TwimOauth');
+        $this->Oauth->setDataSource('test_twitter_oauth_app');
         $oauth_token = 'B6gyHD1wS0xI02oPkVekZ5CqOGNEmrQXAVfa8amKc';
         $oauth_verifier = 'sAquV9j08QST9bZcMoCJbQJpR64afO1mpDJfZvik';
         try {
