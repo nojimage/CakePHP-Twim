@@ -43,10 +43,12 @@ class TwimOauthTestCase extends CakeTestCase {
         ));
 
         $this->Oauth = ClassRegistry::init('Twim.TestTwimOauth');
+        $this->_dsConfig = $this->Oauth->getDataSource()->config;
         $this->Oauth->getDataSource()->config['oauth_callback'] = 'http://example.com/oauth_callback';
     }
 
     public function endTest() {
+        $this->Oauth->getDataSource()->setConfig($this->_dsConfig);
         unset($this->Oauth);
         ClassRegistry::flush();
     }

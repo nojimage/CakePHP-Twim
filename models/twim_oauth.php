@@ -123,17 +123,19 @@ class TwimOauth extends TwimAppModel {
      * 
      */
     public function onError() {
-        App::import('Core', 'Xml');
-        $Xml = new Xml($this->response);
-        $this->response = $Xml->toArray(false);
-        $Xml->__destruct();
-        $Xml = null;
-        unset($Xml);
 
-        if (isset($this->response['hash'])) {
-            $this->response = $this->response['hash'];
+        if (isset($this->response) && is_string($this->response)) {
+            App::import('Core', 'Xml');
+            $Xml = new Xml($this->response);
+            $this->response = $Xml->toArray(false);
+            $Xml->__destruct();
+            $Xml = null;
+            unset($Xml);
+
+            if (isset($this->response['hash'])) {
+                $this->response = $this->response['hash'];
+            }
         }
-
         parent::onError();
     }
 
