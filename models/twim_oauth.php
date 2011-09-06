@@ -112,11 +112,19 @@ class TwimOauth extends TwimAppModel {
         $result = $this->getDataSource()->request($this);
         parse_str($result, $accessToken);
 
-        $oauth_token = $accessToken['oauth_token'];
-        $oauth_token_secret = $accessToken['oauth_token_secret'];
-        $this->getDataSource()->setConfig(compact('oauth_token', 'oauth_token_secret'));
+        $this->setToken($accessToken);
 
         return $accessToken;
+    }
+
+    /**
+     * set access token
+     *
+     * @param mixed $oauth_token
+     * @param string $oauth_token_secret
+     */
+    public function setToken($oauth_token, $oauth_token_secret = null) {
+        $this->getDataSource()->setToken($oauth_token, $oauth_token_secret);
     }
 
     /**

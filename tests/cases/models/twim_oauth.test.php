@@ -132,4 +132,17 @@ class TwimOauthTestCase extends CakeTestCase {
         }
     }
 
+    // =========================================================================
+    public function testSetToken() {
+        $this->Oauth->setToken('dummy_token', 'dummy_secret');
+        $this->assertIdentical('dummy_token', $this->Oauth->getDataSource()->config['oauth_token']);
+        $this->assertIdentical('dummy_secret', $this->Oauth->getDataSource()->config['oauth_token_secret']);
+    }
+
+    public function testSetToken_with_array() {
+        $this->Oauth->setToken(array('oauth_token' => 'dummy_token2', 'oauth_token_secret' => 'dummy_secret2'));
+        $this->assertIdentical('dummy_token2', $this->Oauth->getDataSource()->config['oauth_token']);
+        $this->assertIdentical('dummy_secret2', $this->Oauth->getDataSource()->config['oauth_token_secret']);
+    }
+
 }
