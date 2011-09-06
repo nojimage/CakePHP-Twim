@@ -44,7 +44,7 @@ class TwimOauth extends TwimAppModel {
 
         // normalize url
         if (!empty($params['oauth_callback']) && !preg_match('!^https?://!', $params['oauth_callback'])) {
-            $params['oauth_callback'] = Router::url($params['oauth_callback'], true);
+            $params['oauth_callback'] = Router::getInstance()->url($params['oauth_callback'], true);
         }
 
         if (empty($params['x_auth_access_type']) && !empty($this->getDataSource()->config['x_auth_access_type'])) {
@@ -105,9 +105,13 @@ class TwimOauth extends TwimAppModel {
         $this->request = array(
             'uri' => array('schema' => 'https', 'path' => 'oauth/access_token'),
             'method' => 'POST',
-            'auth' => true,
-            'body' => $params,
+            'auth' => array(),
         );
+        foreach (array('oauth_token', 'oauth_verifier') as $key) {
+            if (!empty($params[$key])) {
+                $this->request['auth'][$key] = $params[$key];
+            }
+        }
 
         $result = $this->getDataSource()->request($this);
         parse_str($result, $accessToken);

@@ -107,7 +107,7 @@ class TwimOauthTestCase extends CakeTestCase {
         $result = $this->Oauth->getAccessToken(compact('oauth_token', 'oauth_verifier'));
         $this->assertIdentical($this->Oauth->request['uri']['path'], 'oauth/access_token');
         $this->assertIdentical($this->Oauth->request['method'], 'POST');
-        $this->assertIdentical($this->Oauth->request['body'], array(
+        $this->assertIdentical($this->Oauth->request['auth'], array(
             'oauth_token' => 'dummy_token',
             'oauth_verifier' => 'dummy_verifier',
         ));
