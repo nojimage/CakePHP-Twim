@@ -38,8 +38,10 @@ class TwimOauth extends TwimAppModel {
             $params = array('oauth_callback' => $params);
         }
 
-        if (empty($params['oauth_callback']) && !empty($this->getDataSource()->config['oauth_callback'])) {
-            $params['oauth_callback'] = $this->getDataSource()->config['oauth_callback'];
+        $config = $this->getDataSource()->config;
+
+        if (empty($params['oauth_callback']) && !empty($config['oauth_callback'])) {
+            $params['oauth_callback'] = $config['oauth_callback'];
         }
 
         // normalize url
@@ -47,8 +49,8 @@ class TwimOauth extends TwimAppModel {
             $params['oauth_callback'] = Router::getInstance()->url($params['oauth_callback'], true);
         }
 
-        if (empty($params['x_auth_access_type']) && !empty($this->getDataSource()->config['x_auth_access_type'])) {
-            $params['x_auth_access_type'] = $this->getDataSource()->config['x_auth_access_type'];
+        if (empty($params['x_auth_access_type']) && !empty($config['x_auth_access_type'])) {
+            $params['x_auth_access_type'] = $config['x_auth_access_type'];
         }
 
         $this->request = array(
@@ -137,15 +139,19 @@ class TwimOauth extends TwimAppModel {
     public function onError() {
 
         if (isset($this->response) && is_string($this->response)) {
-            App::import('Core', 'Xml');
-            $Xml = new Xml($this->response);
-            $this->response = $Xml->toArray(false);
-            $Xml->__destruct();
-            $Xml = null;
-            unset($Xml);
+            if (preg_match('/<\?xml /', $this->response)) {
+                App::import('Core', 'Xml');
+                $Xml = new Xml($this->response);
+                $this->response = $Xml->toArray(false);
+                $Xml->__destruct();
+                $Xml = null;
+                unset($Xml);
 
-            if (isset($this->response['hash'])) {
-                $this->response = $this->response['hash'];
+                if (isset($this->response['hash'])) {
+                    $this->response = $this->response['hash'];
+                }
+            } else {
+                $this->response = array('error' => $this->response);
             }
         }
         parent::onError();
