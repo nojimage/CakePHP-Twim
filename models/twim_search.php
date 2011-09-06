@@ -14,8 +14,8 @@
  * @author    nojimage <nojimage at gmail.com>
  * @copyright 2011 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
- * @link    　http://php-tips.com/
- * @since   　File available since Release 1.0
+ * @package   twim
+ * @since     File available since Release 1.0
  * @see http://dev.twitter.com/doc/get/search
  *
  * NOTICE: Search API "from_user_id" doesn't match up with the proper Twitter "user_id"

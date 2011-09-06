@@ -18,6 +18,7 @@ App::import('Datasource', 'Rest.RestSource');
  * @author    nojimage <nojimage at gmail.com>
  * @copyright 2011 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @package   twim
  * @see       http://dev.twitter.com/doc
  *
  */
