@@ -85,6 +85,12 @@ class TwitterComponentTestCase extends CakeTestCase {
         $this->assertEqual('access_token_secret', $this->Controller->Twitter->settings['fields']['oauth_token_secret']);
     }
 
+    function testInitialize_with_AuthComponent() {
+        $this->Controller->Auth = new Object();
+        $this->Controller->Twitter->initialize($this->Controller);
+        $this->assertIdentical(array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'login'), $this->Controller->Auth->loginAction);
+    }
+
     // =========================================================================
     function testGetTwimSource() {
         $this->assertIsA($this->Controller->Twitter->getTwimSource(), 'TwimSource');

@@ -56,6 +56,10 @@ class TwitterComponent extends Object {
 
         $this->TwimOauth = ClassRegistry::init('Twim.TwimOauth');
         $this->TwimOauth->setDataSource($this->settings['datasource']);
+        
+        if (isset($this->Controller->Auth)) {
+            $this->Controller->Auth->loginAction = array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'login');
+        }
     }
 
     /**
