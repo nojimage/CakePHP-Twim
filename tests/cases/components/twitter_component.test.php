@@ -58,11 +58,13 @@ class TwitterComponentTestCase extends CakeTestCase {
         $this->Controller = new TwitterComponentTestController();
         $this->Controller->constructClasses();
         $this->Controller->Component->initialize($this->Controller);
+        $this->prefixes = Configure::read('Routing.prefixes');
     }
 
     function endTest() {
         unset($this->Controller);
         ClassRegistry::flush();
+        Configure::write('Routing.prefixes', $this->prefixes);
     }
 
     // =========================================================================
@@ -86,9 +88,10 @@ class TwitterComponentTestCase extends CakeTestCase {
     }
 
     function testInitialize_with_AuthComponent() {
+        Configure::write('Routing.prefixes', array('admin'));
         $this->Controller->Auth = new Object();
         $this->Controller->Twitter->initialize($this->Controller);
-        $this->assertIdentical(array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'login'), $this->Controller->Auth->loginAction);
+        $this->assertIdentical(array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'login', 'admin' => false), $this->Controller->Auth->loginAction);
     }
 
     // =========================================================================
