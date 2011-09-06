@@ -38,8 +38,7 @@ Mock::generatePartial('TwimSource', 'MockTwimStatusTwimSource', array('request')
 class TwimStatusTestCase extends CakeTestCase {
 
     public function startTest() {
-        ConnectionManager::create('test_twitter_status',
-                        array('datasource' => 'MockTwimStatusTwimSource'));
+        ConnectionManager::create('test_twitter_status', array('datasource' => 'MockTwimStatusTwimSource'));
 
         $this->Status = ClassRegistry::init('Twim.TestTwimStatus');
     }
@@ -196,8 +195,15 @@ class TwimStatusTestCase extends CakeTestCase {
 
     // =========================================================================
     public function test_tweet_and_delete_real() {
-        $this->Status = new TwimStatus();
-        $this->Status->setDataSourceConfig();
+
+        ClassRegistry::flush();
+        $this->Status = ClassRegistry::init('TwimStatus');
+
+        $ds = $this->Status->getDataSource();
+        if (empty($ds->config['oauth_token'])) {
+            return $this->skipIf(true, 'access token is empty.');
+        }
+
         $data = array(
             'TwimStatus' => array(
                 'text' => 'test tweet ' . time(),
