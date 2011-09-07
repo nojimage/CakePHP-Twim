@@ -112,12 +112,16 @@ class OauthController extends AppController {
             return;
         }
 
-        /* @var $model TwitterUser */
         $model = $this->Auth->getModel();
+        /* @var $model TwitterUser */
         $data = array();
 
         // save to database
-        $data = $model->createSaveDataByToken($token);
+        if (method_exists($model, 'createSaveDataByToken') || in_array('createSaveDataByToken', $model->Behaviors->methods())) {
+            $data = $model->createSaveDataByToken($token);
+        } else {
+            $data = $token;
+        }
 
         if (!$model->save($data)) {
             $this->flash(__d('twim', 'The user could not be saved', true), array('action' => 'login'), 5);
