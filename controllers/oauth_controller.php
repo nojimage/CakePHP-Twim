@@ -66,6 +66,7 @@ class OauthController extends AppController {
      */
     public function logout() {
         $this->Session->setFlash(__d('twim', 'Signed out', true));
+        $this->Session->delete('TwitterAuth');
         $this->redirect($this->Auth->logout());
     }
 
@@ -89,7 +90,7 @@ class OauthController extends AppController {
             $token = $this->Twitter->getAccessToken();
 
             if (!$useAuth) {
-                $this->Session->write('TwitterUser', $token);
+                $this->Session->write('TwitterAuth', $token);
                 $this->redirect('/');
             }
 
