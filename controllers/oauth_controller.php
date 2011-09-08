@@ -33,7 +33,7 @@ class OauthController extends AppController {
      */
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('login', 'logout', 'authorize_url', 'authenticate_url', 'callback');
+        $this->Auth->allow('login', 'connect', 'callback');
     }
 
     /**
@@ -55,39 +55,18 @@ class OauthController extends AppController {
     }
 
     /**
+     * redirect twitter authorize page
+     */
+    public function connect() {
+        $this->Twitter->connect();
+    }
+
+    /**
      * logout action
      */
     public function logout() {
         $this->Session->setFlash(__d('twim', 'Signed out', true));
         $this->redirect($this->Auth->logout());
-    }
-
-    /**
-     * get authorize url
-     *
-     * @param string $datasource
-     */
-    public function authorize_url($dataSource = null) {
-        Configure::write('debug', 0);
-        $this->layout = 'ajax';
-        // -- set datasource
-        $this->Twitter->TwimOauth->setDataSource($dataSource);
-        // set Authorize Url
-        $this->set('url', $this->Twitter->getAuthorizeUrl(null, true));
-    }
-
-    /**
-     * get authenthicate url
-     *
-     * @param string $datasource
-     */
-    public function authenticate_url($dataSource = null) {
-        Configure::write('debug', 0);
-        $this->layout = 'ajax';
-        // -- set datasource
-        $this->Twitter->TwimOauth->setDataSource($dataSource);
-        // set Authenticate Url
-        $this->set('url', $this->Twitter->getAuthenticateUrl(null, true));
     }
 
     /**
@@ -97,14 +76,14 @@ class OauthController extends AppController {
 
         $this->Twitter->TwimOauth->setDataSource($dataSource);
 
-        // 正当な返り値かチェック
+        // check return token
         if (empty($this->params['url']['oauth_token']) || empty($this->params['url']['oauth_verifier'])) {
             $this->Twitter->deleteCachedAuthorizeUrl();
             $this->flash(__d('twim', 'Authorization failure.', true), '/', 5);
             return;
         }
 
-        // $tokenを取得
+        // get access token
         $token = $this->Twitter->getAccessToken();
 
         if (is_string($token)) {

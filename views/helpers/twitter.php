@@ -88,38 +88,42 @@ class TwitterHelper extends AppHelper {
      * create OAuth Link
      *
      * @param $options
-     *  loading:      loading message
      *  login:        login link text
      *  datasource:   datasource name (default: twitter)
-     *  authenticate: use authenticate link (default: false)
+     *  authorize: use authorize link (default: false)
      */
     public function oauthLink($options = array()) {
 
         $default = array(
-            'loading' => __d('twim', 'Loading...', true),
             'login' => __d('twim', 'Login Twitter', true),
-            'datasource' => 'twitter',
-            'authorize' => false,
-            'loginElementId' => 'twitter-login-wrap',
         );
 
+        if (is_string($options)) {
+            $options = array('login' => $options);
+        }
         $options = am($default, $options);
 
-        $action = $options['authorize'] ? 'authorize_url' : 'authenticate_url';
+        $login = $options['login'];
+        unset($login);
 
-        $request_url = $this->Html->url(array('plugin' => 'twim', 'controller' => 'oauth', 'action' => $action . '/' . urlencode($options['datasource'])), true);
+        // create connect url
+        $url = array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'connect');
+        if (isset($options['datasource'])) {
+            $url['datasource'] = $options['datasource'];
+            unset($options['datasource']);
+        }
+        if (isset($options['authorize'])) {
+            $url['authorize'] = $options['authorize'];
+            unset($options['authorize']);
+        }
 
-        $this->Js->buffer("
-            $.getJSON('{$request_url}', {}, function(data){
-            var link = $('<a>').attr('href', data.url).html('{$options['login']}');
-            $('#{$options['loginElementId']} .loading').remove();
-            $('#{$options['loginElementId']}').append(link);
-            });
-        ");
+        if (Configure::read('Routing.prefixes')) {
+            foreach (Configure::read('Routing.prefixes') as $prefix) {
+                $url[$prefix] = false;
+            }
+        }
 
-        $out = sprintf('<span id="%s"><span class="loading">%s</span></span>', $options['loginElementId'], $options['loading']);
-
-        return $this->output($out);
+        return $this->Html->link($options['login'], $url, $options);
     }
 
     /**
