@@ -76,48 +76,38 @@ class OauthController extends AppController {
 
         $this->Twitter->TwimOauth->setDataSource($dataSource);
 
-        // check return token
-        if (empty($this->params['url']['oauth_token']) || empty($this->params['url']['oauth_verifier'])) {
+        try {
+
+            $useAuth = isset($this->Auth);
+
+            // check return token
+            if (empty($this->params['url']['oauth_token']) || empty($this->params['url']['oauth_verifier'])) {
+                throw new Exception(__d('twim', 'invalid request.', true));
+            }
+
+            // get access token
+            $token = $this->Twitter->getAccessToken();
+
+            if (!$useAuth) {
+                $this->Session->write('TwitterUser', $token);
+                $this->redirect('/');
+            }
+
+            $loginRedirect = $this->Auth->redirect();
+            $data = $this->Twitter->saveToUser($token);
+            $this->Auth->login($data);
+            // Redirect
+            if (ini_get('session.referer_check') && env('HTTP_REFERER')) {
+                $this->flash(sprintf(__d('twim', 'Redirect to %s', true), Router::url($loginRedirect, true) . ini_get('session.referer_check')), $loginRedirect, 0);
+                return;
+            }
+
+            $this->redirect($loginRedirect);
+        } catch (Exception $e) {
             $this->Twitter->deleteCachedAuthorizeUrl();
-            $this->flash(__d('twim', 'Authorization failure.', true), '/', 5);
+            $this->flash(__d('twim', 'Authorization Error: ', true) . $e->getMessage(), array('action' => 'login'), 5);
             return;
         }
-
-        // get access token
-        $token = $this->Twitter->getAccessToken();
-
-        if (is_string($token)) {
-            $this->flash(__d('twim', 'Authorization Error: ', true) . $token, '/', 5);
-            return;
-        }
-
-        $model = $this->Auth->getModel();
-        /* @var $model TwitterUser */
-        $data = array();
-
-        // save to database
-        if (method_exists($model, 'createSaveDataByToken') || in_array('createSaveDataByToken', $model->Behaviors->methods())) {
-            $data = $model->createSaveDataByToken($token);
-        } else {
-            $data = $token;
-        }
-
-        if (!$model->save($data)) {
-            $this->flash(__d('twim', 'The user could not be saved', true), array('action' => 'login'), 5);
-            return;
-        }
-
-        // login
-        $this->Auth->login($data);
-
-
-        // Redirect
-        if (ini_get('session.referer_check') && env('HTTP_REFERER')) {
-            $this->flash(sprintf(__d('twim', 'Redirect to %s', true), Router::url($this->Auth->redirect(), true) . ini_get('session.referer_check')), $this->Auth->redirect(), 0);
-            return;
-        }
-
-        $this->redirect($this->Auth->redirect());
     }
 
 }

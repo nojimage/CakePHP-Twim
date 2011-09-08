@@ -219,6 +219,32 @@ class TwitterComponent extends Object {
     }
 
     /**
+     * save token to User model
+     *
+     * @param array $token
+     * @return array User record
+     */
+    public function saveToUser($token) {
+
+        $model = $this->Controller->Auth->getModel();
+        /* @var $model TwitterUser */
+        $data = array();
+
+        // save to database
+        if (method_exists($model, 'createSaveDataByToken') || in_array('createSaveDataByToken', $model->Behaviors->methods())) {
+            $data = $model->createSaveDataByToken($token);
+        } else {
+            $data = $token;
+        }
+
+        if ($result = $model->save($data)) {
+            return $result;
+        }
+
+        throw new Exception(__d('twim', 'The user could not be saved', true));
+    }
+
+    /**
      * delete Authorize/Authenticate url from Session
      */
     public function deleteCachedAuthorizeUrl() {

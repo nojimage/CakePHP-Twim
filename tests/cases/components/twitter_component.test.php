@@ -3,7 +3,7 @@
 /**
  * Twitter API Component Test Case
  */
-App::import('Component', 'Twim.Twitter');
+App::import('Component', array('Twim.Twitter'));
 
 ConnectionManager::create('test_twitter_component', array(
     'datasource' => 'Twim.TwimSource',
@@ -44,6 +44,17 @@ class TwitterComponentTestController extends Controller {
     }
 
 }
+
+class TwitterComponentTestUser extends Model {
+
+    public $name = 'TwitterUser';
+    public $alias = 'TwitterUser';
+    public $useTable = false;
+
+}
+
+Mock::generatePartial('TwitterComponentTestUser', 'TwitterComponentMockUser', array('save', 'createSaveDataByToken'));
+Mock::generatePartial('Object', 'TwitterComponentMockAuthComponent', array('getModel'));
 
 class TestTwitterComponent extends TwitterComponent {
     
@@ -196,6 +207,40 @@ class TwitterComponentTestCase extends CakeTestCase {
         $result = $this->Controller->Twitter->setTokenByUser($user);
         $this->assertEqual('dummy_token2', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token']);
         $this->assertEqual('dummy_secret2', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token_secret']);
+    }
+
+    // =========================================================================
+    function testSaveToUser() {
+        $this->Controller->Auth = new TwitterComponentMockAuthComponent();
+        $this->Controller->Auth->userModel = 'TwitterComponentMockUser';
+        
+        $model = ClassRegistry::init('TwitterComponentMockUser');
+        $this->Controller->Auth->expectOnce('getModel');
+        $this->Controller->Auth->setReturnValue('getModel', $model);
+
+        $token = array(
+            'user_id' => '123456789',
+            'screen_name' => 'dummy_user',
+            'oauth_token' => 'dummy token',
+            'oauth_token_secret' => 'dummy secret token',
+        );
+        $saveData = array(
+            'TwitterUser' => array(
+                'id' => '123456789',
+                'username' => 'dummy_user',
+                'oauth_token' => 'dummy token',
+                'oauth_token_secret' => 'dummy secret token',
+                'password' => 'ae9277742549f954cb43408b44fd3610a5b5e9db',
+            ),
+        );
+
+        $model->expectOnce('createSaveDataByToken', array($token));
+        $model->setReturnValue('createSaveDataByToken', $saveData);
+        $model->expectOnce('save', array($saveData));
+        $model->setReturnValue('save', $saveData);
+
+        $result = $this->Controller->Twitter->saveToUser($token);
+        $this->assertIdentical($result, $saveData);
     }
 
 }
