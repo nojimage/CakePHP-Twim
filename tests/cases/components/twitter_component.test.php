@@ -28,6 +28,7 @@ class TwitterComponentTestController extends Controller {
     public $stoped = false;
     public $status = 200;
     public $headers = array();
+    public $redirectUrl = null;
 
     function _stop($status = 0) {
         $this->stoped = $status;
@@ -35,6 +36,7 @@ class TwitterComponentTestController extends Controller {
 
     function redirect($url, $status = null, $exit = true) {
         $this->status = $status;
+        $this->redirectUrl = $url;
     }
 
     function header($status) {
@@ -114,6 +116,18 @@ class TwitterComponentTestCase extends CakeTestCase {
         $this->assertPattern('!https://api\.twitter\.com/oauth/authenticate\?oauth_token=.+!', $result);
 
         $this->authenticateUrl = $result;
+    }
+
+    // =========================================================================
+    function testConnect() {
+        $this->Controller->Twitter->connect();
+        $this->assertPattern('!https://api\.twitter\.com/oauth/authenticate\?oauth_token=.+!', $this->Controller->redirectUrl);
+    }
+
+    function testConnect_authorize() {
+        $this->Controller->params['named']['authorize'] = 'true';
+        $this->Controller->Twitter->connect();
+        $this->assertPattern('!https://api\.twitter\.com/oauth/authorize\?oauth_token=.+!', $this->Controller->redirectUrl);
     }
 
     // =========================================================================

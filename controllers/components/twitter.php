@@ -137,6 +137,32 @@ class TwitterComponent extends Object {
     }
 
     /**
+     * redirect Twitter authorize page
+     */
+    public function connect() {
+
+        $dataSource = $authorize = false;
+
+        if (!empty($this->Controller->params['named']['datasource'])) {
+            $dataSource = $this->Controller->params['named']['datasource'];
+        }
+
+        if (!empty($this->Controller->params['named']['authorize'])) {
+            $authorize = $this->Controller->params['named']['authorize'];
+        }
+
+        if ($dataSource !== false) {
+            $this->TwimOauth->setDataSource($dataSource);
+        }
+
+        if ($authorize) {
+            $this->Controller->redirect($this->getAuthorizeUrl());
+        } else {
+            $this->Controller->redirect($this->getAuthenticateUrl());
+        }
+    }
+
+    /**
      * get OAuth Access Token
      *
      * @return array|false
