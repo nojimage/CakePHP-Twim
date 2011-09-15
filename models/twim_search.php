@@ -95,11 +95,8 @@ class TwimSearch extends TwimAppModel {
         }
 
         $this->request['uri']['host'] = 'search.twitter.com';
-        $this->request['uri']['path'] = 'search';
 
-        if (array_key_exists($type, $this->allowedFindOptions)) {
-            $this->request['uri']['query'] = array_intersect_key($options, array_flip($this->allowedFindOptions[$type]));
-        }
+        $this->_setupRequest($type, $options);
 
         $results = parent::find('all', $options);
 

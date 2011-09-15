@@ -1,7 +1,7 @@
 <?php
 
 /**
- * for Trend API
+ * for Status API
  *
  * PHP versions 5
  *
@@ -35,6 +35,8 @@
  */
 class TwimStatus extends TwimAppModel {
 
+    public $apiUrlBase = '1/statuses/';
+
     /**
      * The model's schema. Used by FormHelper
      *
@@ -47,6 +49,7 @@ class TwimStatus extends TwimAppModel {
         'in_reply_to_user_id' => array('type' => 'integer', 'length' => '11'),
         'in_reply_to_screen_name' => array('type' => 'string', 'length' => '255'),
     );
+
     /**
      * Validation rules for the model
      *
@@ -80,6 +83,7 @@ class TwimStatus extends TwimAppModel {
             ),
         ),
     );
+
     /**
      * Custom find types available on this model
      *
@@ -99,6 +103,7 @@ class TwimStatus extends TwimAppModel {
         'retweetedBy' => true,
         'retweetedByIds' => true,
     );
+
     /**
      * The custom find types that require authentication
      *
@@ -115,6 +120,7 @@ class TwimStatus extends TwimAppModel {
         'retweetedBy',
         'retweetedByIds',
     );
+
     /**
      * The options allowed by each of the custom find types
      * 
@@ -177,13 +183,9 @@ class TwimStatus extends TwimAppModel {
         if (method_exists($this, '_find' . Inflector::camelize($type))) {
             return parent::find($type, $options);
         }
-        $this->request['uri']['path'] = '1/statuses/' . Inflector::underscore($type);
-        if (array_key_exists($type, $this->allowedFindOptions)) {
-            $this->request['uri']['query'] = array_intersect_key($options, array_flip($this->allowedFindOptions[$type]));
-        }
-        if (in_array($type, $this->findMethodsRequiringAuth)) {
-            $this->request['auth'] = true;
-        }
+
+        $this->_setupRequest($type, $options);
+
         return parent::find('all', $options);
     }
 
@@ -201,14 +203,19 @@ class TwimStatus extends TwimAppModel {
      * */
     protected function _findShow($state, $query = array(), $results = array()) {
         if ($state === 'before') {
+
             if (empty($query['id'])) {
-                return false;
+                return $query;
             }
-            $this->request = array(
-                'uri' => array('path' => '1/statuses/show/' . $query['id']),
-            );
+
+            $type = 'show';
+
+            $this->_setupRequest($type, $query);
+
+            $this->request['uri']['path'] = $this->apiUrlBase . $type . '/' . $query['id'];
+            unset($this->request['uri']['query']['id']);
             unset($query['id']);
-            $this->request['uri']['query'] = array_intersect_key($query, array_flip($this->allowedFindOptions['show']));
+
             return $query;
         } else {
             return $results;
@@ -230,13 +237,16 @@ class TwimStatus extends TwimAppModel {
     protected function _findRetweets($state, $query = array(), $results = array()) {
         if ($state === 'before') {
             if (empty($query['id'])) {
-                return false;
+                return $query;
             }
-            $this->request = array(
-                'uri' => array('path' => '1/statuses/retweets/' . $query['id']),
-            );
+
+            $type = 'retweets';
+
+            $this->_setupRequest($type, $query);
+
+            $this->request['uri']['path'] = $this->apiUrlBase . $type . '/' . $query['id'];
+            unset($this->request['uri']['query']['id']);
             unset($query['id']);
-            $this->request['uri']['query'] = array_intersect_key($query, array_flip($this->allowedFindOptions['show']));
             return $query;
         } else {
             return $results;
@@ -258,19 +268,20 @@ class TwimStatus extends TwimAppModel {
     protected function _findRetweetedBy($state, $query = array(), $results = array()) {
         if ($state === 'before') {
             if (empty($query['id'])) {
-                return false;
+                return $query;
             }
-            $this->request = array(
-                'uri' => array(
-                    'path' => '1/statuses/' . $query['id'] . '/retweeted_by'
-                ),
-                'auth' => true,
-            );
-            unset($query['id']);
+
+            $type = 'retweetedBy';
+
             if ($query['count'] > 100) {
                 $query['count'] = 100;
             }
-            $this->request['uri']['query'] = array_intersect_key($query, array_flip($this->allowedFindOptions['retweetedBy']));
+            $this->_setupRequest($type, $query);
+
+            $this->request['uri']['path'] = $this->apiUrlBase . $query['id'] . '/retweeted_by';
+            unset($this->request['uri']['query']['id']);
+            unset($query['id']);
+
             return $query;
         } else {
             return $results;
@@ -292,19 +303,20 @@ class TwimStatus extends TwimAppModel {
     protected function _findRetweetedByIds($state, $query = array(), $results = array()) {
         if ($state === 'before') {
             if (empty($query['id'])) {
-                return false;
+                return $query;
             }
-            $this->request = array(
-                'uri' => array(
-                    'path' => '1/statuses/' . $query['id'] . '/retweeted_by/ids'
-                ),
-                'auth' => true,
-            );
-            unset($query['id']);
+
+            $type = 'retweetedByIds';
+
             if ($query['count'] > 100) {
                 $query['count'] = 100;
             }
-            $this->request['uri']['query'] = array_intersect_key($query, array_flip($this->allowedFindOptions['retweetedBy']));
+            $this->_setupRequest($type, $query);
+
+            $this->request['uri']['path'] = $this->apiUrlBase . $query['id'] . '/retweeted_by/ids';
+            unset($this->request['uri']['query']['id']);
+            unset($query['id']);
+
             return $query;
         } else {
             return $results;

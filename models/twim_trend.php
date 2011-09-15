@@ -26,6 +26,8 @@
  */
 class TwimTrend extends TwimAppModel {
 
+    public $apiUrlBase = '1/trends/';
+
     /**
      * Custom find types available on this model
      *
@@ -39,6 +41,7 @@ class TwimTrend extends TwimAppModel {
         'available' => true,
         'woeid' => true,
     );
+
     /**
      * The options allowed by each of the custom find types
      *
@@ -65,14 +68,10 @@ class TwimTrend extends TwimAppModel {
             return parent::find($type, $options);
         }
 
+        $this->_setupRequest($type, $options);
+
         if ($type === 'trends') {
             $this->request['uri']['path'] = Inflector::underscore($type);
-        } else {
-            $this->request['uri']['path'] = '1/trends/' . Inflector::underscore($type);
-        }
-
-        if (array_key_exists($type, $this->allowedFindOptions)) {
-            $this->request['uri']['query'] = array_intersect_key($options, array_flip($this->allowedFindOptions[$type]));
         }
 
         return parent::find('all', $options);
@@ -88,14 +87,18 @@ class TwimTrend extends TwimAppModel {
     protected function _findWoeid($state, $query = array(), $results = array()) {
         if ($state === 'before') {
             if (empty($query['woeid'])) {
-                return false;
+                return $query;
             }
-            $this->request['uri']['path'] = '1/trends/' . $query['woeid'];
+
+            $this->_setupRequest('woeid', $query);
+
+            $this->request['uri']['path'] = $this->apiUrlBase . $query['woeid'];
             unset($query['woeid']);
-            $this->request['uri']['query'] = array_intersect_key($query, array_flip($this->allowedFindOptions['woeid']));
+            unset($this->request['uri']['query']['woeid']);
+
             return $query;
         } else if ($state === 'after') {
-            return !empty($results[0]) ? $results[0] : $results;
+            return!empty($results[0]) ? $results[0] : $results;
         } else {
             return $results;
         }
