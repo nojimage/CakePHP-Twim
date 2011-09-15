@@ -101,25 +101,6 @@ class TwimUser extends TwimAppModel {
      */
     public function find($type, $options = array()) {
 
-        /*
-          if (!empty($options['limit']) && empty($options['per_page'])) {
-          $options['per_page'] = $options['limit'];
-          }
-          if ((empty($options['page']) || empty($options['count']))
-          && array_key_exists($type, $this->allowedFindOptions)
-          && in_array('page', $this->allowedFindOptions[$type])
-          && in_array('per_page', $this->allowedFindOptions[$type])) {
-          $options['page'] = 1;
-          $options['per_page'] = $this->$maxPerPage;
-          $results = array();
-          while ($page = $this->find($type, $options)) {
-          $results = array_merge($results, $page);
-          $options['page']++;
-          }
-          return $results;
-          }
-         */
-
         if (method_exists($this, '_find' . Inflector::camelize($type))) {
             return parent::find($type, $options);
         }
