@@ -37,10 +37,11 @@ Mock::generatePartial('TwimSource', 'MockTwimSearchTwimSource', array('request')
  */
 class TwimSearchTestCase extends CakeTestCase {
 
-    public function startTest() {
-        ConnectionManager::create('test_twitter_search',
-                        array('datasource' => 'MockTwimSearchTwimSource'));
+    public function startCase() {
+        ConnectionManager::create('test_twitter_search', array('datasource' => 'MockTwimSearchTwimSource'));
+    }
 
+    public function startTest() {
         $this->Search = ClassRegistry::init('Twim.TestTwimSearch');
     }
 
@@ -50,7 +51,7 @@ class TwimSearchTestCase extends CakeTestCase {
     }
 
     // =========================================================================
-    public function test_serach() {
+    public function testSerach() {
         $q = 'test';
         $page = 1;
         $limit = 50;
@@ -60,39 +61,51 @@ class TwimSearchTestCase extends CakeTestCase {
 
         $this->assertIdentical($this->Search->request['uri']['host'], 'search.twitter.com');
         $this->assertIdentical($this->Search->request['uri']['path'], 'search');
-        $this->assertIdentical($this->Search->request['uri']['query'], array('q' => 'test', 'page' => 1, 'rpp' => 50));
+        $this->assertEqual($this->Search->request['uri']['query'], array('q' => 'test', 'page' => 1, 'rpp' => 50));
     }
 
-    public function test_serach_call2() {
+    public function testSerach_call2() {
 
         $this->Search->getDataSource()->expectOnce('request');
         $this->Search->find('search', 'test');
-        $this->assertIdentical($this->Search->request['uri']['query'], array('q' => 'test', 'page' => 1, 'rpp' => 200));
+        $this->assertEqual($this->Search->request['uri']['query'], array('q' => 'test', 'page' => 1, 'rpp' => 100));
     }
 
-    public function test_serach_call3() {
+    public function testSerach_call3() {
 
         $this->Search->getDataSource()->expectOnce('request');
         $this->Search->find('test');
-        $this->assertIdentical($this->Search->request['uri']['query'], array('q' => 'test', 'page' => 1, 'rpp' => 200));
+        $this->assertEqual($this->Search->request['uri']['query'], array('q' => 'test', 'page' => 1, 'rpp' => 100));
     }
 
-    public function test_serach_noquery() {
+    public function testSerach_noquery() {
 
-        $this->Search = new TwimSearch();
+        $this->Search->setDataSource('twitter');
         try {
             $this->Search->find('');
         } catch (RuntimeException $e) {
             $this->assertIdentical($e->getMessage(), 'You must enter a query.');
         }
-        $this->assertIdentical($this->Search->request['uri']['query'], array('q' => '', 'page' => 1, 'rpp' => 200));
+        $this->assertEqual($this->Search->request['uri']['query'], array('q' => '', 'page' => 1, 'rpp' => 100));
     }
 
-    public function test_serach_get_all_results() {
-        $this->Search->getDataSource()->expectCallCount('request', 2);
-        $this->Search->getDataSource()->setReturnValueAt(0, 'request', array('result' => array(1)));
-        $this->Search->getDataSource()->setReturnValueAt(1, 'request', array('result' => array()));
-        $this->Search->find('twitter');
+    public function testSerach_get_all_results() {
+        $this->Search->setDataSource('twitter');
+        $this->assertTrue(count($this->Search->find('twitter')) > 100);
+        $this->assertTrue(empty($this->Search->response['next_page']));
+    }
+
+    public function testSerach_limitation_results() {
+        $this->Search->setDataSource('twitter');
+        $this->assertIdentical(255, count($this->Search->find('search', array('q' => 'twitter', 'limit' => 255))));
+        $this->assertFalse(empty($this->Search->response['next_page']));
+    }
+
+    public function test_serach_get_empty_results() {
+        $this->Search->getDataSource()->expectOnce('request');
+        $this->Search->getDataSource()->setReturnValue('request', array('results' => array()));
+        $result = $this->Search->find('nwoghwiot20gflanvowigiwoagnla;424ty9agfjpoafacdj4#eqpwkp');
+        $this->assertIdentical(array(), $result);
     }
 
 }

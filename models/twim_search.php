@@ -32,6 +32,7 @@ class TwimSearch extends TwimAppModel {
     public $_findMethods = array(
         'search' => true,
     );
+
     /**
      * The options allowed by each of the custom find types
      *
@@ -41,6 +42,26 @@ class TwimSearch extends TwimAppModel {
         'search' => array('lang', 'locale', 'max_id', 'q', 'rpp', 'page', 'since', 'since_id', 'geocode', 'show_user', 'until', 'result_type'),
     );
 
+    /**
+     * Search API result data limit
+     *
+     * @var int
+     */
+    public $resultLimit = 1500;
+
+    /**
+     * Search API max number of rpp(result per page)
+     *
+     * @var int
+     */
+    public $maxRpp = 100;
+
+    /**
+     *
+     * @param string $type
+     * @param array $options
+     * @return  array
+     */
     public function find($type, $options = array()) {
 
         if (is_string($type) && empty($options)) {
@@ -49,25 +70,26 @@ class TwimSearch extends TwimAppModel {
         }
 
         if (is_string($options)) {
-            $q = $options;
-            $options = compact('q');
+            $options = array('q' => $options);
         }
 
-        if (!empty($options['limit']) && empty($options['rpp'])) {
+        $defaults = array('rpp' => $this->maxRpp, 'limit' => $this->resultLimit);
+
+        $options = array_merge($defaults, $options);
+
+        if (!empty($options['limit']) && $options['limit'] <= $this->maxRpp) {
             $options['rpp'] = $options['limit'];
         }
 
-        if (empty($options['page']) && empty($options['limit'])) {
+        if (empty($options['page'])) {
             $options['page'] = 1;
-            $options['limit'] = 200;
             $results = array();
-            try {
-                while (($page = $this->find($type, $options)) != false) {
-                    $results = array_merge($results, $page);
-                    $options['page']++;
+            while ($pageData = $this->find($type, $options)) {
+                $results = array_merge($results, array_slice($pageData, 0, $options['limit'] - count($results)));
+                $options['page']++;
+                if (count($results) >= $options['limit'] || empty($this->response['next_page'])) {
+                    break;
                 }
-            } catch (Exception $e) {
-
             }
             return $results;
         }
@@ -79,7 +101,9 @@ class TwimSearch extends TwimAppModel {
             $this->request['uri']['query'] = array_intersect_key($options, array_flip($this->allowedFindOptions[$type]));
         }
 
-        return Set::extract('/results/.', parent::find('all', $options));
+        $results = parent::find('all', $options);
+
+        return $results['results'];
     }
 
 }
