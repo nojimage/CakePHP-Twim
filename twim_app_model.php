@@ -109,6 +109,8 @@ class TwimAppModel extends AppModel {
 
             if (!empty($this->response['error'])) {
                 $message = $this->response['error'];
+            } else if (!empty($this->response['errors'][0]['message'])) {
+                $message = $this->response['errors'][0]['message'];
             }
 
             throw new RuntimeException(
