@@ -17,7 +17,7 @@
  * @package   twim
  * @since     File available since Release 1.0
  * @original  https://github.com/neilcrookes/CakePHP-Twitter-API-Plugin
- **/
+ * */
 /*
  * @property TwimSource $Source
  */
@@ -47,6 +47,27 @@ class TwimAppModel extends AppModel {
      * @var array
      */
     public $request = array();
+
+    /**
+     * Twitter API url base
+     *
+     * @var string
+     */
+    public $apiUrlBase = '';
+
+    /**
+     * The custom find types that require authentication
+     *
+     * @var array
+     */
+    public $findMethodsRequiringAuth = array();
+
+    /**
+     * The options allowed by each of the custom find types
+     * 
+     * @var array
+     */
+    public $allowedFindOptions = array();
 
     public function __get($name) {
         $model = ClassRegistry::init('Twim.Twim' . $name);
@@ -117,6 +138,27 @@ class TwimAppModel extends AppModel {
                     $message,
                     $this->getDataSource()->Http->response['status']['code']);
         }
+    }
+
+    /**
+     * filter options and setup request
+     *
+     * @param type $type
+     * @param array $options
+     */
+    protected function _setupRequest($type, array $options) {
+
+        $this->request['uri']['path'] = $this->apiUrlBase . Inflector::underscore($type);
+
+        if (isset($this->allowedFindOptions[$type])) {
+            $this->request['uri']['query'] = array_intersect_key($options, array_flip($this->allowedFindOptions[$type]));
+        }
+
+        if (in_array($type, $this->findMethodsRequiringAuth)) {
+            $this->request['auth'] = true;
+        }
+
+        return $this;
     }
 
 }
