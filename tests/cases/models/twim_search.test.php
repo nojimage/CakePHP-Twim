@@ -108,4 +108,19 @@ class TwimSearchTestCase extends CakeTestCase {
         $this->assertIdentical(array(), $result);
     }
 
+    public function testSerach_with_users_lookup() {
+        $this->Search->setDataSource('twitter')->User->setDataSource('twitter');
+        $results = $this->Search->find('search', array('q' => 'twitter', 'limit' => 255, 'users_lookup' => true));
+        $this->assertIdentical(255, count($results));
+        $this->assertTrue(isset($results[0]['user']['id_str']));
+    }
+
+    public function testSerach_with_users_lookup_specific_fields() {
+        $this->Search->setDataSource('twitter')->User->setDataSource('twitter');
+        $results = $this->Search->find('search', array('q' => 'twitter', 'limit' => 1, 'users_lookup' => array('name', 'statuses_count')));
+        $this->assertFalse(isset($results[0]['user']['id_str']));
+        $this->assertTrue(isset($results[0]['user']['name']));
+        $this->assertTrue(isset($results[0]['user']['statuses_count']));
+    }
+
 }

@@ -73,7 +73,7 @@ class TwimSearch extends TwimAppModel {
             $options = array('q' => $options);
         }
 
-        $defaults = array('rpp' => $this->maxRpp, 'limit' => $this->resultLimit);
+        $defaults = array('rpp' => $this->maxRpp, 'limit' => $this->resultLimit, 'users_lookup' => false);
 
         $options = array_merge($defaults, $options);
 
@@ -100,7 +100,52 @@ class TwimSearch extends TwimAppModel {
 
         $results = parent::find('all', $options);
 
-        return $results['results'];
+        $results = $results['results'];
+
+        if ($options['users_lookup']) {
+            $results = $this->usersLookup($results, $options['users_lookup']);
+        }
+
+        return $results;
+    }
+
+    /**
+     * lookup user
+     *
+     * @param array $datas
+     * @param mixed $fields
+     * @return array
+     */
+    public function usersLookup(array $datas, $fields = true) {
+
+        if ($fields === true) {
+            $fields = array();
+        } else if (is_scalar($fields)) {
+            $fields = array($fields);
+        }
+        $fields = array_flip($fields);
+
+        //
+        $screenNames = array_unique(Set::extract('/from_user', $datas));
+        $sets = array_chunk($screenNames, 100);
+
+        $users = array();
+
+        foreach ($sets as $screenNames) {
+            $result = $this->User->find('lookup', array('screen_name' => $screenNames));
+            foreach ($result as $user) {
+                $users[$user['screen_name']] = !empty($fields) ? array_intersect_key($user, $fields) : $user;
+            }
+        }
+
+        // 
+        for ($i = 0; $i < count($datas); $i++) {
+            if (isset($users[$datas[$i]['from_user']])) {
+                $datas[$i]['user'] = $users[$datas[$i]['from_user']];
+            }
+        }
+
+        return $datas;
     }
 
 }
