@@ -1,6 +1,6 @@
 <?php
 App::import('Core', 'HttpSocket');
-App::import('Vendor', 'Twim.HttpSocketProxy');
+App::import('Lib', 'Twim.HttpSocketProxy');
 
 /**
  * Extension to CakePHP core HttpSocket class that overrides the request method

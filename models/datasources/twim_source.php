@@ -84,7 +84,7 @@ class TwimSource extends RestSource {
 
         $config = array_merge($defaults, $config);
 
-        App::import('Vendor', 'Twim.HttpSocketOauth');
+        App::import('Lib', 'Twim.HttpSocketOauth');
         parent::__construct($config, new HttpSocketOauth());
 
         if (!empty($config['proxy']['host'])) {
