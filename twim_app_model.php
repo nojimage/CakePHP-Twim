@@ -128,10 +128,12 @@ class TwimAppModel extends AppModel {
         if ($this->getDataSource()->config['throw_exception']) {
             $message = $this->getDataSource()->Http->response['body'];
 
-            if (!empty($this->response['error'])) {
+            if (is_array($this->response) && !empty($this->response['error'])) {
                 $message = $this->response['error'];
-            } else if (!empty($this->response['errors'][0]['message'])) {
+            } else if (is_array($this->response) && !empty($this->response['errors'][0]['message'])) {
                 $message = $this->response['errors'][0]['message'];
+            } else if ($this->getDataSource()->Http->response['status']['code'] == 404) {
+                $message = sprintf('The requested URL %s was not found.', $this->getDataSource()->Http->url($this->getDataSource()->Http->request['uri']));
             }
 
             throw new RuntimeException(
