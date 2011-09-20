@@ -16,12 +16,12 @@
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   twim
  * @since   　File available since Release 1.0
- * @see       http://dev.twitter.com/doc/get/trends
- * @see       http://dev.twitter.com/doc/get/trends/current
- * @see       http://dev.twitter.com/doc/get/trends/daily
- * @see       http://dev.twitter.com/doc/get/trends/weekly
- * @see       http://dev.twitter.com/doc/get/trends/available
- * @see       http://dev.twitter.com/doc/get/trends/1
+ * @link      http://dev.twitter.com/doc/get/trends
+ * @link      http://dev.twitter.com/doc/get/trends/current
+ * @link      http://dev.twitter.com/doc/get/trends/daily
+ * @link      http://dev.twitter.com/doc/get/trends/weekly
+ * @link      http://dev.twitter.com/doc/get/trends/available
+ * @link      http://dev.twitter.com/doc/get/trends/1
  *
  */
 class TwimTrend extends TwimAppModel {

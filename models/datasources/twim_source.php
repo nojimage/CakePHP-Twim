@@ -19,7 +19,7 @@ App::import('Datasource', 'Rest.RestSource');
  * @copyright 2011 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   twim
- * @see       http://dev.twitter.com/doc
+ * @link      http://dev.twitter.com/doc
  *
  */
 class TwimSource extends RestSource {

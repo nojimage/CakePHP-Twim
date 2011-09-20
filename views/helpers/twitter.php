@@ -168,7 +168,7 @@ class TwitterHelper extends AppHelper {
     /**
      * create tweet button
      *
-     * @see http://dev.twitter.com/pages/tweet_button
+     * @link http://dev.twitter.com/pages/tweet_button
      * @param string  $label
      * @param array   $options
      * @param boolean $dataAttribute

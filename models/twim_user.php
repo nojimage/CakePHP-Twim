@@ -16,14 +16,14 @@
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   twim
  * @since   　File available since Release 1.0
- * @see       https://dev.twitter.com/docs/api/1/get/users/lookup
- * @see       https://dev.twitter.com/docs/api/1/get/users/search
- * @see       https://dev.twitter.com/docs/api/1/get/users/show
- * @see       https://dev.twitter.com/docs/api/1/get/users/contributees
- * @see       https://dev.twitter.com/docs/api/1/get/users/contributors
- * @see       https://dev.twitter.com/docs/api/1/get/users/suggestions
- * @see       https://dev.twitter.com/docs/api/1/get/users/suggestions/%3Aslug
- * @see       https://dev.twitter.com/docs/api/1/get/users/suggestions/%3Aslug/members
+ * @link      https://dev.twitter.com/docs/api/1/get/users/lookup
+ * @link      https://dev.twitter.com/docs/api/1/get/users/search
+ * @link      https://dev.twitter.com/docs/api/1/get/users/show
+ * @link      https://dev.twitter.com/docs/api/1/get/users/contributees
+ * @link      https://dev.twitter.com/docs/api/1/get/users/contributors
+ * @link      https://dev.twitter.com/docs/api/1/get/users/suggestions
+ * @link      https://dev.twitter.com/docs/api/1/get/users/suggestions/%3Aslug
+ * @link      https://dev.twitter.com/docs/api/1/get/users/suggestions/%3Aslug/members
  *
  */
 class TwimUser extends TwimAppModel {

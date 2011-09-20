@@ -16,10 +16,10 @@
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   twim
  * @since   　File available since Release 1.0
- * @see       https://dev.twitter.com/docs/api/1/get/oauth/authenticate
- * @see       https://dev.twitter.com/docs/api/1/get/oauth/authorize
- * @see       https://dev.twitter.com/docs/api/1/post/oauth/access_token
- * @see       https://dev.twitter.com/docs/api/1/post/oauth/request_token
+ * @link      https://dev.twitter.com/docs/api/1/get/oauth/authenticate
+ * @link      https://dev.twitter.com/docs/api/1/get/oauth/authorize
+ * @link      https://dev.twitter.com/docs/api/1/post/oauth/access_token
+ * @link      https://dev.twitter.com/docs/api/1/post/oauth/request_token
  *
  */
 class TwimOauth extends TwimAppModel {

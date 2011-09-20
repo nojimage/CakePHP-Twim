@@ -16,21 +16,21 @@
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   twim
  * @since   　File available since Release 1.0
- * @see       http://dev.twitter.com/doc/get/statuses/public_timeline
- * @see       http://dev.twitter.com/doc/get/statuses/home_timeline
- * @see       http://dev.twitter.com/doc/get/statuses/friends_timeline
- * @see       http://dev.twitter.com/doc/get/statuses/user_timeline
- * @see       http://dev.twitter.com/doc/get/statuses/mentions
- * @see       http://dev.twitter.com/doc/get/statuses/retweeted_by_me
- * @see       http://dev.twitter.com/doc/get/statuses/retweeted_to_me
- * @see       http://dev.twitter.com/doc/get/statuses/retweets_of_me
- * @see       http://dev.twitter.com/doc/get/statuses/show/:id
- * @see       http://dev.twitter.com/doc/get/statuses/retweets/:id
- * @see       http://dev.twitter.com/doc/get/statuses/:id/retweeted_by
- * @see       http://dev.twitter.com/doc/get/statuses/:id/retweeted_by/ids
- * @see       http://dev.twitter.com/doc/post/statuses/update
- * @see       http://dev.twitter.com/doc/post/statuses/retweet/:id
- * @see       http://dev.twitter.com/doc/post/statuses/destroy/:id
+ * @link      http://dev.twitter.com/doc/get/statuses/public_timeline
+ * @link      http://dev.twitter.com/doc/get/statuses/home_timeline
+ * @link      http://dev.twitter.com/doc/get/statuses/friends_timeline
+ * @link      http://dev.twitter.com/doc/get/statuses/user_timeline
+ * @link      http://dev.twitter.com/doc/get/statuses/mentions
+ * @link      http://dev.twitter.com/doc/get/statuses/retweeted_by_me
+ * @link      http://dev.twitter.com/doc/get/statuses/retweeted_to_me
+ * @link      http://dev.twitter.com/doc/get/statuses/retweets_of_me
+ * @link      http://dev.twitter.com/doc/get/statuses/show/:id
+ * @link      http://dev.twitter.com/doc/get/statuses/retweets/:id
+ * @link      http://dev.twitter.com/doc/get/statuses/:id/retweeted_by
+ * @link      http://dev.twitter.com/doc/get/statuses/:id/retweeted_by/ids
+ * @link      http://dev.twitter.com/doc/post/statuses/update
+ * @link      http://dev.twitter.com/doc/post/statuses/retweet/:id
+ * @link      http://dev.twitter.com/doc/post/statuses/destroy/:id
  *
  */
 class TwimStatus extends TwimAppModel {

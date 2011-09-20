@@ -16,7 +16,7 @@
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   twim
  * @since     File available since Release 1.0
- * @see http://dev.twitter.com/doc/get/search
+ * @link      https://dev.twitter.com/docs/api/1/get/search
  *
  * NOTICE: Search API "from_user_id" doesn't match up with the proper Twitter "user_id"
  * see http://code.google.com/p/twitter-api/issues/detail?id=214

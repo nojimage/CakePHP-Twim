@@ -236,7 +236,7 @@ class HttpSocketProxy extends HttpSocket {
      * @param HttpSocket $http
      * @param array $proxyInfo
      * @return void
-     * @see http://www.ietf.org/rfc/rfc2617.txt
+     * @link http://www.ietf.org/rfc/rfc2617.txt
      */
     public static function proxyAuthentication(HttpSocket $http, &$proxyInfo) {
         if (isset($proxyInfo['user'], $proxyInfo['pass'])) {
