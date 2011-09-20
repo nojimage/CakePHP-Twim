@@ -103,6 +103,32 @@ class TwimUserTestCase extends CakeTestCase {
     }
 
     // =========================================================================
+    public function testProfileImage() {
+        $this->User->getDataSource()->expectOnce('request');
+        $this->assertFalse($this->User->find('profileImage'));
+    }
+
+    public function testProfileImage_with_screen_name() {
+        $this->User->getDataSource()->expectOnce('request');
+        $this->User->find('profileImage', array('screen_name' => 'abcd'));
+        $this->assertIdentical($this->User->request['uri']['path'], '1/users/profile_image');
+        $this->assertIdentical($this->User->request['uri']['query'], array('screen_name' => 'abcd'));
+    }
+
+    public function testProfileImage_with_size() {
+        $this->User->getDataSource()->expectOnce('request');
+        $this->User->find('profileImage', array('screen_name' => 'abcd', 'size' => 'bigger'));
+        $this->assertIdentical($this->User->request['uri']['path'], '1/users/profile_image');
+        $this->assertIdentical($this->User->request['uri']['query'], array('screen_name' => 'abcd', 'size' => 'bigger'));
+    }
+
+    public function testProfileImage_real() {
+        $this->User->setDataSource('twitter');
+        $result = $this->User->find('profileImage', array('screen_name' => 'twitterapi'));
+        $this->assertPattern('!http://a[0-9]+\.twimg\.com/profile_images/[0-9]+/.+\.png!', $result);
+    }
+
+    // =========================================================================
     public function testSearch() {
         $this->User->getDataSource()->expectOnce('request');
         $this->User->find('search', array('q' => 'cake'));

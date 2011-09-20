@@ -15,8 +15,9 @@
  * @copyright 2011 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   twim
- * @since   　File available since Release 1.0
+ * @since     File available since Release 1.0
  * @link      https://dev.twitter.com/docs/api/1/get/users/lookup
+ * @link      https://dev.twitter.com/docs/api/1/get/users/profile_image/%3Ascreen_name
  * @link      https://dev.twitter.com/docs/api/1/get/users/search
  * @link      https://dev.twitter.com/docs/api/1/get/users/show
  * @link      https://dev.twitter.com/docs/api/1/get/users/contributees
@@ -37,6 +38,7 @@ class TwimUser extends TwimAppModel {
      */
     public $_findMethods = array(
         'lookup' => true,
+        'profileImage' => true,
         'search' => true,
         'show' => true,
         'contributees' => true,
@@ -62,6 +64,7 @@ class TwimUser extends TwimAppModel {
      */
     public $allowedFindOptions = array(
         'lookup' => array('screen_name', 'user_id', 'include_entities'),
+        'profileImage' => array('screen_name', 'size'),
         'search' => array('q', 'page', 'per_page', 'include_entities'),
         'show' => array('user_id', 'screen_name', 'include_entities'),
         'contributees' => array('user_id', 'screen_name', 'include_entities', 'skip_status'),
@@ -101,6 +104,10 @@ class TwimUser extends TwimAppModel {
      */
     public function find($type, $options = array()) {
 
+        if (Inflector::camelize($type) === 'ProfileImage') {
+            return $this->profileImage($options);
+        }
+
         if (method_exists($this, '_find' . Inflector::camelize($type))) {
             return parent::find($type, $options);
         }
@@ -108,6 +115,35 @@ class TwimUser extends TwimAppModel {
         $this->_setupRequest($type, $options);
 
         return parent::find('all', $options);
+    }
+
+    /**
+     * profile image
+     * -------------
+     * 
+     * @param array $options
+     *  screen_name: string<br />
+     *  size: string (bigger or normal or mini or original)
+     * @return string
+     */
+    public function profileImage($options) {
+
+        $this->_setupRequest('profileImage', $options);
+
+        $ds = $this->getDataSource();
+        try {
+            $ds->read($this);
+        } catch (RuntimeException $e) {
+            if ($ds->Http->response['status']['code'] != 302) {
+                throw $e;
+            }
+        }
+
+        if (!isset($ds->Http->response['header']['Location'])) {
+            return false;
+        }
+
+        return $ds->Http->response['header']['Location'];
     }
 
     /**
