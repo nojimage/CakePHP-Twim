@@ -37,6 +37,13 @@ class TwimSource extends RestSource {
         'throw_exception' => true,
         'cache' => false,
         'refresh_cache' => false,
+        'proxy' => array(
+            'host' => '',
+            'port' => 3128,
+            'method' => null,
+            'user' => null,
+            'pass' => null,
+        ),
     );
 
     /**
@@ -79,6 +86,10 @@ class TwimSource extends RestSource {
 
         App::import('Vendor', 'Twim.HttpSocketOauth');
         parent::__construct($config, new HttpSocketOauth());
+
+        if (!empty($config['proxy']['host'])) {
+            $this->Http->configProxy($config['proxy']);
+        }
     }
 
     /**
@@ -194,6 +205,20 @@ class TwimSource extends RestSource {
         }
 
         return $response;
+    }
+
+    /**
+     * Set proxy settings
+     *
+     * @param mixed $host Proxy host. Can be an array with settings to authentication class
+     * @param integer $port Port. Default 3128.
+     * @param string $method Proxy method (ie, Basic, Digest). If empty, disable proxy authentication
+     * @param string $user Username if your proxy need authentication
+     * @param string $pass Password to proxy authentication
+     * @return void
+     */
+    public function configProxy($host, $port = 3128, $method = null, $user = null, $pass = null) {
+        $this->Http->configProxy($host, $port, $method, $user, $pass);
     }
 
     /**

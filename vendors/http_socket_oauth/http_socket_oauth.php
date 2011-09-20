@@ -1,5 +1,6 @@
 <?php
 App::import('Core', 'HttpSocket');
+App::import('Vendor', 'Twim.HttpSocketProxy');
 
 /**
  * Extension to CakePHP core HttpSocket class that overrides the request method
@@ -25,7 +26,7 @@ App::import('Core', 'HttpSocket');
  * @copyright (c) 2010 Neil Crookes
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
  */
-class HttpSocketOauth extends HttpSocket {
+class HttpSocketOauth extends HttpSocketProxy {
 
   /**
    * Default OAuth parameters. These get merged into the $request['auth'] param.
