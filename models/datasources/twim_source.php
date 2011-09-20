@@ -123,6 +123,27 @@ class TwimSource extends RestSource {
     }
 
     /**
+     * get api call remaining
+     *
+     * @return array
+     */
+    public function getRatelimit() {
+
+        if (empty($this->Http->response['header'])) {
+            return array();
+        }
+
+        $headers = array(
+            'X-Ratelimit-Class' => true,
+            'X-Ratelimit-Remaining' => true,
+            'X-Ratelimit-Limit' => true,
+            'X-Ratelimit-Reset' => true,
+        );
+
+        return array_intersect_key($this->Http->response['header'], $headers);
+    }
+
+    /**
      * Adds in common elements to the request such as the host and extension and
      * OAuth params from config if not set in the request already
      *
