@@ -1,0 +1,49 @@
+/**
+ * Twitter Actions CSS
+ *
+ * Copyright 2011, nojimage (http://php-tips.com/)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @version   1.0
+ * @author    nojimage <nojimage at gmail.com>
+ * @copyright 2011 nojimage (http://php-tips.com/)
+ * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @package   twim
+ * @since     File available since Release 1.0
+ **/
+.tweet-actions a {
+    padding-bottom: 3px;
+}
+
+.tweet-actions a i {
+    display: inline-block;
+    text-indent: -9999px;
+    width: 16px;
+    height: 16px;
+    margin-bottom: -3px;
+    vertical-align: baseline;
+    background-position: left top;
+    background-repeat: no-repeat;
+}
+
+.tweet-actions a:hover i {
+    background-position: -16px 0;
+}
+
+.tweet-actions a.active i {
+    background-position: -32px 0;
+}
+
+.tweet-actions a.favorite i {
+    background-image: url('../img/favorite-sprite.png');
+}
+
+.tweet-actions a.reply i {
+    background-image: url('../img/reply-sprite.png');
+}
+
+.tweet-actions a.retweet i {
+    background-image: url('../img/retweet-sprite.png');
+}
