@@ -60,4 +60,16 @@ class TwimAccountTestCase extends CakeTestCase {
         $this->assertTrue(isset($limit['remaining_hits']));
     }
 
+    // =========================================================================
+    public function testGetApiRemain() {
+        $this->Account->setDataSource('twitter');
+        $this->assertTrue($this->Account->getApiRemain() > 0);
+    }
+
+    // =========================================================================
+    public function testGetApiResetTime() {
+        $this->Account->setDataSource('twitter');
+        $this->assertTrue($this->Account->getApiResetTime() > time());
+    }
+
 }
