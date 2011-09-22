@@ -132,6 +132,8 @@ class TwimAppModel extends AppModel {
                 $message = $this->response['error'];
             } else if (is_array($this->response) && !empty($this->response['errors'][0]['message'])) {
                 $message = $this->response['errors'][0]['message'];
+            } else if ($this->getDataSource()->Http->response['status']['code'] == 503) {
+                $message = __d('twim', 'Twitter is over capacity.', true);
             } else if ($this->getDataSource()->Http->response['status']['code'] == 404) {
                 $message = sprintf('The requested URL %s was not found.', $this->getDataSource()->Http->url($this->getDataSource()->Http->request['uri']));
             }
