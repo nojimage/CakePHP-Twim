@@ -117,6 +117,7 @@ class TwimStatus extends TwimAppModel {
         'retweetedByMe',
         'retweetedToMe',
         'retweetsOfMe',
+        'retweets',
         'retweetedBy',
         'retweetedByIds',
     );
