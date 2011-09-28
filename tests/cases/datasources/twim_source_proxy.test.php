@@ -2,7 +2,7 @@
 
 App::import('Datasource', 'Twim.TwimSource');
 
-ConnectionManager::create('test_twitter_twim_source', array(
+ConnectionManager::create('test_twitter_twim_source_proxy', array(
     'datasource' => 'Twim.TwimSource',
     'oauth_consumer_key' => 'cvEPr1xe1dxqZZd1UaifFA',
     'oauth_consumer_secret' => 'gOBMTs7Rw4Z3p5EhzqBey8ousRTwNDvreJskN8Z60',
@@ -13,10 +13,18 @@ ConnectionManager::create('test_twitter_twim_source', array(
  * @property TwimSource $TwimSource
  * @property stdClass $Model
  */
-class TwimSourceTestCase extends CakeTestCase {
+class TwimSourceProxyTestCase extends CakeTestCase {
+
+    public function skip() {
+        $sock = @fsockopen('localhost', 3128, $errno, $errstr, 15);
+        $this->skipIf($sock === FALSE, 'unable to connect to localhost:3128 ' . $errstr);
+        if ($sock) {
+            fclose($sock);
+        }
+    }
 
     public function startTest($method) {
-        $this->TwimSource = ConnectionManager::getDataSource('test_twitter_twim_source');
+        $this->TwimSource = ConnectionManager::getDataSource('test_twitter_twim_source_proxy');
         $this->Model = new stdClass();
     }
 
@@ -27,7 +35,7 @@ class TwimSourceTestCase extends CakeTestCase {
     }
 
     // =========================================================================
-    public function testRequest() {
+    public function testConfigProxy() {
         $this->Model->request = array(
             'uri' => array(
                 'host' => 'search.twitter.com',
@@ -35,26 +43,10 @@ class TwimSourceTestCase extends CakeTestCase {
                 'query' => array('q' => 'twitter'),
             ),
         );
+        $this->TwimSource->configProxy('localhost');
         $results = $this->TwimSource->request($this->Model);
         $this->assertIdentical(200, $this->TwimSource->Http->response['status']['code']);
         $this->assertTrue(isset($results['results']));
-    }
-
-    // =========================================================================
-    public function testGetRatelimit() {
-        $this->Model->request = array(
-            'uri' => array(
-                'host' => 'api.twitter.com',
-                'path' => '1/statuses/public_timeline',
-            ),
-        );
-        $results = $this->TwimSource->request($this->Model);
-        $this->assertIdentical(200, $this->TwimSource->Http->response['status']['code']);
-        $limit = $this->TwimSource->getRatelimit();
-        $this->assertIdentical('api', $limit['X-Ratelimit-Class']);
-        $this->assertIdentical('150', $limit['X-Ratelimit-Limit']);
-        $this->assertTrue($limit['X-Ratelimit-Remaining'] > 0);
-        $this->assertTrue($limit['X-Ratelimit-Reset'] > time());
     }
 
 }
