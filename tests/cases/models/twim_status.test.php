@@ -19,28 +19,18 @@
  * @since   　File available since Release 1.0
  *
  */
+App::import('Lib', 'Twim.TwimConnectionTestCase');
 App::import('Model', 'Twim.TwimStatus');
-App::import('Datasource', array('Twim.TwimSource'));
-
-class TestTwimStatus extends TwimStatus {
-
-    public $alias = 'TwimStatus';
-    public $useDbConfig = 'test_twitter_status';
-
-}
-
-Mock::generatePartial('TwimSource', 'MockTwimStatusTwimSource', array('request'));
 
 /**
  *
  * @property TwimStatus $Status
  */
-class TwimStatusTestCase extends CakeTestCase {
+class TwimStatusTestCase extends TwimConnectionTestCase {
 
     public function startTest() {
-        ConnectionManager::create('test_twitter_status', array('datasource' => 'MockTwimStatusTwimSource'));
-
-        $this->Status = ClassRegistry::init('Twim.TestTwimStatus');
+        $this->Status = ClassRegistry::init('Twim.TwimStatus');
+        $this->Status->setDataSource($this->mockDatasourceName);
     }
 
     public function endTest() {
@@ -57,7 +47,7 @@ class TwimStatusTestCase extends CakeTestCase {
     }
 
     public function test_publicTimeline_real() {
-        $this->Status = new TwimStatus();
+        $this->Status->setDataSource($this->testDatasourceName);
         $results = $this->Status->find('publicTimeline');
         $this->assertIdentical(count($results), 20);
         $this->assertIdentical(count(Set::extract('/text', $results)), 20);
@@ -196,8 +186,7 @@ class TwimStatusTestCase extends CakeTestCase {
     // =========================================================================
     public function test_tweet_and_delete_real() {
 
-        ClassRegistry::flush();
-        $this->Status = ClassRegistry::init('TwimStatus');
+        $this->Status->setDataSource($this->testDatasourceName);
 
         $ds = $this->Status->getDataSource();
         if (empty($ds->config['oauth_token'])) {

@@ -19,30 +19,18 @@
  * @since   　File available since Release 1.0
  *
  */
+App::import('Lib', 'Twim.TwimConnectionTestCase');
 App::import('Model', 'Twim.TwimAccount');
-App::import('Datasource', array('Twim.TwimSource'));
-
-class TestTwimAccount extends TwimAccount {
-
-    public $alias = 'TwimAccount';
-    public $useDbConfig = 'test_twitter_account';
-
-}
-
-Mock::generatePartial('TwimSource', 'MockTwimAccountTwimSource', array('request'));
 
 /**
  *
  * @property TwimAccount $Account
  */
-class TwimAccountTestCase extends CakeTestCase {
-
-    public function startCase() {
-        ConnectionManager::create('test_twitter_account', array('datasource' => 'MockTwimAccountTwimSource'));
-    }
+class TwimAccountTestCase extends TwimConnectionTestCase {
 
     public function startTest() {
-        $this->Account = ClassRegistry::init('Twim.TestTwimAccount');
+        $this->Account = ClassRegistry::init('Twim.TwimAccount');
+        $this->Account->setDataSource($this->testDatasourceName);
     }
 
     public function endTest() {
@@ -52,7 +40,6 @@ class TwimAccountTestCase extends CakeTestCase {
 
     // =========================================================================
     public function testRateLimitStatus() {
-        $this->Account->setDataSource('twitter');
         $limit = $this->Account->find('rateLimitStatus');
         $this->assertTrue(isset($limit['hourly_limit']));
         $this->assertTrue(isset($limit['reset_time_in_seconds']));
@@ -62,13 +49,11 @@ class TwimAccountTestCase extends CakeTestCase {
 
     // =========================================================================
     public function testGetApiRemain() {
-        $this->Account->setDataSource('twitter');
         $this->assertTrue($this->Account->getApiRemain() > 0);
     }
 
     // =========================================================================
     public function testGetApiResetTime() {
-        $this->Account->setDataSource('twitter');
         $this->assertTrue($this->Account->getApiResetTime() > time());
     }
 

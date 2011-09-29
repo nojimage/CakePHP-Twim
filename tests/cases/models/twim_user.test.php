@@ -19,30 +19,18 @@
  * @since   　File available since Release 1.0
  *
  */
+App::import('Lib', 'Twim.TwimConnectionTestCase');
 App::import('Model', 'Twim.TwimUser');
-App::import('Datasource', array('Twim.TwimSource'));
-
-class TestTwimUser extends TwimUser {
-
-    public $alias = 'TwimUser';
-    public $useDbConfig = 'test_twitter_user';
-
-}
-
-Mock::generatePartial('TwimSource', 'MockTwimUserTwimSource', array('request'));
 
 /**
  *
  * @property TwimUser $User
  */
-class TwimUserTestCase extends CakeTestCase {
-
-    public function startCase() {
-        ConnectionManager::create('test_twitter_user', array('datasource' => 'MockTwimUserTwimSource'));
-    }
+class TwimUserTestCase extends TwimConnectionTestCase {
 
     public function startTest() {
-        $this->User = ClassRegistry::init('Twim.TestTwimUser');
+        $this->User = ClassRegistry::init('Twim.TwimUser');
+        $this->User->setDataSource($this->mockDatasourceName);
     }
 
     public function endTest() {
@@ -123,7 +111,7 @@ class TwimUserTestCase extends CakeTestCase {
     }
 
     public function testProfileImage_real() {
-        $this->User->setDataSource('twitter');
+        $this->User->setDataSource($this->testDatasourceName);
         $result = $this->User->find('profileImage', array('screen_name' => 'twitterapi'));
         $this->assertPattern('!http://a[0-9]+\.twimg\.com/profile_images/[0-9]+/.+\.png!', $result);
     }
@@ -138,6 +126,7 @@ class TwimUserTestCase extends CakeTestCase {
     }
 
     public function testSearch_real() {
+        $this->User->setDataSource($this->testDatasourceName);
         $ds = $this->User->getDataSource();
         if (empty($ds->config['oauth_token'])) {
             return $this->skipIf(true, 'access token is empty.');
@@ -168,14 +157,14 @@ class TwimUserTestCase extends CakeTestCase {
     }
 
     public function testShow_real_by_screen_name() {
-        $this->User->setDataSource('twitter');
+        $this->User->setDataSource($this->testDatasourceName);
         $results = $this->User->find('show', array('screen_name' => 'nojimage'));
         $this->assertEqual('nojimage', $results['screen_name']);
         $this->assertEqual('15982041', $results['id_str']);
     }
 
     public function testShow_real_by_user_id() {
-        $this->User->setDataSource('twitter');
+        $this->User->setDataSource($this->testDatasourceName);
         $results = $this->User->find('show', array('user_id' => '8620662'));
         $this->assertEqual('cakephp', $results['screen_name']);
         $this->assertEqual('8620662', $results['id_str']);
@@ -202,13 +191,13 @@ class TwimUserTestCase extends CakeTestCase {
     }
 
     public function testContributees_real_by_screen_name() {
-        $this->User->setDataSource('twitter');
+        $this->User->setDataSource($this->testDatasourceName);
         $results = $this->User->find('contributees', array('screen_name' => 'themattharris'));
         $this->assertEqual('twitterapi', $results[0]['screen_name']);
     }
 
     public function testContributees_real_by_user_id() {
-        $this->User->setDataSource('twitter');
+        $this->User->setDataSource($this->testDatasourceName);
         $results = $this->User->find('contributees', array('user_id' => '819797'));
         $this->assertEqual('twitterapi', $results[0]['screen_name']);
     }
@@ -234,13 +223,13 @@ class TwimUserTestCase extends CakeTestCase {
     }
 
     public function testContributors_real_by_screen_name() {
-        $this->User->setDataSource('twitter');
+        $this->User->setDataSource($this->testDatasourceName);
         $results = $this->User->find('contributors', array('screen_name' => 'twitter'));
         $this->assertEqual('biz', $results[0]['screen_name']);
     }
 
     public function testContributors_real_by_user_id() {
-        $this->User->setDataSource('twitter');
+        $this->User->setDataSource($this->testDatasourceName);
         $results = $this->User->find('contributors', array('user_id' => '783214'));
         $this->assertEqual('biz', $results[0]['screen_name']);
     }

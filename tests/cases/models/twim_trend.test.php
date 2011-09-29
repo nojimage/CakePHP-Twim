@@ -19,29 +19,18 @@
  * @since   　File available since Release 1.0
  *
  */
+App::import('Lib', 'Twim.TwimConnectionTestCase');
 App::import('Model', 'Twim.TwimTrend');
-App::import('Datasource', array('Twim.TwimSource'));
-
-class TestTwimTrend extends TwimTrend {
-
-    public $alias = 'TwimTrend';
-    public $useDbConfig = 'test_twitter_trend';
-
-}
-
-Mock::generatePartial('TwimSource', 'MockTwimTrendTwimSource', array('request'));
 
 /**
  *
  * @property TwimTrend $Trend
  */
-class TwimTrendTestCase extends CakeTestCase {
+class TwimTrendTestCase extends TwimConnectionTestCase {
 
     public function startTest() {
-        ConnectionManager::create('test_twitter_trend',
-                        array('datasource' => 'MockTwimTrendTwimSource'));
-
-        $this->Trend = ClassRegistry::init('Twim.TestTwimTrend');
+        $this->Trend = ClassRegistry::init('Twim.TwimTrend');
+        $this->Trend->setDataSource($this->mockDatasourceName);
     }
 
     public function endTest() {
@@ -80,6 +69,7 @@ class TwimTrendTestCase extends CakeTestCase {
         $this->assertIdentical($this->Trend->request['uri']['path'], '1/trends/weekly');
         $this->assertIdentical($this->Trend->request['uri']['query'], array());
     }
+
     // =========================================================================
     public function test_available() {
         $this->Trend->getDataSource()->expectOnce('request');
@@ -87,6 +77,7 @@ class TwimTrendTestCase extends CakeTestCase {
         $this->assertIdentical($this->Trend->request['uri']['path'], '1/trends/available');
         $this->assertIdentical($this->Trend->request['uri']['query'], array());
     }
+
     // =========================================================================
     public function test_woeid() {
         $this->Trend->getDataSource()->expectOnce('request');
@@ -97,7 +88,7 @@ class TwimTrendTestCase extends CakeTestCase {
 
     // =========================================================================
     public function test_trends_real() {
-        $this->Trend = new TwimTrend();
+        $this->Trend->setDataSource($this->testDatasourceName);
         $datas = $this->Trend->find('trends');
         $this->assertNotNull($datas['trends']);
         $this->assertNotNull($datas['as_of']);
@@ -105,7 +96,7 @@ class TwimTrendTestCase extends CakeTestCase {
 
     // =========================================================================
     public function test_current_real() {
-        $this->Trend = new TwimTrend();
+        $this->Trend->setDataSource($this->testDatasourceName);
         $datas = $this->Trend->find('current');
         $this->assertNotNull($datas['trends']);
         $this->assertNotNull($datas['as_of']);
@@ -113,7 +104,7 @@ class TwimTrendTestCase extends CakeTestCase {
 
     // =========================================================================
     public function test_daily_real() {
-        $this->Trend = new TwimTrend();
+        $this->Trend->setDataSource($this->testDatasourceName);
         $datas = $this->Trend->find('daily');
         $this->assertNotNull($datas['trends']);
         $this->assertNotNull($datas['as_of']);
@@ -121,20 +112,22 @@ class TwimTrendTestCase extends CakeTestCase {
 
     // =========================================================================
     public function test_weekly_real() {
-        $this->Trend = new TwimTrend();
+        $this->Trend->setDataSource($this->testDatasourceName);
         $datas = $this->Trend->find('weekly');
         $this->assertNotNull($datas['trends']);
         $this->assertNotNull($datas['as_of']);
     }
+
     // =========================================================================
     public function test_available_real() {
-        $this->Trend = new TwimTrend();
+        $this->Trend->setDataSource($this->testDatasourceName);
         $datas = $this->Trend->find('available', array());
         $this->assertNotNull($datas);
     }
+
     // =========================================================================
     public function test_woeid_real() {
-        $this->Trend = new TwimTrend();
+        $this->Trend->setDataSource($this->testDatasourceName);
         $datas = $this->Trend->find('woeid', array('woeid' => 1));
         $this->assertNotNull($datas['trends']);
         $this->assertNotNull($datas['as_of']);

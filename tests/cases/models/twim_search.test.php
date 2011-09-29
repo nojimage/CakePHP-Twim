@@ -19,33 +19,21 @@
  * @since   　File available since Release 1.0
  *
  */
+App::import('Lib', 'Twim.TwimConnectionTestCase');
 App::import('Model', 'Twim.TwimSearch');
-App::import('Datasource', array('Twim.TwimSource'));
-
-class TestTwimSearch extends TwimSearch {
-
-    public $alias = 'TwimSearch';
-    public $useDbConfig = 'test_twitter_search';
-
-}
-
-Mock::generatePartial('TwimSource', 'MockTwimSearchTwimSource', array('request'));
 
 /**
  *
  * @property TwimSearch $Search
  */
-class TwimSearchTestCase extends CakeTestCase {
+class TwimSearchTestCase extends TwimConnectionTestCase {
 
-    public function startCase() {
-        ConnectionManager::create('test_twitter_search', array('datasource' => 'MockTwimSearchTwimSource'));
+    public function startTest($method) {
+        $this->Search = ClassRegistry::init('Twim.TwimSearch');
+        $this->Search->setDataSource($this->mockDatasourceName);
     }
 
-    public function startTest() {
-        $this->Search = ClassRegistry::init('Twim.TestTwimSearch');
-    }
-
-    public function endTest() {
+    public function endTest($method) {
         unset($this->Search);
         ClassRegistry::flush();
     }
@@ -80,7 +68,7 @@ class TwimSearchTestCase extends CakeTestCase {
 
     public function testSerach_noquery() {
 
-        $this->Search->setDataSource('twitter');
+        $this->Search->setDataSource($this->testDatasourceName);
         try {
             $this->Search->find('');
         } catch (RuntimeException $e) {
@@ -90,13 +78,13 @@ class TwimSearchTestCase extends CakeTestCase {
     }
 
     public function testSerach_get_all_results() {
-        $this->Search->setDataSource('twitter');
+        $this->Search->setDataSource($this->testDatasourceName);
         $this->assertTrue(count($this->Search->find('twitter')) > 100);
         $this->assertTrue(empty($this->Search->response['next_page']));
     }
 
     public function testSerach_limitation_results() {
-        $this->Search->setDataSource('twitter');
+        $this->Search->setDataSource($this->testDatasourceName);
         $this->assertIdentical(255, count($this->Search->find('search', array('q' => 'twitter', 'limit' => 255))));
         $this->assertFalse(empty($this->Search->response['next_page']));
     }
@@ -109,14 +97,14 @@ class TwimSearchTestCase extends CakeTestCase {
     }
 
     public function testSerach_with_users_lookup() {
-        $this->Search->setDataSource('twitter')->User->setDataSource('twitter');
+        $this->Search->setDataSource($this->testDatasourceName)->User->setDataSource($this->testDatasourceName);
         $results = $this->Search->find('search', array('q' => 'twitter', 'limit' => 255, 'users_lookup' => true));
         $this->assertIdentical(255, count($results));
         $this->assertTrue(isset($results[0]['user']['id_str']));
     }
 
     public function testSerach_with_users_lookup_specific_fields() {
-        $this->Search->setDataSource('twitter')->User->setDataSource('twitter');
+        $this->Search->setDataSource($this->testDatasourceName)->User->setDataSource($this->testDatasourceName);
         $results = $this->Search->find('search', array('q' => 'twitter', 'limit' => 1, 'users_lookup' => array('name', 'statuses_count')));
         $this->assertFalse(isset($results[0]['user']['id_str']));
         $this->assertTrue(isset($results[0]['user']['name']));

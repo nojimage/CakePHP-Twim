@@ -49,6 +49,13 @@ class TwimAppModel extends AppModel {
     public $request = array();
 
     /**
+     * responese body
+     *
+     * @var array
+     */
+    public $response = null;
+
+    /**
      * Twitter API url base
      *
      * @var string

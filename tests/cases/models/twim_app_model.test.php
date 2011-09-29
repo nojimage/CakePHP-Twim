@@ -19,8 +19,8 @@
  * @since   　File available since Release 1.0
  *
  */
+App::import('Lib', 'Twim.TwimConnectionTestCase');
 App::import('Model', array('Twim.TwimAppModel'));
-App::import('Datasource', array('Twim.TwimSource'));
 
 class TestTwimAppModel extends TwimAppModel {
 
@@ -39,25 +39,25 @@ class TestTwimAppModelTwimSource extends TwimSource {
     
 }
 
-ConnectionManager::create('test_twitter_app',
-                array(
-                    'datasource' => 'Twim.TwimSource',
-                    'oauth_consumer_key' => 'cvEPr1xe1dxqZZd1UaifFA',
-                    'oauth_consumer_secret' => 'gOBMTs7Rw4Z3p5EhzqBey8ousRTwNDvreJskN8Z60',
-        ));
+ConnectionManager::create('test_twitter_app', array(
+    'datasource' => 'Twim.TwimSource',
+    'oauth_consumer_key' => 'cvEPr1xe1dxqZZd1UaifFA',
+    'oauth_consumer_secret' => 'gOBMTs7Rw4Z3p5EhzqBey8ousRTwNDvreJskN8Z60',
+));
 
-ConnectionManager::create('test_twitter2',
-                array(
-                    'datasource' => 'TestTwimAppModelTwimSource',
-                    'oauth_consumer_key' => 'testConsumerKey',
-                    'oauth_consumer_secret' => 'testConsumerSecret',
-        ));
+ConnectionManager::create('test_twitter2', array(
+    'datasource' => 'TestTwimAppModelTwimSource',
+    'oauth_consumer_key' => 'testConsumerKey',
+    'oauth_consumer_secret' => 'testConsumerSecret',
+));
 
 /**
  *
  * @property TwimAppModel $Twim
  */
-class TwimAppModelTestCase extends CakeTestCase {
+class TwimAppModelTestCase extends TwimConnectionTestCase {
+
+    public $connectionCheck = false;
 
     function startTest($method) {
         $this->Twim = ClassRegistry::init('TestTwimAppModel');

@@ -1,29 +1,16 @@
 <?php
 
+App::import('Lib', 'Twim.TwimConnectionTestCase');
 App::import('Model', array('Twim.Twim'));
-
-class TestTwim extends Twim {
-
-    public $alias = 'Twim';
-    public $useDbConfig = 'test_twitter_twim';
-
-}
-
-ConnectionManager::create('test_twitter_twim',
-                array(
-                    'datasource' => 'Twim.TwimSource',
-                    'oauth_consumer_key' => 'cvEPr1xe1dxqZZd1UaifFA',
-                    'oauth_consumer_secret' => 'gOBMTs7Rw4Z3p5EhzqBey8ousRTwNDvreJskN8Z60',
-        ));
 
 /**
  *
  * @property Twim $Twim
  */
-class TwimTestCase extends CakeTestCase {
+class TwimTestCase extends TwimConnectionTestCase {
 
     public function startTest($method) {
-        $this->Twim = ClassRegistry::init('TestTwim');
+        $this->Twim = ClassRegistry::init('Twim');
     }
 
     public function endTest($method) {
