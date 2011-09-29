@@ -9,6 +9,7 @@ Mock::generatePartial('TwimSource', 'MockTwimSource', array('request'));
 class TwimConnectionTestCase extends CakeTestCase {
 
     public $connectionCheck = true;
+    public $needAuth = false;
     public $testDatasourceName = 'test_twim_source';
     public $mockDatasourceName = null;
 
@@ -23,6 +24,15 @@ class TwimConnectionTestCase extends CakeTestCase {
         if ($sock) {
             fclose($sock);
         }
+
+        if ($this->_should_skip || !$this->needAuth) {
+            return;
+        }
+
+        $ds = ConnectionManager::getDataSource('twitter');
+        if (!$this->_should_skip && empty($ds->config['oauth_token'])) {
+            $this->skipIf(true, 'access token is empty.');
+        }
     }
 
     public function startCase() {
@@ -31,7 +41,7 @@ class TwimConnectionTestCase extends CakeTestCase {
         $this->createMockDatasource();
     }
 
-    public function createTestDatasource($dataSourceName = '') {
+    protected function createTestDatasource($dataSourceName = '') {
         if (empty($dataSourceName)) {
             $dataSourceName = $this->testDatasourceName;
         }
@@ -45,7 +55,7 @@ class TwimConnectionTestCase extends CakeTestCase {
         }
     }
 
-    public function createMockDatasource($dataSourceName = '') {
+    protected function createMockDatasource($dataSourceName = '') {
         if (empty($dataSourceName)) {
             $dataSourceName = 'mock_twim_source_' . Inflector::underscore(get_class($this));
             $this->mockDatasourceName = $dataSourceName;

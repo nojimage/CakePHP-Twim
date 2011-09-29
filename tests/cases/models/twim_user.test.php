@@ -125,17 +125,6 @@ class TwimUserTestCase extends TwimConnectionTestCase {
         $this->assertIdentical($this->User->request['auth'], true);
     }
 
-    public function testSearch_real() {
-        $this->User->setDataSource($this->testDatasourceName);
-        $ds = $this->User->getDataSource();
-        if (empty($ds->config['oauth_token'])) {
-            return $this->skipIf(true, 'access token is empty.');
-        }
-
-        $results = $this->User->find('search', array('q' => 'cake'));
-        $this->assertTrue(isset($results[0]['screen_name']));
-    }
-
     // =========================================================================
     public function testShow() {
         $this->User->getDataSource()->expectOnce('request');

@@ -183,25 +183,4 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
         $this->assertIdentical($this->Status->request['method'], 'POST');
     }
 
-    // =========================================================================
-    public function test_tweet_and_delete_real() {
-
-        $this->Status->setDataSource($this->testDatasourceName);
-
-        $ds = $this->Status->getDataSource();
-        if (empty($ds->config['oauth_token'])) {
-            return $this->skipIf(true, 'access token is empty.');
-        }
-
-        $data = array(
-            'TwimStatus' => array(
-                'text' => 'test tweet ' . time(),
-            ),
-        );
-        $this->assertTrue($this->Status->tweet($data), 'can\'t tweet: %s');
-        $result = $this->Status->find('show', array('id' => $this->Status->getLastInsertID()));
-        $this->assertIdentical($result['text'], $data['TwimStatus']['text']);
-        $this->assertTrue($this->Status->delete($this->Status->getLastInsertID()), 'can\'t remove tweet: %s');
-    }
-
 }
