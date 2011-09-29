@@ -57,6 +57,15 @@ class TwimSearch extends TwimAppModel {
     public $maxRpp = 100;
 
     /**
+     * for search API
+     *
+     * @var array
+     */
+    public $request = array(
+        'uri' => array('host' => 'search.twitter.com')
+    );
+
+    /**
      *
      * @param string $type
      * @param array $options
@@ -93,8 +102,6 @@ class TwimSearch extends TwimAppModel {
             }
             return $results;
         }
-
-        $this->request['uri']['host'] = 'search.twitter.com';
 
         $this->_setupRequest($type, $options);
 
