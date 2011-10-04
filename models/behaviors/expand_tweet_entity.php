@@ -99,29 +99,29 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
         $override = $this->settings[$model->alias]['overrideText'];
 
         if ($this->settings[$model->alias]['expandHashtag']) {
-            if (isset($results['results'])) {
+            if (!empty($results['results'])) {
                 $results['results'] = array_map(array($this, 'expandHashtag'), $results['results'], array($override));
             } else if (Set::numeric(array_keys($results))) {
                 $results = array_map(array($this, 'expandHashtag'), $results, array($override));
-            } else {
+            } else if (!empty($results)) {
                 $results = $this->expandHashtag($results, $override);
             }
         }
 
         if ($this->settings[$model->alias]['expandUrl'] === 'string') {
-            if (isset($results['results'])) {
+            if (!empty($results['results'])) {
                 $results['results'] = array_map(array($this, 'expandUrlString'), $results['results'], array($override));
             } else if (Set::numeric(array_keys($results))) {
                 $results = array_map(array($this, 'expandUrlString'), $results, array($override));
-            } else {
+            } else if (!empty($results)) {
                 $results = $this->expandUrlString($results, $override);
             }
         } else {
-            if (isset($results['results'])) {
+            if (!empty($results['results'])) {
                 $results['results'] = array_map(array($this, 'expandUrl'), $results['results'], array($override));
             } else if (Set::numeric(array_keys($results))) {
                 $results = array_map(array($this, 'expandUrl'), $results, array($override));
-            } else {
+            } else if (!empty($results)) {
                 $results = $this->expandUrl($results, $override);
             }
         }
@@ -230,6 +230,10 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
 
         if (empty($entity['expanded_url'])) {
             $entity['expanded_url'] = $entity['url'];
+        }
+
+        if (empty($entity['display_url'])) {
+            $entity['display_url'] = $entity['url'];
         }
 
         $data = array(
