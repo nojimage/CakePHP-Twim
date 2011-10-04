@@ -36,7 +36,7 @@ class TwimSearch extends TwimAppModel {
      * @var array
      */
     public $actsAs = array(
-        'Twim.ExpandTweetEntity' => array('expand_hashtag' => false, 'expand_url' => false),
+        'Twim.ExpandTweetEntity' => array('expandHashtag' => false, 'expandUrl' => false),
     );
 
     /**
