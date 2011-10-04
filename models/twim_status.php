@@ -33,6 +33,13 @@
  * @link      http://dev.twitter.com/doc/post/statuses/destroy/:id
  *
  */
+
+/**
+ * @method TwimSearch setExpandHashtag()
+ * @method TwimSearch setExpandUrl()
+ * @method array expandHashtag()
+ * @method array expandUrl()
+ */
 class TwimStatus extends TwimAppModel {
 
     public $apiUrlBase = '1/statuses/';
@@ -82,6 +89,14 @@ class TwimStatus extends TwimAppModel {
                 'allowEmpty' => true,
             ),
         ),
+    );
+
+    /**
+     *
+     * @var array
+     */
+    public $actsAs = array(
+        'Twim.ExpandTweetEntity' => array('expand_hashtag' => false, 'expand_url' => false),
     );
 
     /**

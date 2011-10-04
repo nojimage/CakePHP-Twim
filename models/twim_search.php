@@ -22,7 +22,22 @@
  * see http://code.google.com/p/twitter-api/issues/detail?id=214
  *
  */
+
+/**
+ * @method TwimSearch setExpandHashtag()
+ * @method TwimSearch setExpandUrl()
+ * @method array expandHashtag()
+ * @method array expandUrl()
+ */
 class TwimSearch extends TwimAppModel {
+
+    /**
+     *
+     * @var array
+     */
+    public $actsAs = array(
+        'Twim.ExpandTweetEntity' => array('expand_hashtag' => false, 'expand_url' => false),
+    );
 
     /**
      * Custom find types available on this model
