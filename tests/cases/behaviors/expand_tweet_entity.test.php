@@ -162,6 +162,36 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
         $this->assertIdentical($ok, $tweet['text']);
     }
 
+    public function testExpandUrlString() {
+        $tweet = array(
+            'text' => 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question',
+            'entities' => array(
+                'hashtags' => array(
+                    array(
+                        'text' => 'cakephp',
+                        'indices' => array(78, 86)
+                    ),
+                    array(
+                        'text' => 'question',
+                        'indices' => array(87, 96)
+                    ),
+                ),
+                'urls' => array(
+                    array(
+                        'url' => 'http://t.co/VKUESCJp',
+                        'expanded_url' => 'http://ask.cakephp.org/s/1yu',
+                        'display_url' => 'ask.cakephp.org/s/1yu',
+                        'indices' => array(56, 76)
+                    ),
+                ),
+            ),
+        );
+        $ok = 'How can I submit my app to the bakery (recently baked?) http://ask.cakephp.org/s/1yu  #cakephp #question';
+
+        $tweet = $this->Search->expandUrlString($tweet);
+        $this->assertIdentical($ok, $tweet['text']);
+    }
+
     // =========================================================================
     public function testAfterFind() {
         $this->Search->setExpandHashtag()->setExpandUrl()->setDataSource($this->testDatasourceName);
@@ -177,6 +207,14 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
         $results = $this->Status->find('show', array('id' => '121055461549158400'));
         $this->assertPattern('/class="twitter-timeline-link" rel="external nofollow"/', $results['text']);
         $this->assertPattern('/ class="twitter-hashtag" rel="external nofollow"/', $results['text']);
+    }
+
+    public function testAfterFind_Status_urlString() {
+        $this->Status->setExpandHashtag()->setExpandUrl('string')->setDataSource($this->testDatasourceName);
+
+        $results = $this->Status->find('show', array('id' => '121055461549158400'));
+        $this->assertNoPattern('/class="twitter-timeline-link" rel="external nofollow"/', $results['text']);
+        $this->assertPattern('!http://ask.cakephp.org/s/1yu!', $results['text']);
     }
 
 }

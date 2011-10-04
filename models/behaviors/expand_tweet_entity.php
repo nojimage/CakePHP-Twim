@@ -44,7 +44,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
      * set expand url flag
      *
      * @param TwimAppModel $model
-     * @param bool $flag
+     * @param mixed $flag true|false|'string'
      * @return TwimAppModel
      */
     public function setExpandUrl($model, $flag = true) {
@@ -120,9 +120,11 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
         }
 
         foreach ($tweet['entities']['urls'] as $url) {
+
             if (empty($url['expanded_url'])) {
                 $url['expanded_url'] = $url['url'];
             }
+
             $data = array(
                 h($url['url']),
                 h($url['expanded_url']),
@@ -132,6 +134,35 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
             );
             $urlLink = vsprintf('<a href="%s" title="%s" class="%s" rel="%s">%s</a>', $data);
             $tweet['text'] = preg_replace('/' . preg_quote($url['url'], '/') . '/', $urlLink, $tweet['text'], 1);
+        }
+
+        return $tweet;
+    }
+
+    /**
+     * Expand urls (string)
+     *
+     * @param TwimAppModel $model
+     * @param array $tweet
+     * @return array
+     */
+    public function expandUrlString($model, array $tweet = null) {
+
+        if (is_array($model) && empty($tweet)) {
+            $tweet = $model;
+        }
+
+        if (empty($tweet) || empty($tweet['entities']['urls'])) {
+            return $tweet;
+        }
+
+        foreach ($tweet['entities']['urls'] as $url) {
+
+            if (empty($url['expanded_url'])) {
+                $url['expanded_url'] = $url['url'];
+            }
+
+            $tweet['text'] = preg_replace('/' . preg_quote($url['url'], '/') . '/', h($url['expanded_url']), $tweet['text'], 1);
         }
 
         return $tweet;
@@ -161,7 +192,15 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
             }
         }
 
-        if ($this->settings[$model->alias]['expand_url']) {
+        if ($this->settings[$model->alias]['expand_url'] === 'string') {
+            if (isset($results['results'])) {
+                $results['results'] = array_map(array($this, 'expandUrlString'), $results['results']);
+            } else if (Set::numeric(array_keys($results))) {
+                $results = array_map(array($this, 'expandUrlString'), $results);
+            } else {
+                $results = $this->expandUrlString($results);
+            }
+        } else {
             if (isset($results['results'])) {
                 $results['results'] = array_map(array($this, 'expandUrl'), $results['results']);
             } else if (Set::numeric(array_keys($results))) {
