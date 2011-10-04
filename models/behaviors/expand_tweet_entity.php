@@ -83,131 +83,6 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
     }
 
     /**
-     * Expand hashtags
-     *
-     * @param TwimAppModel $model
-     * @param mixed $tweet
-     * @param bool $override
-     * @return array
-     */
-    public function expandHashtag($model, $tweet = null, $override = false) {
-
-        if (is_array($model) && (empty($tweet) || is_bool($tweet))) {
-            $override = $tweet;
-            $tweet = $model;
-        }
-
-        if (empty($tweet) || empty($tweet['entities']['hashtags'])) {
-            return $tweet;
-        }
-
-        $filedName = 'expanded_text';
-        if ($override) {
-            $filedName = 'text';
-        }
-        $tweet[$filedName] = isset($tweet[$filedName]) ? $tweet[$filedName] : $tweet['text'];
-
-        foreach ($tweet['entities']['hashtags'] as $hashtag) {
-            $hash = h("#{$hashtag['text']}");
-            $data = array(
-                "http://twitter.com/#!/search?q=" . urlencode($hash),
-                h($hash),
-                'twitter-hashtag',
-                'external nofollow',
-                h($hash),
-            );
-            $hashtagLink = vsprintf('<a href="%s" title="%s" class="%s" rel="%s">%s</a>', $data);
-            $tweet[$filedName] = preg_replace('/' . preg_quote("#{$hashtag['text']}", '/') . '/', $hashtagLink, $tweet[$filedName], 1);
-        }
-
-        return $tweet;
-    }
-
-    /**
-     * Expand urls
-     *
-     * @param TwimAppModel $model
-     * @param mixed $tweet
-     * @param bool $override
-     * @return array
-     */
-    public function expandUrl($model, $tweet = null, $override = false) {
-
-        if (is_array($model) && (empty($tweet) || is_bool($tweet))) {
-            $override = $tweet;
-            $tweet = $model;
-        }
-
-        if (empty($tweet) || empty($tweet['entities']['urls'])) {
-            return $tweet;
-        }
-
-        $filedName = 'expanded_text';
-        if ($override) {
-            $filedName = 'text';
-        }
-        $tweet[$filedName] = isset($tweet[$filedName]) ? $tweet[$filedName] : $tweet['text'];
-
-
-        foreach ($tweet['entities']['urls'] as $url) {
-
-            if (empty($url['expanded_url'])) {
-                $url['expanded_url'] = $url['url'];
-            }
-
-            $data = array(
-                h($url['url']),
-                h($url['expanded_url']),
-                'twitter-timeline-link',
-                'external nofollow',
-                h($url['display_url']),
-            );
-            $urlLink = vsprintf('<a href="%s" title="%s" class="%s" rel="%s">%s</a>', $data);
-            $tweet[$filedName] = preg_replace('/' . preg_quote($url['url'], '/') . '/', $urlLink, $tweet[$filedName], 1);
-        }
-
-        return $tweet;
-    }
-
-    /**
-     * Expand urls (string)
-     *
-     * @param TwimAppModel $model
-     * @param mixed $tweet
-     * @param bool $override
-     * @return array
-     */
-    public function expandUrlString($model, $tweet = null, $override = false) {
-
-        if (is_array($model) && (empty($tweet) || is_bool($tweet))) {
-            $override = $tweet;
-            $tweet = $model;
-        }
-
-        if (empty($tweet) || empty($tweet['entities']['urls'])) {
-            return $tweet;
-        }
-
-        $filedName = 'expanded_text';
-        if ($override) {
-            $filedName = 'text';
-        }
-        $tweet[$filedName] = isset($tweet[$filedName]) ? $tweet[$filedName] : $tweet['text'];
-
-
-        foreach ($tweet['entities']['urls'] as $url) {
-
-            if (empty($url['expanded_url'])) {
-                $url['expanded_url'] = $url['url'];
-            }
-
-            $tweet[$filedName] = preg_replace('/' . preg_quote($url['url'], '/') . '/', h($url['expanded_url']), $tweet[$filedName], 1);
-        }
-
-        return $tweet;
-    }
-
-    /**
      * expand tweet
      *
      * @param TwimAppModel $model
@@ -252,6 +127,134 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
         }
 
         return $results;
+    }
+
+    /**
+     * Expand hashtags
+     *
+     * @param TwimAppModel $model
+     * @param mixed $tweet
+     * @param bool $override
+     * @return array
+     */
+    public function expandHashtag($model, $tweet = null, $override = false) {
+        return $this->_expand('_expandHashtag', 'hashtags', $model, $tweet, $override);
+    }
+
+    /**
+     * Expand urls
+     *
+     * @param TwimAppModel $model
+     * @param mixed $tweet
+     * @param bool $override
+     * @return array
+     */
+    public function expandUrl($model, $tweet = null, $override = false) {
+        return $this->_expand('_expandUrl', 'urls', $model, $tweet, $override);
+    }
+
+    /**
+     * Expand urls (string)
+     *
+     * @param TwimAppModel $model
+     * @param mixed $tweet
+     * @param bool $override
+     * @return array
+     */
+    public function expandUrlString($model, $tweet = null, $override = false) {
+        return $this->_expand('_expandUrlString', 'urls', $model, $tweet, $override);
+    }
+
+    /**
+     * epand text
+     *
+     * @param string $func
+     * @param string $entityField
+     * @param mixed $model
+     * @param mixed $tweet
+     * @param bool $override
+     * @return array
+     */
+    protected function _expand($func, $entityField, $model, $tweet = null, $override = false) {
+
+        if (is_array($model) && (empty($tweet) || is_bool($tweet))) {
+            $override = $tweet;
+            $tweet = $model;
+        }
+
+        if (empty($tweet) || empty($tweet['entities'][$entityField])) {
+            return $tweet;
+        }
+
+        $filedName = 'expanded_text';
+        if ($override) {
+            $filedName = 'text';
+        }
+        $tweet[$filedName] = isset($tweet[$filedName]) ? $tweet[$filedName] : $tweet['text'];
+
+        foreach ($tweet['entities'][$entityField] as $entity) {
+            $tweet[$filedName] = $this->{$func}($tweet[$filedName], $entity);
+        }
+
+        return $tweet;
+    }
+
+    /**
+     *
+     * @param string $text
+     * @param array $entity
+     * @return string 
+     */
+    protected function _expandHashtag($text, array $entity) {
+
+        $hash = h("#{$entity['text']}");
+        $data = array(
+            "http://twitter.com/#!/search?q=" . urlencode($hash),
+            h($hash),
+            'twitter-hashtag',
+            'external nofollow',
+            h($hash),
+        );
+        $hashtagLink = vsprintf('<a href="%s" title="%s" class="%s" rel="%s">%s</a>', $data);
+
+        return preg_replace('/' . preg_quote($hash, '/') . '/', $hashtagLink, $text, 1);
+    }
+
+    /**
+     *
+     * @param string $text
+     * @param array $entity
+     * @return string 
+     */
+    protected function _expandUrl($text, array $entity) {
+
+        if (empty($entity['expanded_url'])) {
+            $entity['expanded_url'] = $entity['url'];
+        }
+
+        $data = array(
+            h($entity['url']),
+            h($entity['expanded_url']),
+            'twitter-timeline-link',
+            'external nofollow',
+            h($entity['display_url']),
+        );
+        $urlLink = vsprintf('<a href="%s" title="%s" class="%s" rel="%s">%s</a>', $data);
+
+        return preg_replace('/' . preg_quote($entity['url'], '/') . '/', $urlLink, $text, 1);
+    }
+
+    /**
+     *
+     * @param string $text
+     * @param array $entity
+     * @return string 
+     */
+    protected function _expandUrlString($text, array $entity) {
+        if (empty($entity['expanded_url'])) {
+            $entity['expanded_url'] = $entity['url'];
+        }
+        return preg_replace('/' . preg_quote($entity['url'], '/') . '/', h($entity['expanded_url']), $text, 1);
     }
 
 }
