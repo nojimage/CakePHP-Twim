@@ -100,9 +100,9 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
 
         if ($this->settings[$model->alias]['expandHashtag']) {
             if (!empty($results['results'])) {
-                $results['results'] = array_map(array($this, 'expandHashtag'), $results['results'], array($override));
+                $results['results'] = array_map(array($this, 'expandHashtag'), $results['results'], array_fill(0, count($results['results']), $override));
             } else if (Set::numeric(array_keys($results))) {
-                $results = array_map(array($this, 'expandHashtag'), $results, array($override));
+                $results = array_map(array($this, 'expandHashtag'), $results, array_fill(0, count($results), $override));
             } else if (!empty($results)) {
                 $results = $this->expandHashtag($results, $override);
             }
@@ -110,17 +110,17 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
 
         if ($this->settings[$model->alias]['expandUrl'] === 'string') {
             if (!empty($results['results'])) {
-                $results['results'] = array_map(array($this, 'expandUrlString'), $results['results'], array($override));
+                $results['results'] = array_map(array($this, 'expandUrlString'), $results['results'], array_fill(0, count($results['results']), $override));
             } else if (Set::numeric(array_keys($results))) {
-                $results = array_map(array($this, 'expandUrlString'), $results, array($override));
+                $results = array_map(array($this, 'expandUrlString'), $results, array_fill(0, count($results), $override));
             } else if (!empty($results)) {
                 $results = $this->expandUrlString($results, $override);
             }
         } else {
             if (!empty($results['results'])) {
-                $results['results'] = array_map(array($this, 'expandUrl'), $results['results'], array($override));
+                $results['results'] = array_map(array($this, 'expandUrl'), $results['results'], array_fill(0, count($results['results']), $override));
             } else if (Set::numeric(array_keys($results))) {
-                $results = array_map(array($this, 'expandUrl'), $results, array($override));
+                $results = array_map(array($this, 'expandUrl'), $results, array_fill(0, count($results), $override));
             } else if (!empty($results)) {
                 $results = $this->expandUrl($results, $override);
             }
