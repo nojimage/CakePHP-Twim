@@ -182,7 +182,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
             $tweet = $model;
         }
 
-        if (empty($tweet)) {
+        if (empty($tweet) || empty($tweet['text'])) {
             return $tweet;
         }
 
