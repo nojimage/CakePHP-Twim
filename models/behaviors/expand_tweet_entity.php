@@ -182,7 +182,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
             $tweet = $model;
         }
 
-        if (empty($tweet) || empty($tweet['entities'][$entityField])) {
+        if (empty($tweet)) {
             return $tweet;
         }
 
@@ -191,6 +191,10 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
             $filedName = 'text';
         }
         $tweet[$filedName] = isset($tweet[$filedName]) ? $tweet[$filedName] : $tweet['text'];
+
+        if (empty($tweet['entities'][$entityField])) {
+            return $tweet;
+        }
 
         foreach ($tweet['entities'][$entityField] as $entity) {
             $tweet[$filedName] = $this->{$func}($tweet[$filedName], $entity);

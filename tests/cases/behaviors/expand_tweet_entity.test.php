@@ -144,6 +144,22 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
         $this->assertIdentical($ok, $tweet['expanded_text']);
     }
 
+    public function testExpandHashtag_entities_empty() {
+        $tweet = array(
+            'text' => 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question',
+            'entities' => array(
+                'hashtags' => array(
+                ),
+                'urls' => array(
+                ),
+            ),
+        );
+        $ok = 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question';
+
+        $tweet = $this->Search->expandHashtag($tweet);
+        $this->assertIdentical($ok, $tweet['expanded_text']);
+    }
+
     // =========================================================================
     public function testExpandUrl() {
         $tweet = array(
@@ -175,6 +191,22 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
         $this->assertIdentical($ok, $tweet['expanded_text']);
     }
 
+    public function testExpandUrl_entities_empty() {
+        $tweet = array(
+            'text' => 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question',
+            'entities' => array(
+                'hashtags' => array(
+                ),
+                'urls' => array(
+                ),
+            ),
+        );
+        $ok = 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question';
+
+        $tweet = $this->Search->expandUrl($tweet);
+        $this->assertIdentical($ok, $tweet['expanded_text']);
+    }
+
     public function testExpandUrlString() {
         $tweet = array(
             'text' => 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question',
@@ -200,6 +232,22 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
             ),
         );
         $ok = 'How can I submit my app to the bakery (recently baked?) http://ask.cakephp.org/s/1yu  #cakephp #question';
+
+        $tweet = $this->Search->expandUrlString($tweet);
+        $this->assertIdentical($ok, $tweet['expanded_text']);
+    }
+
+    public function testExpandUrlString_entities_empty() {
+        $tweet = array(
+            'text' => 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question',
+            'entities' => array(
+                'hashtags' => array(
+                ),
+                'urls' => array(
+                ),
+            ),
+        );
+        $ok = 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question';
 
         $tweet = $this->Search->expandUrlString($tweet);
         $this->assertIdentical($ok, $tweet['expanded_text']);
