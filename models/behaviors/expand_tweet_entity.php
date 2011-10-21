@@ -221,7 +221,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
         );
         $hashtagLink = vsprintf('<a href="%s" title="%s" class="%s" rel="%s">%s</a>', $data);
 
-        return preg_replace('/' . preg_quote($hash, '/') . '/', $hashtagLink, $text, 1);
+        return preg_replace('/(^|[\s^"])' . preg_quote($hash, '/') . '([\s^"]|$)/u', "$1{$hashtagLink}$2", $text, 1);
     }
 
     /**
@@ -249,7 +249,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
         );
         $urlLink = vsprintf('<a href="%s" title="%s" class="%s" rel="%s">%s</a>', $data);
 
-        return preg_replace('/' . preg_quote($entity['url'], '/') . '/', $urlLink, $text, 1);
+        return preg_replace('/(^|[\s^"])' . preg_quote($entity['url'], '/') . '([\s^"]|$)/u', "$1{$urlLink}$2", $text, 1);
     }
 
     /**

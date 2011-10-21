@@ -160,6 +160,54 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
         $this->assertIdentical($ok, $tweet['expanded_text']);
     }
 
+    public function testExpandHashtag_manyhashtag() {
+
+        $tweet = array(
+            'text' => '豚骨ラーメン食べたでー。うまかった＾－＾　 #followdaibosyu  #followmejp  #sougofollow  #goen  #相互フォロー  #sougo  #フォロー  #相互',
+            'entities' => array('hashtags' =>
+                array(
+                    array(
+                        'indices' => array(22, 37),
+                        'text' => 'followdaibosyu',
+                    ),
+                    array(
+                        'indices' => array(39, 50),
+                        'text' => 'followmejp',
+                    ),
+                    array(
+                        'indices' => array(52, 64),
+                        'text' => 'sougofollow',
+                    ),
+                    array(
+                        'indices' => array(66, 71),
+                        'text' => 'goen',
+                    ),
+                    array(
+                        'indices' => array(73, 80),
+                        'text' => '相互フォロー',
+                    ),
+                    array(
+                        'indices' => array(82, 88),
+                        'text' => 'sougo',
+                    ),
+                    array(
+                        'indices' => array(90, 95),
+                        'text' => 'フォロー',
+                    ),
+                    array(
+                        'indices' => array(97, 100),
+                        'text' => '相互',
+                    ),
+                ),
+            ),
+        );
+
+        $tweet = $this->Search->expandHashtag($tweet);
+        $ok = '豚骨ラーメン食べたでー。うまかった＾－＾　 <a href="http://twitter.com/#!/search?q=%23followdaibosyu" title="#followdaibosyu" class="twitter-hashtag" rel="external nofollow">#followdaibosyu</a>  <a href="http://twitter.com/#!/search?q=%23followmejp" title="#followmejp" class="twitter-hashtag" rel="external nofollow">#followmejp</a>  <a href="http://twitter.com/#!/search?q=%23sougofollow" title="#sougofollow" class="twitter-hashtag" rel="external nofollow">#sougofollow</a>  <a href="http://twitter.com/#!/search?q=%23goen" title="#goen" class="twitter-hashtag" rel="external nofollow">#goen</a>  <a href="http://twitter.com/#!/search?q=%23%E7%9B%B8%E4%BA%92%E3%83%95%E3%82%A9%E3%83%AD%E3%83%BC" title="#相互フォロー" class="twitter-hashtag" rel="external nofollow">#相互フォロー</a>  <a href="http://twitter.com/#!/search?q=%23sougo" title="#sougo" class="twitter-hashtag" rel="external nofollow">#sougo</a>  <a href="http://twitter.com/#!/search?q=%23%E3%83%95%E3%82%A9%E3%83%AD%E3%83%BC" title="#フォロー" class="twitter-hashtag" rel="external nofollow">#フォロー</a>  <a href="http://twitter.com/#!/search?q=%23%E7%9B%B8%E4%BA%92" title="#相互" class="twitter-hashtag" rel="external nofollow">#相互</a>';
+
+        $this->assertEqual($ok, $tweet['expanded_text']);
+    }
+
     // =========================================================================
     public function testExpandUrl() {
         $tweet = array(
