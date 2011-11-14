@@ -154,6 +154,38 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
         $this->assertIdentical($this->Status->request['body'], array('status' => 'test tweet'));
     }
 
+    public function test_tweet_string_params() {
+        $this->Status->getDataSource()->expectOnce('request');
+        $data = 'test tweet';
+        $this->Status->tweet($data);
+        $this->assertIdentical($this->Status->request['uri']['path'], '1/statuses/update');
+        $this->assertIdentical($this->Status->request['method'], 'POST');
+        $this->assertIdentical($this->Status->request['body'], array('status' => 'test tweet'));
+    }
+
+    public function test_tweet_simple_array() {
+        $this->Status->getDataSource()->expectOnce('request');
+        $data = array(
+            'text' => 'test tweet',
+        );
+        $this->Status->tweet($data);
+        $this->assertIdentical($this->Status->request['uri']['path'], '1/statuses/update');
+        $this->assertIdentical($this->Status->request['method'], 'POST');
+        $this->assertIdentical($this->Status->request['body'], array('status' => 'test tweet'));
+    }
+
+    public function test_tweet_reply() {
+        $this->Status->getDataSource()->expectOnce('request');
+        $data = array(
+            'text' => 'test tweet',
+            'in_reply_to_status_id' => '1234567890',
+        );
+        $this->Status->tweet($data);
+        $this->assertIdentical($this->Status->request['uri']['path'], '1/statuses/update');
+        $this->assertIdentical($this->Status->request['method'], 'POST');
+        $this->assertEqual($this->Status->request['body'], array('status' => 'test tweet', 'in_reply_to_status_id' => '1234567890'));
+    }
+
     // =========================================================================
     public function test_retweet() {
         $this->Status->getDataSource()->expectOnce('request');

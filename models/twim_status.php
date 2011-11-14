@@ -352,12 +352,22 @@ class TwimStatus extends TwimAppModel {
             'uri' => array(
                 'path' => '1/statuses/update',
             ),
+            'method' => 'POST',
         );
-        if (isset($data[$this->alias]['text'])) {
-            $this->request['body'] = array(
-                'status' => $data[$this->alias]['text'],
-            );
+
+        if (is_string($data)) {
+            $data = array('text' => $data);
+        } else if (isset($data[$this->alias])) {
+            $data = $data[$this->alias];
         }
+
+        if (isset($data['text'])) {
+            $data['status'] = $data['text'];
+            unset($data['text']);
+        }
+
+        $this->request['body'] = $data;
+
         return $this->save($data, $validate, $fieldList);
     }
 
