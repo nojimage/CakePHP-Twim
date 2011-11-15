@@ -172,4 +172,9 @@ class TwimAppModel extends AppModel {
         return $this;
     }
 
+    public function beforeFind($queryData) {
+        $this->request['method'] = 'GET';
+        return true;
+    }
+
 }
