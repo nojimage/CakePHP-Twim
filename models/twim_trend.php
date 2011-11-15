@@ -16,8 +16,6 @@
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   twim
  * @since   　File available since Release 1.0
- * @link      http://dev.twitter.com/doc/get/trends
- * @link      http://dev.twitter.com/doc/get/trends/current
  * @link      http://dev.twitter.com/doc/get/trends/daily
  * @link      http://dev.twitter.com/doc/get/trends/weekly
  * @link      http://dev.twitter.com/doc/get/trends/available
@@ -34,8 +32,6 @@ class TwimTrend extends TwimAppModel {
      * @var array
      */
     public $_findMethods = array(
-        'trends' => true,
-        'current' => true,
         'daily' => true,
         'weekly' => true,
         'available' => true,
@@ -48,8 +44,6 @@ class TwimTrend extends TwimAppModel {
      * @var array
      */
     public $allowedFindOptions = array(
-        'trends' => array(),
-        'current' => array('exclude'),
         'daily' => array('exclude', 'date'),
         'weekly' => array('exclude', 'date'),
         'available' => array('lat', 'long'),

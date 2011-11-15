@@ -39,22 +39,6 @@ class TwimTrendTestCase extends TwimConnectionTestCase {
     }
 
     // =========================================================================
-    public function test_trends() {
-        $this->Trend->getDataSource()->expectOnce('request');
-        $this->Trend->find('trends');
-        $this->assertIdentical($this->Trend->request['uri']['path'], 'trends');
-        $this->assertIdentical($this->Trend->request['uri']['query'], array());
-    }
-
-    // =========================================================================
-    public function test_current() {
-        $this->Trend->getDataSource()->expectOnce('request');
-        $this->Trend->find('current');
-        $this->assertIdentical($this->Trend->request['uri']['path'], '1/trends/current');
-        $this->assertIdentical($this->Trend->request['uri']['query'], array());
-    }
-
-    // =========================================================================
     public function test_daily() {
         $this->Trend->getDataSource()->expectOnce('request');
         $this->Trend->find('daily');
@@ -84,22 +68,6 @@ class TwimTrendTestCase extends TwimConnectionTestCase {
         $this->Trend->find('woeid', array('woeid' => 1));
         $this->assertIdentical($this->Trend->request['uri']['path'], '1/trends/1');
         $this->assertIdentical($this->Trend->request['uri']['query'], array());
-    }
-
-    // =========================================================================
-    public function test_trends_real() {
-        $this->Trend->setDataSource($this->testDatasourceName);
-        $datas = $this->Trend->find('trends');
-        $this->assertNotNull($datas['trends']);
-        $this->assertNotNull($datas['as_of']);
-    }
-
-    // =========================================================================
-    public function test_current_real() {
-        $this->Trend->setDataSource($this->testDatasourceName);
-        $datas = $this->Trend->find('current');
-        $this->assertNotNull($datas['trends']);
-        $this->assertNotNull($datas['as_of']);
     }
 
     // =========================================================================
