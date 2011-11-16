@@ -183,8 +183,6 @@ class TwimFriendship extends TwimAppModel {
 
         $this->request['body'] = $data;
 
-        parent::create();
-        $this->set('id', isset($data['screen_name']) ? $data['screen_name'] : $data['user_id']);
         return $this->save($data, $validate);
     }
 
@@ -210,8 +208,6 @@ class TwimFriendship extends TwimAppModel {
 
         $this->request['body'] = $data;
 
-        parent::create();
-        $this->set('id', isset($data['screen_name']) ? $data['screen_name'] : $data['user_id']);
         return $this->save($data, $validate);
     }
 
@@ -225,7 +221,7 @@ class TwimFriendship extends TwimAppModel {
      */
     public function save($data = null, $validate = true, $fieldList = array()) {
         $this->request['auth'] = true;
-        $result = parent::save($data, $validate, $fieldList);
+        $result = $this->getDataSource()->create($this);
         if ($result && !empty($this->response['user']['id_str'])) {
             $this->setInsertID($this->response['user']['id_str']);
         }
@@ -265,7 +261,7 @@ class TwimFriendship extends TwimAppModel {
         }
         $this->request['body'] = $id;
 
-        return parent::delete($id, $cascade);
+        return $this->getDataSource()->delete($this);
     }
 
     /**
@@ -276,7 +272,7 @@ class TwimFriendship extends TwimAppModel {
      * @return boolean True if such user_a follows user_b
      * @access public
      */
-    function exists($user_id_a = null, $user_id_b = null) {
+    function exists($user_id_a, $user_id_b = null) {
 
         if (is_null($user_id_b)) {
 

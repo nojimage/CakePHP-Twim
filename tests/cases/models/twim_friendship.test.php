@@ -158,8 +158,6 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
         $this->assertIdentical($this->Friendship->request['uri']['path'], '1/friendships/create');
         $this->assertIdentical($this->Friendship->request['method'], 'POST');
         $this->assertIdentical($this->Friendship->request['body'], array('user_id' => '1234'));
-        $this->assertIdentical($this->Friendship->exists_request['uri']['path'], '1/friendships/exists');
-        $this->assertIdentical($this->Friendship->exists_request['uri']['query'], array('user_id_a' => '1234'));
     }
 
     public function testCreate_screen_name() {
@@ -173,8 +171,6 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
         $this->assertIdentical($this->Friendship->request['uri']['path'], '1/friendships/create');
         $this->assertIdentical($this->Friendship->request['method'], 'POST');
         $this->assertIdentical($this->Friendship->request['body'], array('screen_name' => 'foo'));
-        $this->assertIdentical($this->Friendship->exists_request['uri']['path'], '1/friendships/exists');
-        $this->assertIdentical($this->Friendship->exists_request['uri']['query'], array('screen_name_a' => 'foo'));
     }
 
     public function testCreate_string_param() {
@@ -184,8 +180,6 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
         $this->assertIdentical($this->Friendship->request['uri']['path'], '1/friendships/create');
         $this->assertIdentical($this->Friendship->request['method'], 'POST');
         $this->assertIdentical($this->Friendship->request['body'], array('user_id' => '1234'));
-        $this->assertIdentical($this->Friendship->exists_request['uri']['path'], '1/friendships/exists');
-        $this->assertIdentical($this->Friendship->exists_request['uri']['query'], array('user_id_a' => '1234'));
     }
 
     public function testCreate_string_param_screen_name() {
@@ -195,8 +189,6 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
         $this->assertIdentical($this->Friendship->request['uri']['path'], '1/friendships/create');
         $this->assertIdentical($this->Friendship->request['method'], 'POST');
         $this->assertIdentical($this->Friendship->request['body'], array('screen_name' => 'foo'));
-        $this->assertIdentical($this->Friendship->exists_request['uri']['path'], '1/friendships/exists');
-        $this->assertIdentical($this->Friendship->exists_request['uri']['query'], array('screen_name_a' => 'foo'));
     }
 
     public function testCreate_simple_array() {
@@ -206,8 +198,6 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
         $this->assertIdentical($this->Friendship->request['uri']['path'], '1/friendships/create');
         $this->assertIdentical($this->Friendship->request['method'], 'POST');
         $this->assertIdentical($this->Friendship->request['body'], array('screen_name' => 'foo'));
-        $this->assertIdentical($this->Friendship->exists_request['uri']['path'], '1/friendships/exists');
-        $this->assertIdentical($this->Friendship->exists_request['uri']['query'], array('screen_name_a' => 'foo'));
     }
 
     // =========================================================================
@@ -241,8 +231,6 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
         $this->assertIdentical($this->Friendship->request['uri']['path'], '1/friendships/update');
         $this->assertIdentical($this->Friendship->request['method'], 'POST');
         $this->assertIdentical($this->Friendship->request['body'], array('user_id' => '1234', 'device' => false, 'retweets' => false));
-        $this->assertIdentical($this->Friendship->exists_request['uri']['path'], '1/friendships/exists');
-        $this->assertIdentical($this->Friendship->exists_request['uri']['query'], array('user_id_a' => '1234'));
     }
 
 }
