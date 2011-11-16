@@ -35,8 +35,8 @@
  */
 
 /**
- * @method TwimSearch setExpandHashtag()
- * @method TwimSearch setExpandUrl()
+ * @method TwimStatus setExpandHashtag()
+ * @method TwimStatus setExpandUrl()
  * @method array expandHashtag()
  * @method array expandUrl()
  */
