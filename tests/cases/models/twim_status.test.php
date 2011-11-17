@@ -199,7 +199,7 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
         $this->Status->getDataSource()->expectOnce('request');
         $data = array(
             'TwimStatus' => array(
-                'text' => 'test tweet',
+                'status' => 'test tweet',
             ),
         );
         $this->Status->save($data);
