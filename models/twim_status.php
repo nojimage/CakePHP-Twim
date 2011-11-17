@@ -391,7 +391,7 @@ class TwimStatus extends TwimAppModel {
         );
         $this->create();
         // Dummy data ensures Model::save() does in fact call DataSource::create()
-        $data = array($this->alias => array('text' => 'dummy'));
+        $data = array($this->alias => array('status' => 'dummy'));
         return $this->save($data);
     }
 
