@@ -51,7 +51,7 @@ class TwimStatus extends TwimAppModel {
      */
     public $_schema = array(
         'id' => array('type' => 'integer', 'length' => '11'),
-        'text' => array('type' => 'string', 'length' => '140'),
+        'status' => array('type' => 'string', 'length' => '140'),
         'in_reply_to_status_id' => array('type' => 'integer', 'length' => '11'),
         'in_reply_to_user_id' => array('type' => 'integer', 'length' => '11'),
         'in_reply_to_screen_name' => array('type' => 'string', 'length' => '255'),
@@ -63,7 +63,7 @@ class TwimStatus extends TwimAppModel {
      * @var array
      */
     public $validate = array(
-        'text' => array(
+        'status' => array(
             'notEmpty' => array(
                 'rule' => 'notEmpty',
                 'message' => 'Please enter some text',
