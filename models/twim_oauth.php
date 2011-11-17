@@ -54,7 +54,7 @@ class TwimOauth extends TwimAppModel {
         }
 
         $this->request = array(
-            'uri' => array('schema' => 'https', 'path' => 'oauth/request_token'),
+            'uri' => array('scheme' => 'https', 'path' => 'oauth/request_token'),
             'method' => 'POST',
             'auth' => true,
             'body' => $params,
@@ -105,7 +105,7 @@ class TwimOauth extends TwimAppModel {
     public function getAccessToken($params = array()) {
 
         $this->request = array(
-            'uri' => array('schema' => 'https', 'path' => 'oauth/access_token'),
+            'uri' => array('scheme' => 'https', 'path' => 'oauth/access_token'),
             'method' => 'POST',
             'auth' => array(),
         );

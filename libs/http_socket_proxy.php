@@ -77,17 +77,17 @@ class HttpSocketProxy extends HttpSocket {
                 $cookies = $this->buildCookies($this->request['cookies']);
             }
             $Host = $this->request['uri']['host'];
-            $schema = '';
+            $scheme = '';
             $port = 0;
-            if (isset($this->request['uri']['schema'])) {
-                $schema = $this->request['uri']['schema'];
+            if (isset($this->request['uri']['scheme'])) {
+                $scheme = $this->request['uri']['scheme'];
             }
             if (isset($this->request['uri']['port'])) {
                 $port = $this->request['uri']['port'];
             }
             if (
-                    ($schema === 'http' && $port != 80) ||
-                    ($schema === 'https' && $port != 443) ||
+                    ($scheme === 'http' && $port != 80) ||
+                    ($scheme === 'https' && $port != 443) ||
                     ($port != 80 && $port != 443)
             ) {
                 $Host .= ':' . $port;
