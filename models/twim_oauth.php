@@ -54,11 +54,15 @@ class TwimOauth extends TwimAppModel {
         }
 
         $this->request = array(
-            'uri' => array('scheme' => 'https', 'path' => 'oauth/request_token'),
+            'uri' => array('scheme' => 'http', 'path' => 'oauth/request_token'),
             'method' => 'POST',
             'auth' => true,
             'body' => $params,
         );
+
+        if (extension_loaded('openssl')) {
+            $this->request['uri']['scheme'] = 'https';
+        }
 
         $result = $this->getDataSource()->request($this);
         parse_str($result, $requestToken);
@@ -105,10 +109,23 @@ class TwimOauth extends TwimAppModel {
     public function getAccessToken($params = array()) {
 
         $this->request = array(
-            'uri' => array('scheme' => 'https', 'path' => 'oauth/access_token'),
+            'uri' => array('scheme' => 'http', 'path' => 'oauth/access_token'),
             'method' => 'POST',
             'auth' => array(),
         );
+
+        if (extension_loaded('openssl')) {
+            // check OpenSSL module loaded
+            $this->request['uri']['scheme'] = 'https';
+
+            // for xauth
+            foreach (array('x_auth_password', 'x_auth_username', 'x_auth_mode') as $key) {
+                if (!empty($params[$key])) {
+                    $this->request['body'][$key] = $params[$key];
+                }
+            }
+        }
+
         foreach (array('oauth_token', 'oauth_verifier') as $key) {
             if (!empty($params[$key])) {
                 $this->request['auth'][$key] = $params[$key];

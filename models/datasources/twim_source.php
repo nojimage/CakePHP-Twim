@@ -172,7 +172,7 @@ class TwimSource extends RestSource {
                 'oauth_token_secret',
             );
             foreach ($oAuthParams as $oAuthParam) {
-                if (!isset($model->request['auth'][$oAuthParam])) {
+                if (!isset($model->request['auth'][$oAuthParam]) && !empty($this->config[$oAuthParam])) {
                     $model->request['auth'][$oAuthParam] = $this->config[$oAuthParam];
                 }
             }
