@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="cakephp-twim-plugin" default="test">
+
+    <property environment="env" />
+    <property name="cakeRoot"   value="${application.startdir}/../.." override="true" />
+    <!-- if this plugin in app/plugins/ -->
+<!--    <property name="cakeRoot"   value="${application.startdir}/../../.." override="true" />-->
+    <property name="srcdir"     value="${application.startdir}" override="true" />
+    <property name="reportdir"  value="${srcdir}/reports" override="true" />
+
+    <target name="clean">
+        <delete dir="${reportdir}" includeemptydirs="true" />
+        <mkdir dir="${reportdir}" />
+    </target>
+
+    <target name="test">
+        <exec command="cakerunner
+            --cakephp-app-path ${cakeRoot}/app
+            --log-junit=${reportdir}/unittest.xml
+            -R ${srcdir}/tests/cases/" />
+    </target>
+
+    <target name="phpcs">
+        <exec command="phpcs
+            --report=checkstyle --report-checkstyle=${reportdir}/checkstyle-result.xml
+            --encoding=utf-8 --standard=CakePHP 
+            --extensions=php
+            ${srcdir}" />
+    </target>
+
+</project>
