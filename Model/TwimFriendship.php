@@ -75,7 +75,7 @@ class TwimFriendship extends TwimAppModel {
 	 *
 	 * @var array
 	 */
-	public $_findMethods = array(
+	public $findMethods = array(
 		'exists' => true,
 		'incoming' => true,
 		'outgoing' => true,

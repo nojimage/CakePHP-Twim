@@ -44,7 +44,7 @@ class TwimAccount extends TwimAppModel {
 	 *
 	 * @var array
 	 */
-	public $_findMethods = array(
+	public $findMethods = array(
 		'rateLimitStatus' => true,
 		'verifyCredentials' => true,
 		'totals' => true,

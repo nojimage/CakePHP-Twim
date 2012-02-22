@@ -31,7 +31,7 @@ class TwimTrend extends TwimAppModel {
      *
      * @var array
      */
-    public $_findMethods = array(
+    public $findMethods = array(
         'daily' => true,
         'weekly' => true,
         'available' => true,

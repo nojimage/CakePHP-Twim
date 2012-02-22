@@ -36,7 +36,7 @@ class TwimUser extends TwimAppModel {
      *
      * @var array
      */
-    public $_findMethods = array(
+    public $findMethods = array(
         'lookup' => true,
         'profileImage' => true,
         'search' => true,
