@@ -64,6 +64,7 @@ class TwimConnectionTestCase extends CakeTestCase {
 				'datasource' => 'Twim.TwimSource',
 				'oauth_consumer_key' => 'cvEPr1xe1dxqZZd1UaifFA',
 				'oauth_consumer_secret' => 'gOBMTs7Rw4Z3p5EhzqBey8ousRTwNDvreJskN8Z60',
+				'cache' => false,
 			));
 		}
 	}

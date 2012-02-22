@@ -39,6 +39,7 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 	}
 
 	// =========================================================================
+
 	public function testSerach() {
 		$q = 'test';
 		$page = 1;
@@ -76,13 +77,17 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 
 	public function testSerach_get_all_results() {
 		$this->Search->setDataSource($this->testDatasourceName);
-		$this->assertTrue(count($this->Search->find('twitter')) > 100);
+		$results = $this->Search->find('test');
+		$this->assertGreaterThan(100, count($results));
 		$this->assertTrue(empty($this->Search->response['next_page']));
 	}
 
+	/**
+	 * @depends testSerach_get_all_results
+	 */
 	public function testSerach_limitation_results() {
 		$this->Search->setDataSource($this->testDatasourceName);
-		$this->assertIdentical(255, count($this->Search->find('search', array('q' => 'twitter', 'limit' => 255))));
+		$this->assertIdentical(255, count($this->Search->find('search', array('q' => 'test', 'limit' => 255))));
 		$this->assertFalse(empty($this->Search->response['next_page']));
 	}
 
@@ -99,6 +104,9 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 		$this->assertTrue(isset($results[0]['user']['id_str']));
 	}
 
+	/**
+	 * @depends testSerach_with_users_lookup
+	 */
 	public function testSerach_with_users_lookup_specific_fields() {
 		$this->Search->setDataSource($this->testDatasourceName)->User->setDataSource($this->testDatasourceName);
 		$results = $this->Search->find('search', array('q' => 'twitter', 'limit' => 1, 'users_lookup' => array('name', 'statuses_count')));

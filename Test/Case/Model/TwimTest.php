@@ -21,9 +21,9 @@ class TwimTestCase extends TwimConnectionTestCase {
 	public function testSerach() {
 		$q = 'test';
 		$limit = 100;
-		$datas = $this->Twim->Search->find('search', compact('q', 'limit'));
-		$this->assertTrue(!empty($datas));
-		$this->assertIdentical(count($datas), 100);
+		$results = $this->Twim->Search->find('search', compact('q', 'limit'));
+		$this->assertTrue(!empty($results));
+		$this->assertIdentical(count($results), 100);
 	}
 
 }
