@@ -17,7 +17,7 @@
         <exec command="${cakeRoot}/app/Console/cake testsuite
             --log-junit ${reportdir}/unittest.xml
             --coverage-clover ${reportdir}/clover.xml
-            app AllTwim" />
+            app AllTwimTests" />
     </target>
 
     <target name="phpcs">
