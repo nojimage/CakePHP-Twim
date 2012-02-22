@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Twim App Controller
  *
@@ -15,7 +16,7 @@
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   twim
  * @since     File available since Release 1.0
- **/
+ * */
 class TwimAppController extends AppController {
-
+	
 }

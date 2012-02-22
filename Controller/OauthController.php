@@ -3,20 +3,21 @@
 /**
  * Twim Oauth Controller
  *
+ * CakePHP 2.0
  * PHP version 5
  *
- * Copyright 2011, nojimage (http://php-tips.com/)
+ * Copyright 2012, nojimage (http://php-tips.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   1.0
+ * @version   2.0
  * @author    nojimage <nojimage at gmail.com>
- * @copyright 2011 nojimage (http://php-tips.com/)
+ * @copyright 2012 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
- * @package   twim
+ * @package   Twim
  * @since     File available since Release 1.0
- * */
+ */
 
 /**
  * @property AuthComponent $Auth
@@ -24,91 +25,91 @@
  */
 class OauthController extends AppController {
 
-    public $uses = array();
-    public $components = array('Twim.Twitter');
-    public $helpers = array('Html', 'Form', 'Js', 'Twim.Twitter');
+	public $uses = array();
 
-    /**
-     * 
-     */
-    public function beforeFilter() {
-        parent::beforeFilter();
-        $this->Auth->allow('login', 'connect', 'callback');
-    }
+	public $components = array('Twim.Twitter');
 
-    /**
-     * login action
-     */
-    public function login() {
+	public $helpers = array('Html', 'Form', 'Js', 'Twim.Twitter');
 
-        $linkOptions = array();
+	/**
+	 * 
+	 */
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$this->Auth->allow('login', 'connect', 'callback');
+	}
 
-        if (!empty($this->params['named']['datasource'])) {
-            $linkOptions['datasource'] = $this->params['named']['datasource'];
-        }
+	/**
+	 * login action
+	 */
+	public function login() {
+		$linkOptions = array();
 
-        if (!empty($this->params['named']['authenticate'])) {
-            $linkOptions['authenticate'] = $this->params['named']['authenticate'];
-        }
+		if (!empty($this->request->named['datasource'])) {
+			$linkOptions['datasource'] = $this->request->named['datasource'];
+		}
 
-        $this->set(compact('linkOptions'));
-    }
+		if (!empty($this->request->named['authenticate'])) {
+			$linkOptions['authenticate'] = $this->request->named['authenticate'];
+		}
 
-    /**
-     * redirect twitter authorize page
-     */
-    public function connect() {
-        $this->Twitter->connect();
-    }
+		$this->set(compact('linkOptions'));
+	}
 
-    /**
-     * logout action
-     */
-    public function logout() {
-        $this->Session->setFlash(__d('twim', 'Signed out'));
-        $this->Session->delete('TwitterAuth');
-        $this->redirect($this->Auth->logout());
-    }
+	/**
+	 * redirect twitter authorize page
+	 */
+	public function connect() {
+		$this->Twitter->connect();
+	}
 
-    /**
-     * OAuth callback
-     */
-    public function callback($dataSource = null) {
+	/**
+	 * logout action
+	 */
+	public function logout() {
+		$this->Session->setFlash(__d('twim', 'Signed out'));
+		$this->Session->delete('TwitterAuth');
+		$this->redirect($this->Auth->logout());
+	}
 
-        $this->Twitter->TwimOauth->setDataSource($dataSource);
+	/**
+	 * OAuth callback
+	 */
+	public function callback($dataSource = null) {
+		$this->Twitter->TwimOauth->setDataSource($dataSource);
 
-        try {
+		try {
 
-            $useAuth = isset($this->Auth);
+			$useAuth = isset($this->Auth);
 
-            // check return token
-            if (empty($this->params['url']['oauth_token']) || empty($this->params['url']['oauth_verifier'])) {
-                throw new Exception(__d('twim', 'invalid request.'));
-            }
+			// check return token
+			if (empty($this->params['url']['oauth_token']) || empty($this->params['url']['oauth_verifier'])) {
+				throw new Exception(__d('twim', 'invalid request.'));
+			}
 
-            // get access token
-            $token = $this->Twitter->getAccessToken();
+			// get access token
+			$token = $this->Twitter->getAccessToken();
 
-            if (!$useAuth) {
-                $this->Session->write('TwitterAuth', $token);
-                $this->redirect('/');
-            }
+			if (!$useAuth) {
+				$this->Session->write('TwitterAuth', $token);
+				$this->redirect('/');
+			}
 
-            $loginRedirect = $this->Auth->redirect();
-            $data = $this->Twitter->saveToUser($token);
-            $this->Auth->login($data);
-            // Redirect
-            if (ini_get('session.referer_check') && env('HTTP_REFERER')) {
-                $this->flash(sprintf(__d('twim', 'Redirect to %s'), Router::url($loginRedirect, true) . ini_get('session.referer_check')), $loginRedirect, 0);
-                return;
-            }
+			$loginRedirect = $this->Auth->redirect();
+			$data = $this->Twitter->saveToUser($token);
+			$this->Auth->login($data);
+			// Redirect
+			if (ini_get('session.referer_check') && env('HTTP_REFERER')) {
+				$this->flash(sprintf(__d('twim', 'Redirect to %s'), Router::url($loginRedirect, true) . ini_get('session.referer_check')), $loginRedirect, 0);
+				return;
+			}
 
-            $this->redirect($loginRedirect);
-        } catch (Exception $e) {
-            $this->Twitter->deleteCachedAuthorizeUrl();
-            $this->flash(__d('twim', 'Authorization Error: ') . $e->getMessage(), array('action' => 'login'), 5);
-            return;
-        }
-    }
+			$this->redirect($loginRedirect);
+		} catch (Exception $e) {
+			$this->Twitter->deleteCachedAuthorizeUrl();
+			$this->flash(__d('twim', 'Authorization Error: ') . $e->getMessage(), array('action' => 'login'), 5);
+			return;
+		}
+	}
 
 }

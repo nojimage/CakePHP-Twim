@@ -19,14 +19,14 @@
 $this->set('title_for_layout', __d('twim', 'Login'));
 $connectUrl = array('action' => 'connect');
 if (!empty($linkOptions)) {
-    $connectUrl = am($connectUrl, $linkOptions);
+	$connectUrl = am($connectUrl, $linkOptions);
 }
 ?>
 <h1><?php echo __d('twim', 'Login'); ?></h1>
 <div class="login-wrap">
-    <?php if (!$this->Session->check('Auth.User')) : ?>
-        <p class="login"><?php echo $this->Html->image('/twim/img/sign-in-with-twitter-d.png', array('alt' => __d('twim', 'Sign in with Twitter'), 'url' => array('action' => 'connect'))); ?></p>
-    <?php else: ?>
-        <p class="logout"><?php echo $this->Html->link(__d('twim', 'Logout'), array('action' => 'logout')) ?></p>
-    <?php endif; ?>
+	<?php if (!$this->Session->check('Auth.User')) : ?>
+		<p class="login"><?php echo $this->Html->image('/twim/img/sign-in-with-twitter-d.png', array('alt' => __d('twim', 'Sign in with Twitter'), 'url' => array('action' => 'connect'))); ?></p>
+	<?php else: ?>
+		<p class="logout"><?php echo $this->Html->link(__d('twim', 'Logout'), array('action' => 'logout')) ?></p>
+	<?php endif; ?>
 </div>
