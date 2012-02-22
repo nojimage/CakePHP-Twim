@@ -26,9 +26,13 @@ class TwimConnectionTestCase extends CakeTestCase {
 		}
 
 		if ($this->needAuth) {
-			$ds = ConnectionManager::getDataSource('twitter');
-			if (empty($ds->config['oauth_token'])) {
-				$this->skipIf(true, 'access token is empty.');
+			try {
+				$ds = ConnectionManager::getDataSource('twitter');
+				if (empty($ds->config['oauth_token'])) {
+					$this->markTestSkipped('access token is empty.');
+				}
+			} catch (MissingDatasourceConfigException $e) {
+				$this->markTestSkipped($e->getMessage());
 			}
 		}
 	}

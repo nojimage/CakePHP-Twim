@@ -19,38 +19,40 @@
  * @since   　File available since Release 1.0
  *
  */
-App::import('Lib', 'Twim.TwimConnectionTestCase');
-App::import('Model', 'Twim.TwimStatus');
+App::uses('TwimConnectionTestCase', 'Twim.TestSuite');
 
 /**
- *
  * @property TwimStatus $Status
  */
 class TwimStatusNeedAuthTestCase extends TwimConnectionTestCase {
 
-    public $needAuth = true;
+	public $needAuth = true;
 
-    public function startTest() {
-        $this->Status = ClassRegistry::init('Twim.TwimStatus');
-    }
+	public function setUp() {
+		parent::setUp();
+		$this->Status = ClassRegistry::init('Twim.TwimStatus');
+	}
 
-    public function endTest() {
-        unset($this->Status);
-        ClassRegistry::flush();
-    }
+	public function tearDown() {
+		unset($this->Status);
+		parent::tearDown();
+		ob_flush();
+	}
 
-    // =========================================================================
-    public function testTweet_and_delete() {
+	// =========================================================================
 
-        $data = array(
-            'TwimStatus' => array(
-                'text' => 'test tweet ' . time(),
-            ),
-        );
-        $this->assertTrue($this->Status->tweet($data), 'can\'t tweet: %s');
-        $result = $this->Status->find('show', array('id' => $this->Status->getLastInsertID()));
-        $this->assertIdentical($result['text'], $data['TwimStatus']['text']);
-        $this->assertTrue($this->Status->delete($this->Status->getLastInsertID()), 'can\'t remove tweet: %s');
-    }
+	public function testTweet_and_delete() {
+		$data = array(
+			'TwimStatus' => array(
+				'text' => 'test tweet ' . time(),
+			),
+		);
+
+		$result = $this->Status->tweet($data);
+		$this->assertTrue(isset($result['TwimStatus']));
+		$result = $this->Status->find('show', array('id' => $this->Status->getLastInsertID()));
+		$this->assertIdentical($result['text'], $data['TwimStatus']['text']);
+		$this->assertTrue($this->Status->delete($this->Status->getLastInsertID()), 'can\'t remove tweet: %s');
+	}
 
 }
