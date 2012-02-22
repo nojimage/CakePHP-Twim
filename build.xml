@@ -15,9 +15,10 @@
 
     <target name="test">
         <exec command="${cakeRoot}/app/Console/cake testsuite
+            --app ${cakeRoot}/app
             --log-junit ${reportdir}/unittest.xml
             --coverage-clover ${reportdir}/clover.xml
-            app AllTwimTests" />
+            Twim AllTwimTests" />
     </target>
 
     <target name="phpcs">
