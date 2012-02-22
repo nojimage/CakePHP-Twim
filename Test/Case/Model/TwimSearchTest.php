@@ -78,7 +78,6 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 	public function testSerach_get_all_results() {
 		$this->Search->setDataSource($this->testDatasourceName);
 		$results = $this->Search->find('test');
-		$this->assertEmpty($this->Search->response['next_page']);
 		$this->assertGreaterThan(100, count($results));
 	}
 
@@ -87,7 +86,6 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 	 */
 	public function testSerach_limitation_results() {
 		$this->Search->setDataSource($this->testDatasourceName);
-		$this->assertEmpty($this->Search->response['next_page']);
 		$this->assertSame(255, count($this->Search->find('search', array('q' => 'test', 'limit' => 255))));
 	}
 
@@ -110,9 +108,9 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 	public function testSerach_with_users_lookup_specific_fields() {
 		$this->Search->setDataSource($this->testDatasourceName)->User->setDataSource($this->testDatasourceName);
 		$results = $this->Search->find('search', array('q' => 'twitter', 'limit' => 1, 'users_lookup' => array('name', 'statuses_count')));
-		$this->assertEmpty($results[0]['user']['id_str']);
-		$this->assertNotEmpty($results[0]['user']['name']);
-		$this->assertNotEmpty($results[0]['user']['statuses_count']);
+		$this->assertArrayNotHasKey('id_str', $results[0]['user']);
+		$this->assertArrayHasKey('name', $results[0]['user']);
+		$this->assertArrayHasKey('statuses_count', $results[0]['user']);
 	}
 
 }
