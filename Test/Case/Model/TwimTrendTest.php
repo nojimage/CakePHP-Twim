@@ -43,8 +43,8 @@ class TwimTrendTestCase extends TwimConnectionTestCase {
 	public function testDaily() {
 		$this->Trend->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Trend->find('daily');
-		$this->assertIdentical($this->Trend->request['uri']['path'], '1/trends/daily');
-		$this->assertIdentical($this->Trend->request['uri']['query'], array());
+		$this->assertSame('1/trends/daily', $this->Trend->request['uri']['path']);
+		$this->assertSame(array(), $this->Trend->request['uri']['query']);
 	}
 
 	// =========================================================================
@@ -52,8 +52,8 @@ class TwimTrendTestCase extends TwimConnectionTestCase {
 	public function testWeekly() {
 		$this->Trend->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Trend->find('weekly');
-		$this->assertIdentical($this->Trend->request['uri']['path'], '1/trends/weekly');
-		$this->assertIdentical($this->Trend->request['uri']['query'], array());
+		$this->assertSame('1/trends/weekly', $this->Trend->request['uri']['path']);
+		$this->assertSame(array(), $this->Trend->request['uri']['query']);
 	}
 
 	// =========================================================================
@@ -61,8 +61,8 @@ class TwimTrendTestCase extends TwimConnectionTestCase {
 	public function testAvailable() {
 		$this->Trend->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Trend->find('available');
-		$this->assertIdentical($this->Trend->request['uri']['path'], '1/trends/available');
-		$this->assertIdentical($this->Trend->request['uri']['query'], array());
+		$this->assertSame('1/trends/available', $this->Trend->request['uri']['path']);
+		$this->assertSame(array(), $this->Trend->request['uri']['query']);
 	}
 
 	// =========================================================================
@@ -70,8 +70,8 @@ class TwimTrendTestCase extends TwimConnectionTestCase {
 	public function testWoeid() {
 		$this->Trend->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Trend->find('woeid', array('woeid' => 1));
-		$this->assertIdentical($this->Trend->request['uri']['path'], '1/trends/1');
-		$this->assertIdentical($this->Trend->request['uri']['query'], array());
+		$this->assertSame('1/trends/1', $this->Trend->request['uri']['path']);
+		$this->assertSame(array(), $this->Trend->request['uri']['query']);
 	}
 
 	// =========================================================================

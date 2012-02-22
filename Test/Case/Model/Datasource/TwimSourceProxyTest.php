@@ -62,7 +62,7 @@ class TwimSourceProxyTestCase extends TwimConnectionTestCase {
 		$this->TwimSource->configProxy('localhost');
 		$results = $this->TwimSource->request($this->Model);
 		$this->assertEquals(200, $this->TwimSource->Http->response['status']['code']);
-		$this->assertTrue(isset($results['results']));
+		$this->assertNotEmpty($results['results']);
 	}
 
 }

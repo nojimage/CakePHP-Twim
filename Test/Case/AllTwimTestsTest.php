@@ -19,7 +19,7 @@
  * @since     File available since Release 1.0
  *
  */
-class AllTwimTest extends PHPUnit_Framework_TestSuite {
+class AllTwimTestsTest extends PHPUnit_Framework_TestSuite {
 
 	public static function suite() {
 		$suite = new CakeTestSuite('All Twim Plugin tests');

@@ -48,29 +48,29 @@ class TwimUserTestCase extends TwimConnectionTestCase {
 	public function testLookup_user_id() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('lookup', array('user_id' => '1234'));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/lookup');
-		$this->assertIdentical($this->User->request['uri']['query'], array('user_id' => '1234'));
+		$this->assertSame('1/users/lookup', $this->User->request['uri']['path']);
+		$this->assertSame(array('user_id' => '1234'), $this->User->request['uri']['query']);
 	}
 
 	public function testLookup_array_user_id() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('lookup', array('user_id' => array('1234', '5678', '9876')));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/lookup');
-		$this->assertIdentical($this->User->request['uri']['query'], array('user_id' => '1234,5678,9876'));
+		$this->assertSame('1/users/lookup', $this->User->request['uri']['path']);
+		$this->assertSame(array('user_id' => '1234,5678,9876'), $this->User->request['uri']['query']);
 	}
 
 	public function testLookup_screen_name() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('lookup', array('screen_name' => 'abcd'));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/lookup');
-		$this->assertIdentical($this->User->request['uri']['query'], array('screen_name' => 'abcd'));
+		$this->assertSame('1/users/lookup', $this->User->request['uri']['path']);
+		$this->assertSame(array('screen_name' => 'abcd'), $this->User->request['uri']['query']);
 	}
 
 	public function testLookup_array_screen_name() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('lookup', array('screen_name' => array('abcd', 'efgh', 'ijkl')));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/lookup');
-		$this->assertIdentical($this->User->request['uri']['query'], array('screen_name' => 'abcd,efgh,ijkl'));
+		$this->assertSame('1/users/lookup', $this->User->request['uri']['path']);
+		$this->assertSame(array('screen_name' => 'abcd,efgh,ijkl'), $this->User->request['uri']['query']);
 	}
 
 	public function testLookup_real_by_screen_name() {
@@ -79,8 +79,8 @@ class TwimUserTestCase extends TwimConnectionTestCase {
 		$results = Set::sort($results, '/id_str', 'asc');
 		$screenNames = Set::extract('/screen_name', $results);
 		$ids = Set::extract('/id_str', $results);
-		$this->assertEqual(array('cakephp', 'nojimage'), $screenNames);
-		$this->assertEqual(array('8620662', '15982041'), $ids);
+		$this->assertEquals(array('cakephp', 'nojimage'), $screenNames);
+		$this->assertEquals(array('8620662', '15982041'), $ids);
 	}
 
 	public function testLookup_real_by_user_id() {
@@ -89,8 +89,8 @@ class TwimUserTestCase extends TwimConnectionTestCase {
 		$results = Set::sort($results, '/id_str', 'asc');
 		$screenNames = Set::extract('/screen_name', $results);
 		$ids = Set::extract('/id_str', $results);
-		$this->assertEqual(array('cakephp', 'nojimage'), $screenNames);
-		$this->assertEqual(array('8620662', '15982041'), $ids);
+		$this->assertEquals(array('cakephp', 'nojimage'), $screenNames);
+		$this->assertEquals(array('8620662', '15982041'), $ids);
 	}
 
 	// =========================================================================
@@ -103,21 +103,21 @@ class TwimUserTestCase extends TwimConnectionTestCase {
 	public function testProfileImage_with_screen_name() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('profileImage', array('screen_name' => 'abcd'));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/profile_image');
-		$this->assertIdentical($this->User->request['uri']['query'], array('screen_name' => 'abcd'));
+		$this->assertSame('1/users/profile_image', $this->User->request['uri']['path']);
+		$this->assertSame(array('screen_name' => 'abcd'), $this->User->request['uri']['query']);
 	}
 
 	public function testProfileImage_with_size() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('profileImage', array('screen_name' => 'abcd', 'size' => 'bigger'));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/profile_image');
-		$this->assertIdentical($this->User->request['uri']['query'], array('screen_name' => 'abcd', 'size' => 'bigger'));
+		$this->assertSame('1/users/profile_image', $this->User->request['uri']['path']);
+		$this->assertSame(array('screen_name' => 'abcd', 'size' => 'bigger'), $this->User->request['uri']['query']);
 	}
 
 	public function testProfileImage_real() {
 		$this->User->setDataSource($this->testDatasourceName);
 		$result = $this->User->find('profileImage', array('screen_name' => 'twitterapi'));
-		$this->assertPattern('!http://a[0-9]+\.twimg\.com/profile_images/[0-9]+/.+\.png!', $result);
+		$this->assertRegExp('!http://a[0-9]+\.twimg\.com/profile_images/[0-9]+/.+\.png!', $result);
 	}
 
 	// =========================================================================
@@ -125,9 +125,9 @@ class TwimUserTestCase extends TwimConnectionTestCase {
 	public function testSearch() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('search', array('q' => 'cake'));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/search');
-		$this->assertIdentical($this->User->request['uri']['query'], array('page' => 1, 'q' => 'cake'));
-		$this->assertIdentical($this->User->request['auth'], true);
+		$this->assertSame('1/users/search', $this->User->request['uri']['path']);
+		$this->assertSame(array('page' => 1, 'q' => 'cake'), $this->User->request['uri']['query']);
+		$this->assertSame(true, $this->User->request['auth']);
 	}
 
 	// =========================================================================
@@ -140,29 +140,29 @@ class TwimUserTestCase extends TwimConnectionTestCase {
 	public function testShow_user_id() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('show', array('user_id' => '1234'));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/show');
-		$this->assertIdentical($this->User->request['uri']['query'], array('user_id' => '1234'));
+		$this->assertSame('1/users/show', $this->User->request['uri']['path']);
+		$this->assertSame(array('user_id' => '1234'), $this->User->request['uri']['query']);
 	}
 
 	public function testShow_screen_name() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('show', array('screen_name' => 'abcd'));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/show');
-		$this->assertIdentical($this->User->request['uri']['query'], array('screen_name' => 'abcd'));
+		$this->assertSame('1/users/show', $this->User->request['uri']['path']);
+		$this->assertSame(array('screen_name' => 'abcd'), $this->User->request['uri']['query']);
 	}
 
 	public function testShow_real_by_screen_name() {
 		$this->User->setDataSource($this->testDatasourceName);
 		$results = $this->User->find('show', array('screen_name' => 'nojimage'));
-		$this->assertEqual('nojimage', $results['screen_name']);
-		$this->assertEqual('15982041', $results['id_str']);
+		$this->assertEquals('nojimage', $results['screen_name']);
+		$this->assertEquals('15982041', $results['id_str']);
 	}
 
 	public function testShow_real_by_user_id() {
 		$this->User->setDataSource($this->testDatasourceName);
 		$results = $this->User->find('show', array('user_id' => '8620662'));
-		$this->assertEqual('cakephp', $results['screen_name']);
-		$this->assertEqual('8620662', $results['id_str']);
+		$this->assertEquals('cakephp', $results['screen_name']);
+		$this->assertEquals('8620662', $results['id_str']);
 	}
 
 	// =========================================================================
@@ -175,27 +175,27 @@ class TwimUserTestCase extends TwimConnectionTestCase {
 	public function testContributees_user_id() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('contributees', array('user_id' => '1234'));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/contributees');
-		$this->assertIdentical($this->User->request['uri']['query'], array('user_id' => '1234'));
+		$this->assertSame('1/users/contributees', $this->User->request['uri']['path']);
+		$this->assertSame(array('user_id' => '1234'), $this->User->request['uri']['query']);
 	}
 
 	public function testContributees_screen_name() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('contributees', array('screen_name' => 'abcd'));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/contributees');
-		$this->assertIdentical($this->User->request['uri']['query'], array('screen_name' => 'abcd'));
+		$this->assertSame('1/users/contributees', $this->User->request['uri']['path']);
+		$this->assertSame(array('screen_name' => 'abcd'), $this->User->request['uri']['query']);
 	}
 
 	public function testContributees_real_by_screen_name() {
 		$this->User->setDataSource($this->testDatasourceName);
 		$results = $this->User->find('contributees', array('screen_name' => 'themattharris'));
-		$this->assertEqual('twitterapi', $results[0]['screen_name']);
+		$this->assertEquals('twitterapi', $results[0]['screen_name']);
 	}
 
 	public function testContributees_real_by_user_id() {
 		$this->User->setDataSource($this->testDatasourceName);
 		$results = $this->User->find('contributees', array('user_id' => '819797'));
-		$this->assertEqual('twitterapi', $results[0]['screen_name']);
+		$this->assertEquals('twitterapi', $results[0]['screen_name']);
 	}
 
 	// =========================================================================
@@ -208,27 +208,27 @@ class TwimUserTestCase extends TwimConnectionTestCase {
 	public function testContributors_user_id() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('contributors', array('user_id' => '1234'));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/contributors');
-		$this->assertIdentical($this->User->request['uri']['query'], array('user_id' => '1234'));
+		$this->assertSame('1/users/contributors', $this->User->request['uri']['path']);
+		$this->assertSame(array('user_id' => '1234'), $this->User->request['uri']['query']);
 	}
 
 	public function testContributors_screen_name() {
 		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
 		$this->User->find('contributors', array('screen_name' => 'abcd'));
-		$this->assertIdentical($this->User->request['uri']['path'], '1/users/contributors');
-		$this->assertIdentical($this->User->request['uri']['query'], array('screen_name' => 'abcd'));
+		$this->assertSame('1/users/contributors', $this->User->request['uri']['path']);
+		$this->assertSame(array('screen_name' => 'abcd'), $this->User->request['uri']['query']);
 	}
 
 	public function testContributors_real_by_screen_name() {
 		$this->User->setDataSource($this->testDatasourceName);
 		$results = $this->User->find('contributors', array('screen_name' => 'twitter'));
-		$this->assertEqual('biz', $results[0]['screen_name']);
+		$this->assertEquals('biz', $results[0]['screen_name']);
 	}
 
 	public function testContributors_real_by_user_id() {
 		$this->User->setDataSource($this->testDatasourceName);
 		$results = $this->User->find('contributors', array('user_id' => '783214'));
-		$this->assertEqual('biz', $results[0]['screen_name']);
+		$this->assertEquals('biz', $results[0]['screen_name']);
 	}
 
 }

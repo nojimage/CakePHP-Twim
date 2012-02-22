@@ -36,6 +36,7 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 	public function tearDown() {
 		unset($this->Search);
 		parent::tearDown();
+		ob_flush();
 	}
 
 	// =========================================================================
@@ -48,21 +49,21 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 
 		$this->Search->find('search', compact('q', 'limit', 'page'));
 
-		$this->assertIdentical($this->Search->request['uri']['host'], 'search.twitter.com');
-		$this->assertIdentical($this->Search->request['uri']['path'], 'search');
-		$this->assertEqual($this->Search->request['uri']['query'], array('q' => 'test', 'page' => 1, 'rpp' => 50));
+		$this->assertSame('search.twitter.com', $this->Search->request['uri']['host']);
+		$this->assertSame('search', $this->Search->request['uri']['path']);
+		$this->assertEquals(array('q' => 'test', 'page' => 1, 'rpp' => 50), $this->Search->request['uri']['query']);
 	}
 
 	public function testSerach_call2() {
 		$this->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('results' => array())));
 		$this->Search->find('search', 'test');
-		$this->assertEqual($this->Search->request['uri']['query'], array('q' => 'test', 'page' => 1, 'rpp' => 100));
+		$this->assertEquals(array('q' => 'test', 'page' => 1, 'rpp' => 100), $this->Search->request['uri']['query']);
 	}
 
 	public function testSerach_call3() {
 		$this->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('results' => array())));
 		$this->Search->find('test');
-		$this->assertEqual($this->Search->request['uri']['query'], array('q' => 'test', 'page' => 1, 'rpp' => 100));
+		$this->assertEquals(array('q' => 'test', 'page' => 1, 'rpp' => 100), $this->Search->request['uri']['query']);
 	}
 
 	/**
@@ -77,8 +78,8 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 	public function testSerach_get_all_results() {
 		$this->Search->setDataSource($this->testDatasourceName);
 		$results = $this->Search->find('test');
+		$this->assertEmpty($this->Search->response['next_page']);
 		$this->assertGreaterThan(100, count($results));
-		$this->assertTrue(empty($this->Search->response['next_page']));
 	}
 
 	/**
@@ -86,21 +87,21 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 	 */
 	public function testSerach_limitation_results() {
 		$this->Search->setDataSource($this->testDatasourceName);
-		$this->assertIdentical(255, count($this->Search->find('search', array('q' => 'test', 'limit' => 255))));
-		$this->assertFalse(empty($this->Search->response['next_page']));
+		$this->assertEmpty($this->Search->response['next_page']);
+		$this->assertSame(255, count($this->Search->find('search', array('q' => 'test', 'limit' => 255))));
 	}
 
 	public function testSerach_get_empty_results() {
 		$this->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('results' => array())));
 		$result = $this->Search->find('nwoghwiot20gflanvowigiwoagnla;424ty9agfjpoafacdj4#eqpwkp');
-		$this->assertIdentical(array(), $result);
+		$this->assertSame(array(), $result);
 	}
 
 	public function testSerach_with_users_lookup() {
 		$this->Search->setDataSource($this->testDatasourceName)->User->setDataSource($this->testDatasourceName);
 		$results = $this->Search->find('search', array('q' => 'twitter', 'limit' => 255, 'users_lookup' => true));
-		$this->assertIdentical(255, count($results));
-		$this->assertTrue(isset($results[0]['user']['id_str']));
+		$this->assertNotEmpty($results[0]['user']['id_str']);
+		$this->assertSame(255, count($results));
 	}
 
 	/**
@@ -109,9 +110,9 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 	public function testSerach_with_users_lookup_specific_fields() {
 		$this->Search->setDataSource($this->testDatasourceName)->User->setDataSource($this->testDatasourceName);
 		$results = $this->Search->find('search', array('q' => 'twitter', 'limit' => 1, 'users_lookup' => array('name', 'statuses_count')));
-		$this->assertFalse(isset($results[0]['user']['id_str']));
-		$this->assertTrue(isset($results[0]['user']['name']));
-		$this->assertTrue(isset($results[0]['user']['statuses_count']));
+		$this->assertEmpty($results[0]['user']['id_str']);
+		$this->assertNotEmpty($results[0]['user']['name']);
+		$this->assertNotEmpty($results[0]['user']['statuses_count']);
 	}
 
 }

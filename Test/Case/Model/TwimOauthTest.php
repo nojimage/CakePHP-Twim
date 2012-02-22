@@ -46,24 +46,24 @@ class TwimOauthTestCase extends TwimConnectionTestCase {
 	public function testGetRequestToken() {
 		$this->Oauth->getDataSource()->expects($this->once())->method('request');
 		$this->Oauth->getRequestToken();
-		$this->assertSame($this->Oauth->request['uri']['path'], 'oauth/request_token');
-		$this->assertSame($this->Oauth->request['method'], 'POST');
-		$this->assertSame($this->Oauth->request['body'], array('oauth_callback' => 'http://example.com/oauth_callback'));
+		$this->assertSame('oauth/request_token', $this->Oauth->request['uri']['path']);
+		$this->assertSame('POST', $this->Oauth->request['method']);
+		$this->assertSame(array('oauth_callback' => 'http://example.com/oauth_callback'), $this->Oauth->request['body']);
 	}
 
 	public function testGetRequestToken_with_callback_url() {
 		$this->Oauth->getDataSource()->expects($this->once())->method('request');
 		$this->Oauth->getRequestToken('http://example.com/foo_bar');
-		$this->assertSame($this->Oauth->request['uri']['path'], 'oauth/request_token');
-		$this->assertSame($this->Oauth->request['method'], 'POST');
-		$this->assertSame($this->Oauth->request['body'], array('oauth_callback' => 'http://example.com/foo_bar'));
+		$this->assertSame('oauth/request_token', $this->Oauth->request['uri']['path']);
+		$this->assertSame('POST', $this->Oauth->request['method']);
+		$this->assertSame(array('oauth_callback' => 'http://example.com/foo_bar'), $this->Oauth->request['body']);
 	}
 
 	public function testGetRequestToken_real() {
 		$this->Oauth->setDataSource($this->testDatasourceName);
 		$result = $this->Oauth->getRequestToken();
-		$this->assertTrue(isset($result['oauth_token']));
-		$this->assertTrue(isset($result['oauth_token_secret']));
+		$this->assertNotEmpty($result['oauth_token']);
+		$this->assertNotEmpty($result['oauth_token_secret']);
 	}
 
 	// =========================================================================
@@ -88,12 +88,12 @@ class TwimOauthTestCase extends TwimConnectionTestCase {
 		$oauth_token = 'dummy_token';
 		$oauth_verifier = 'dummy_verifier';
 		$result = $this->Oauth->getAccessToken(compact('oauth_token', 'oauth_verifier'));
-		$this->assertSame($this->Oauth->request['uri']['path'], 'oauth/access_token');
-		$this->assertSame($this->Oauth->request['method'], 'POST');
-		$this->assertSame($this->Oauth->request['auth'], array(
+		$this->assertSame('oauth/access_token', $this->Oauth->request['uri']['path']);
+		$this->assertSame('POST', $this->Oauth->request['method']);
+		$this->assertSame(array(
 			'oauth_token' => 'dummy_token',
-			'oauth_verifier' => 'dummy_verifier',
-		));
+			'oauth_verifier' => 'dummy_verifier'
+			), $this->Oauth->request['auth']);
 		$this->assertSame('6253282-eWudHldSbIaelX7swmsiHImEL4KinwaGloHANdrY', $result['oauth_token']);
 		$this->assertSame('2EEfA6BG3ly3sR3RjE0IBSnlQu4ZrUzPiYKmrkVU', $result['oauth_token_secret']);
 		$this->assertSame('6253282', $result['user_id']);
@@ -109,7 +109,6 @@ class TwimOauthTestCase extends TwimConnectionTestCase {
 		$this->Oauth->setDataSource($this->testDatasourceName);
 		$oauth_token = 'B6gyHD1wS0xI02oPkVekZ5CqOGNEmrQXAVfa8amKc';
 		$oauth_verifier = 'sAquV9j08QST9bZcMoCJbQJpR64afO1mpDJfZvik';
-
 		$result = $this->Oauth->getAccessToken(compact('oauth_token', 'oauth_verifier'));
 	}
 

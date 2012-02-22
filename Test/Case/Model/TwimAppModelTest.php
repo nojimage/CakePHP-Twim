@@ -81,28 +81,28 @@ class TwimAppModelTestCase extends TwimConnectionTestCase {
 	}
 
 	public function testConstruct() {
-		$this->assertIdentical($this->Twim->getDataSource()->config['oauth_consumer_key'], 'cvEPr1xe1dxqZZd1UaifFA');
+		$this->assertSame('cvEPr1xe1dxqZZd1UaifFA', $this->Twim->getDataSource()->config['oauth_consumer_key']);
 	}
 
 	public function testConstruct_with_ds() {
 		$this->Twim = ClassRegistry::init(array('class' => 'TestTwimAppModel', 'ds' => 'test_twitter2'));
-		$this->assertIsA($this->Twim->getDataSource(), 'TestTwimAppModelTwimSource');
-		$this->assertIdentical($this->Twim->getDataSource()->config['oauth_consumer_key'], 'testConsumerKey');
+		$this->assertInstanceOf('TestTwimAppModelTwimSource', $this->Twim->getDataSource());
+		$this->assertSame('testConsumerKey', $this->Twim->getDataSource()->config['oauth_consumer_key']);
 	}
 
 	public function testGetDataSource() {
-		$this->assertIsA($this->Twim->getDataSource(), 'TwimSource');
-		$this->assertIdentical($this->Twim->getDataSource()->config['oauth_consumer_key'], 'cvEPr1xe1dxqZZd1UaifFA');
+		$this->assertInstanceOf('TwimSource', $this->Twim->getDataSource());
+		$this->assertSame('cvEPr1xe1dxqZZd1UaifFA', $this->Twim->getDataSource()->config['oauth_consumer_key']);
 	}
 
 	public function testSetDataSource() {
-		$this->assertIdentical($this->Twim->getDataSource()->config['oauth_consumer_key'], 'cvEPr1xe1dxqZZd1UaifFA');
-		$this->assertIdentical($this->Twim->setDataSource('test_twitter2')->getDataSource()->config['oauth_consumer_key'], 'testConsumerKey');
+		$this->assertSame('cvEPr1xe1dxqZZd1UaifFA', $this->Twim->getDataSource()->config['oauth_consumer_key']);
+		$this->assertSame('testConsumerKey', $this->Twim->setDataSource('test_twitter2')->getDataSource()->config['oauth_consumer_key']);
 	}
 
 	public function testLoadTwimModel() {
-		$this->assertIsA($this->Twim->TestOauth, 'TwimTestOauth');
-		$this->assertIdentical($this->Twim->TestOauth->getDataSource()->config['oauth_consumer_key'], 'testConsumerKey');
+		$this->assertInstanceOf('TwimTestOauth', $this->Twim->TestOauth);
+		$this->assertSame('testConsumerKey', $this->Twim->TestOauth->getDataSource()->config['oauth_consumer_key']);
 	}
 
 }

@@ -108,12 +108,12 @@ class TwitterComponentTest extends CakeTestCase {
 	// =========================================================================
 
 	public function testConstruct() {
-		$this->assertIsA($this->Controller->Twitter, 'TwitterComponent');
+		$this->assertInstanceOf('TwitterComponent', $this->Controller->Twitter);
 		$this->assertEquals('test_twitter_component', $this->Controller->Twitter->settings['datasource']);
 		$this->assertEquals('oauth_token', $this->Controller->Twitter->settings['fields']['oauth_token']);
 		$this->assertEquals('oauth_token_secret', $this->Controller->Twitter->settings['fields']['oauth_token_secret']);
-		$this->assertIsA($this->Controller->Twitter->Session, 'SessionComponent');
-		$this->assertIsA($this->Controller->Twitter->TwimOauth, 'TwimOauth');
+		$this->assertInstanceOf('SessionComponent', $this->Controller->Twitter->Session);
+		$this->assertInstanceOf('TwimOauth', $this->Controller->Twitter->TwimOauth);
 	}
 
 	public function testConstruct_additionalParameter() {
@@ -132,14 +132,14 @@ class TwitterComponentTest extends CakeTestCase {
 		Configure::write('Routing.prefixes', array('admin'));
 		$this->Controller->Auth = new Object();
 		$this->Controller->Twitter->initialize($this->Controller);
-		$this->assertIdentical(array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'login', 'admin' => false), $this->Controller->Auth->loginAction);
+		$this->assertSame(array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'login', 'admin' => false), $this->Controller->Auth->loginAction);
 	}
 
 	// =========================================================================
 
 	public function testGetTwimSource() {
-		$this->assertIsA($this->Controller->Twitter->getTwimSource(), 'TwimSource');
-		$this->assertEqual('test_twitter_component', $this->Controller->Twitter->getTwimSource()->configKeyName);
+		$this->assertInstanceOf('TwimSource', $this->Controller->Twitter->getTwimSource());
+		$this->assertEquals('test_twitter_component', $this->Controller->Twitter->getTwimSource()->configKeyName);
 	}
 
 	// =========================================================================
@@ -147,7 +147,7 @@ class TwitterComponentTest extends CakeTestCase {
 	public function testGetAuthorizedUrl() {
 		$callback = Router::url('/twim/oauth/callback', true);
 		$result = $this->Controller->Twitter->getAuthorizeUrl($callback);
-		$this->assertPattern('!https://api\.twitter\.com/oauth/authorize\?oauth_token=.+!', $result);
+		$this->assertRegExp('!https://api\.twitter\.com/oauth/authorize\?oauth_token=.+!', $result);
 	}
 
 	// =========================================================================
@@ -155,8 +155,7 @@ class TwitterComponentTest extends CakeTestCase {
 	public function testGetAuthenticateUrl() {
 		$callback = Router::url('/twim/oauth/callback', true);
 		$result = $this->Controller->Twitter->getAuthenticateUrl($callback);
-		$this->assertPattern('!https://api\.twitter\.com/oauth/authenticate\?oauth_token=.+!', $result);
-
+		$this->assertRegExp('!https://api\.twitter\.com/oauth/authenticate\?oauth_token=.+!', $result);
 		$this->authenticateUrl = $result;
 	}
 
@@ -164,13 +163,13 @@ class TwitterComponentTest extends CakeTestCase {
 
 	public function testConnect() {
 		$this->Controller->Twitter->connect();
-		$this->assertPattern('!https://api\.twitter\.com/oauth/authenticate\?oauth_token=.+!', $this->Controller->redirectUrl);
+		$this->assertRegExp('!https://api\.twitter\.com/oauth/authenticate\?oauth_token=.+!', $this->Controller->redirectUrl);
 	}
 
 	public function testConnect_authorize() {
 		$this->Controller->request->named['authorize'] = 'true';
 		$this->Controller->Twitter->connect();
-		$this->assertPattern('!https://api\.twitter\.com/oauth/authorize\?oauth_token=.+!', $this->Controller->redirectUrl);
+		$this->assertRegExp('!https://api\.twitter\.com/oauth/authorize\?oauth_token=.+!', $this->Controller->redirectUrl);
 	}
 
 	// =========================================================================
@@ -199,30 +198,30 @@ class TwitterComponentTest extends CakeTestCase {
 		$this->Controller->request->query['oauth_verifier'] = 'DUWU7DpwCGYNgKbq1B9Pf3uhwVDLyv9XvTP3T3DVAo';
 		$result = $this->Controller->Twitter->getAccessToken();
 
-		$this->assertIsA($result['oauth_token'], 'String');
-		$this->assertIsA($result['oauth_token_secret'], 'String');
-		$this->assertIsA($result['user_id'], 'String');
-		$this->assertIsA($result['screen_name'], 'String');
+		$this->assertInternalType('string', $result['oauth_token']);
+		$this->assertInternalType('string', $result['oauth_token_secret']);
+		$this->assertInternalType('string', $result['user_id']);
+		$this->assertInternalType('string', $result['screen_name']);
 	}
 
 	// =========================================================================
 
 	public function testSetToken_null_params() {
 		$result = $this->Controller->Twitter->setToken('');
-		$this->assertEqual('', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token']);
-		$this->assertEqual('', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token_secret']);
+		$this->assertEquals('', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token']);
+		$this->assertEquals('', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token_secret']);
 	}
 
 	public function testSetToken_with_array() {
 		$result = $this->Controller->Twitter->setToken(array('oauth_token' => 'dummy_token', 'oauth_token_secret' => 'dummy_secret'));
-		$this->assertEqual('dummy_token', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token']);
-		$this->assertEqual('dummy_secret', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token_secret']);
+		$this->assertEquals('dummy_token', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token']);
+		$this->assertEquals('dummy_secret', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token_secret']);
 	}
 
 	public function testSetToken() {
 		$result = $this->Controller->Twitter->setToken('dummy_token2', 'dummy_secret2');
-		$this->assertEqual('dummy_token2', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token']);
-		$this->assertEqual('dummy_secret2', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token_secret']);
+		$this->assertEquals('dummy_token2', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token']);
+		$this->assertEquals('dummy_secret2', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token_secret']);
 	}
 
 	public function testSetTokenByUser() {
@@ -232,8 +231,8 @@ class TwitterComponentTest extends CakeTestCase {
 				'oauth_token_secret' => 'dummy_secret',
 			));
 		$result = $this->Controller->Twitter->setTokenByUser($user);
-		$this->assertEqual('dummy_token', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token']);
-		$this->assertEqual('dummy_secret', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token_secret']);
+		$this->assertEquals('dummy_token', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token']);
+		$this->assertEquals('dummy_secret', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token_secret']);
 	}
 
 	public function testSetTokenByUser_change_field_name() {
@@ -246,8 +245,8 @@ class TwitterComponentTest extends CakeTestCase {
 				'accsess_token_secret' => 'dummy_secret2',
 			));
 		$result = $this->Controller->Twitter->setTokenByUser($user);
-		$this->assertEqual('dummy_token2', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token']);
-		$this->assertEqual('dummy_secret2', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token_secret']);
+		$this->assertEquals('dummy_token2', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token']);
+		$this->assertEquals('dummy_secret2', $this->Controller->Twitter->TwimOauth->getDataSource()->config['oauth_token_secret']);
 	}
 
 	// =========================================================================
@@ -279,7 +278,7 @@ class TwitterComponentTest extends CakeTestCase {
 		$model->expects($this->once())->method('save')->with($saveData)->will($this->returnValue($saveData));
 
 		$result = $this->Controller->Twitter->saveToUser($token);
-		$this->assertIdentical($result, $saveData);
+		$this->assertSame($result, $saveData);
 	}
 
 }

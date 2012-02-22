@@ -32,9 +32,6 @@ class TwimUserNeedAuthTestCase extends TwimConnectionTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->User = ClassRegistry::init('Twim.TwimUser');
-		if (!is_dir(CACHE . 'twitter')) {
-			mkdir(CACHE . 'twitter');
-		}
 	}
 
 	public function tearDown() {
@@ -46,7 +43,7 @@ class TwimUserNeedAuthTestCase extends TwimConnectionTestCase {
 
 	public function testSearch() {
 		$results = $this->User->find('search', array('q' => 'cake'));
-		$this->assertTrue(isset($results[0]['screen_name']));
+		$this->assertNotEmpty($results[0]['screen_name']);
 	}
 
 }

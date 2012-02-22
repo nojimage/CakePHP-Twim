@@ -63,7 +63,7 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 			'expandUrl' => false,
 			'overrideText' => false,
 		);
-		$this->assertEqual($ok, $this->Search->Behaviors->ExpandTweetEntity->settings['TwimSearch']);
+		$this->assertEquals($ok, $this->Search->Behaviors->ExpandTweetEntity->settings['TwimSearch']);
 		//
 		$this->assertTrue($this->Status->Behaviors->attached('ExpandTweetEntity'));
 		$ok = array(
@@ -71,7 +71,7 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 			'expandUrl' => false,
 			'overrideText' => false,
 		);
-		$this->assertEqual($ok, $this->Status->Behaviors->ExpandTweetEntity->settings['TwimStatus']);
+		$this->assertEquals($ok, $this->Status->Behaviors->ExpandTweetEntity->settings['TwimStatus']);
 	}
 
 	// =========================================================================
@@ -161,7 +161,7 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 		$ok = 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  <a href="http://twitter.com/#!/search?q=%23cakephp" title="#cakephp" class="twitter-hashtag" rel="external nofollow">#cakephp</a> <a href="http://twitter.com/#!/search?q=%23question" title="#question" class="twitter-hashtag" rel="external nofollow">#question</a>';
 
 		$tweet = $this->Search->expandHashtag($tweet);
-		$this->assertIdentical($ok, $tweet['expanded_text']);
+		$this->assertSame($ok, $tweet['expanded_text']);
 	}
 
 	public function testExpandHashtag_entities_empty() {
@@ -177,7 +177,7 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 		$ok = 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question';
 
 		$tweet = $this->Search->expandHashtag($tweet);
-		$this->assertIdentical($ok, $tweet['expanded_text']);
+		$this->assertSame($ok, $tweet['expanded_text']);
 	}
 
 	public function testExpandHashtag_manyhashtag() {
@@ -225,7 +225,7 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 		$tweet = $this->Search->expandHashtag($tweet);
 		$ok = '豚骨ラーメン食べたでー。うまかった＾－＾　 <a href="http://twitter.com/#!/search?q=%23followdaibosyu" title="#followdaibosyu" class="twitter-hashtag" rel="external nofollow">#followdaibosyu</a>  <a href="http://twitter.com/#!/search?q=%23followmejp" title="#followmejp" class="twitter-hashtag" rel="external nofollow">#followmejp</a>  <a href="http://twitter.com/#!/search?q=%23sougofollow" title="#sougofollow" class="twitter-hashtag" rel="external nofollow">#sougofollow</a>  <a href="http://twitter.com/#!/search?q=%23goen" title="#goen" class="twitter-hashtag" rel="external nofollow">#goen</a>  <a href="http://twitter.com/#!/search?q=%23%E7%9B%B8%E4%BA%92%E3%83%95%E3%82%A9%E3%83%AD%E3%83%BC" title="#相互フォロー" class="twitter-hashtag" rel="external nofollow">#相互フォロー</a>  <a href="http://twitter.com/#!/search?q=%23sougo" title="#sougo" class="twitter-hashtag" rel="external nofollow">#sougo</a>  <a href="http://twitter.com/#!/search?q=%23%E3%83%95%E3%82%A9%E3%83%AD%E3%83%BC" title="#フォロー" class="twitter-hashtag" rel="external nofollow">#フォロー</a>  <a href="http://twitter.com/#!/search?q=%23%E7%9B%B8%E4%BA%92" title="#相互" class="twitter-hashtag" rel="external nofollow">#相互</a>';
 
-		$this->assertEqual($ok, $tweet['expanded_text']);
+		$this->assertEquals($ok, $tweet['expanded_text']);
 	}
 
 	// =========================================================================
@@ -257,7 +257,7 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 		$ok = 'How can I submit my app to the bakery (recently baked?) <a href="http://t.co/VKUESCJp" title="http://ask.cakephp.org/s/1yu" class="twitter-timeline-link" rel="external nofollow">ask.cakephp.org/s/1yu</a>  #cakephp #question';
 
 		$tweet = $this->Search->expandUrl($tweet);
-		$this->assertIdentical($ok, $tweet['expanded_text']);
+		$this->assertSame($ok, $tweet['expanded_text']);
 	}
 
 	public function testExpandUrl_entities_empty() {
@@ -273,7 +273,7 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 		$ok = 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question';
 
 		$tweet = $this->Search->expandUrl($tweet);
-		$this->assertIdentical($ok, $tweet['expanded_text']);
+		$this->assertSame($ok, $tweet['expanded_text']);
 	}
 
 	public function testExpandUrlString() {
@@ -303,7 +303,7 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 		$ok = 'How can I submit my app to the bakery (recently baked?) http://ask.cakephp.org/s/1yu  #cakephp #question';
 
 		$tweet = $this->Search->expandUrlString($tweet);
-		$this->assertIdentical($ok, $tweet['expanded_text']);
+		$this->assertSame($ok, $tweet['expanded_text']);
 	}
 
 	public function testExpandUrlString_entities_empty() {
@@ -319,7 +319,7 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 		$ok = 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question';
 
 		$tweet = $this->Search->expandUrlString($tweet);
-		$this->assertIdentical($ok, $tweet['expanded_text']);
+		$this->assertSame($ok, $tweet['expanded_text']);
 	}
 
 	// =========================================================================
@@ -328,32 +328,32 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 		$this->Search->setExpandHashtag()->setExpandUrl()->setDataSource($this->testDatasourceName);
 
 		$results = $this->Search->find('search', array('q' => '#cakephp http://', 'limit' => 20));
-		$this->assertPattern('/class="twitter-timeline-link" rel="external nofollow"/', $results[0]['expanded_text']);
-		$this->assertPattern('/ class="twitter-hashtag" rel="external nofollow"/', $results[0]['expanded_text']);
+		$this->assertRegExp('/class="twitter-timeline-link" rel="external nofollow"/', $results[0]['expanded_text']);
+		$this->assertRegExp('/ class="twitter-hashtag" rel="external nofollow"/', $results[0]['expanded_text']);
 	}
 
 	public function testAfterFind_Status() {
 		$this->Status->setExpandHashtag()->setExpandUrl()->setDataSource($this->testDatasourceName);
 
 		$results = $this->Status->find('show', array('id' => '121055461549158400'));
-		$this->assertPattern('/class="twitter-timeline-link" rel="external nofollow"/', $results['expanded_text']);
-		$this->assertPattern('/ class="twitter-hashtag" rel="external nofollow"/', $results['expanded_text']);
+		$this->assertRegExp('/class="twitter-timeline-link" rel="external nofollow"/', $results['expanded_text']);
+		$this->assertRegExp('/ class="twitter-hashtag" rel="external nofollow"/', $results['expanded_text']);
 	}
 
 	public function testAfterFind_Status_urlString() {
 		$this->Status->setExpandHashtag()->setExpandUrl('string')->setDataSource($this->testDatasourceName);
 
 		$results = $this->Status->find('show', array('id' => '121055461549158400'));
-		$this->assertNoPattern('/class="twitter-timeline-link" rel="external nofollow"/', $results['expanded_text']);
-		$this->assertPattern('!http://ask.cakephp.org/s/1yu!', $results['expanded_text']);
+		$this->assertNotRegExp('/class="twitter-timeline-link" rel="external nofollow"/', $results['expanded_text']);
+		$this->assertRegExp('!http://ask.cakephp.org/s/1yu!', $results['expanded_text']);
 	}
 
 	public function testAfterFind_overrideText() {
 		$this->Search->setExpandHashtag()->setExpandUrl()->setOverrideText()->setDataSource($this->testDatasourceName);
 
 		$results = $this->Search->find('search', array('q' => '#cakephp http://', 'limit' => 20));
-		$this->assertPattern('/class="twitter-timeline-link" rel="external nofollow"/', $results[0]['text']);
-		$this->assertPattern('/ class="twitter-hashtag" rel="external nofollow"/', $results[0]['text']);
+		$this->assertRegExp('/class="twitter-timeline-link" rel="external nofollow"/', $results[0]['text']);
+		$this->assertRegExp('/ class="twitter-hashtag" rel="external nofollow"/', $results[0]['text']);
 	}
 
 }

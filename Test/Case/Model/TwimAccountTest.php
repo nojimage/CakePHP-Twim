@@ -43,22 +43,22 @@ class TwimAccountTestCase extends TwimConnectionTestCase {
 
 	public function testRateLimitStatus() {
 		$limit = $this->Account->find('rateLimitStatus');
-		$this->assertTrue(isset($limit['hourly_limit']));
-		$this->assertTrue(isset($limit['reset_time_in_seconds']));
-		$this->assertTrue(isset($limit['reset_time']));
-		$this->assertTrue(isset($limit['remaining_hits']));
+		$this->assertNotEmpty($limit['hourly_limit']);
+		$this->assertNotEmpty($limit['reset_time_in_seconds']);
+		$this->assertNotEmpty($limit['reset_time']);
+		$this->assertNotEmpty($limit['remaining_hits']);
 	}
 
 	// =========================================================================
 
 	public function testGetApiRemain() {
-		$this->assertTrue($this->Account->getApiRemain() > 0);
+		$this->assertGreaterThan(0, $this->Account->getApiRemain());
 	}
 
 	// =========================================================================
 
 	public function testGetApiResetTime() {
-		$this->assertTrue($this->Account->getApiResetTime() > time());
+		$this->assertGreaterThan(time(), $this->Account->getApiResetTime());
 	}
 
 }

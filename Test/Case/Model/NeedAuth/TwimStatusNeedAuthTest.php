@@ -50,10 +50,12 @@ class TwimStatusNeedAuthTestCase extends TwimConnectionTestCase {
 		);
 
 		$result = $this->Status->tweet($data);
-		$this->assertTrue(isset($result['TwimStatus']));
+		$this->assertNotEmpty($result['TwimStatus']);
+
 		$result = $this->Status->find('show', array('id' => $this->Status->getLastInsertID()));
-		$this->assertIdentical($result['text'], $data['TwimStatus']['text']);
-		$this->assertTrue($this->Status->delete($this->Status->getLastInsertID()), 'can\'t remove tweet: %s');
+		$this->assertSame($data['TwimStatus']['text'], $result['text']);
+
+		$this->assertTrue($this->Status->delete($this->Status->getLastInsertID()));
 	}
 
 }

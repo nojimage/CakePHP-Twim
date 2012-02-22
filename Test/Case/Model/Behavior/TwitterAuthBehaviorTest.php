@@ -87,7 +87,7 @@ class TwitterAuthBehaviorTest extends TwimConnectionTestCase {
 				'password' => 'ae9277742549f954cb43408b44fd3610a5b5e9db',
 			),
 		);
-		$this->assertIdentical($ok, $this->Model->createSaveDataByToken($data));
+		$this->assertSame($ok, $this->Model->createSaveDataByToken($data));
 	}
 
 }
