@@ -76,6 +76,7 @@ class TwimUserTestCase extends TwimConnectionTestCase {
 	public function testLookup_real_by_screen_name() {
 		$this->User->setDataSource('twitter');
 		$results = $this->User->find('lookup', array('screen_name' => array('cakephp', 'nojimage')));
+		$results = Set::sort($results, '/id_str', 'asc');
 		$screenNames = Set::extract('/screen_name', $results);
 		$ids = Set::extract('/id_str', $results);
 		$this->assertEqual(array('cakephp', 'nojimage'), $screenNames);
@@ -85,6 +86,7 @@ class TwimUserTestCase extends TwimConnectionTestCase {
 	public function testLookup_real_by_user_id() {
 		$this->User->setDataSource('twitter');
 		$results = $this->User->find('lookup', array('user_id' => array('8620662', '15982041')));
+		$results = Set::sort($results, '/id_str', 'asc');
 		$screenNames = Set::extract('/screen_name', $results);
 		$ids = Set::extract('/id_str', $results);
 		$this->assertEqual(array('cakephp', 'nojimage'), $screenNames);
