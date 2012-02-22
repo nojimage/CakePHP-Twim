@@ -1,7 +1,5 @@
 <?php
 
-App::uses('Component', 'Controller');
-
 /**
  * TwitterKit Twitter Component
  *
@@ -19,6 +17,7 @@ App::uses('Component', 'Controller');
  * @package   twim
  * @since     File available since Release 1.0
  */
+App::uses('Component', 'Controller');
 
 /**
  * @property AppController $Controller
@@ -144,12 +143,12 @@ class TwitterComponent extends Component {
 	public function connect() {
 		$dataSource = $authorize = false;
 
-		if (!empty($this->Controller->params['named']['datasource'])) {
-			$dataSource = $this->Controller->params['named']['datasource'];
+		if (!empty($this->Controller->request->named['datasource'])) {
+			$dataSource = $this->Controller->request->named['datasource'];
 		}
 
-		if (!empty($this->Controller->params['named']['authorize'])) {
-			$authorize = $this->Controller->params['named']['authorize'];
+		if (!empty($this->Controller->request->named['authorize'])) {
+			$authorize = $this->Controller->request->named['authorize'];
 		}
 
 		if ($dataSource !== false) {
@@ -172,12 +171,12 @@ class TwitterComponent extends Component {
 		// remove authorize/authenticate url from session
 		$this->deleteCachedAuthorizeUrl();
 
-		if (empty($this->Controller->params['url']['oauth_token']) || empty($this->Controller->params['url']['oauth_verifier'])) {
+		if (empty($this->Controller->request->query['oauth_token']) || empty($this->Controller->request->query['oauth_verifier'])) {
 			return false;
 		}
 
-		$oauth_token = $this->Controller->params['url']['oauth_token'];
-		$oauth_verifier = $this->Controller->params['url']['oauth_verifier'];
+		$oauth_token = $this->Controller->request->query['oauth_token'];
+		$oauth_verifier = $this->Controller->request->query['oauth_verifier'];
 
 		$accessToken = $this->TwimOauth->getAccessToken(compact('oauth_token', 'oauth_verifier'));
 
@@ -290,7 +289,7 @@ class TwitterComponent extends Component {
 	 * @param string $url
 	 * @return string url
 	 */
-	public function setCachedUrl($type = 'authorize', $url) {
+	public function setCachedUrl($type = 'authorize', $url = '') {
 		$key = $this->getCachedUrlSessionKey($type);
 		$this->Session->write($key . '.url', $url);
 		$this->Session->write($key . '.expire', time() + self::OAUTH_URL_EXPIRE);

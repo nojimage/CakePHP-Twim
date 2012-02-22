@@ -52,7 +52,6 @@ class TwitterComponentTestUser extends Model {
 }
 
 /**
- * @author nojima
  *
  * @property TwitterComponentTestController $Controller
  */
@@ -81,6 +80,7 @@ class TwitterComponentTest extends CakeTestCase {
 		parent::setUp();
 		$this->Controller = new TwitterComponentTestController(null);
 		$this->Controller->constructClasses();
+		$this->Controller->startupProcess();
 	}
 
 	public function tearDown() {
@@ -152,7 +152,7 @@ class TwitterComponentTest extends CakeTestCase {
 	}
 
 	public function testConnect_authorize() {
-		$this->Controller->params['named']['authorize'] = 'true';
+		$this->Controller->request->named['authorize'] = 'true';
 		$this->Controller->Twitter->connect();
 		$this->assertPattern('!https://api\.twitter\.com/oauth/authorize\?oauth_token=.+!', $this->Controller->redirectUrl);
 	}
@@ -164,16 +164,24 @@ class TwitterComponentTest extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 
-	public function testGetAccessToken() {
+	/**
+	 *
+	 * @expectedException RuntimeException 
+	 * @expectedExceptionMessage Invalid / expired Token
+	 */
+	public function testGetAccessToken_invalid() {
 		$result = array();
-		$this->Controller->params['url']['oauth_token'] = 'vkwlQH1uLWWahUNa7PNE6RbBTYGotugP9wh3NSoT0';
-		$this->Controller->params['url']['oauth_verifier'] = 'DUWU7DpwCGYNgKbq1B9Pf3uhwVDLyv9XvTP3T3DVAo';
-		try {
-			$result = $this->Controller->Twitter->getAccessToken();
-		} catch (RuntimeException $e) {
-			$this->assertTrue('Invalid / expired Token', $e->getMessage());
-			return;
-		}
+		$this->Controller->request->query['oauth_token'] = 'invalid token';
+		$this->Controller->request->query['oauth_verifier'] = 'invalid verifier';
+		$result = $this->Controller->Twitter->getAccessToken();
+	}
+
+	public function testGetAccessToken() {
+		$this->markTestSkipped('input right token/verifier');
+		$result = array();
+		$this->Controller->request->query['oauth_token'] = 'vkwlQH1uLWWahUNa7PNE6RbBTYGotugP9wh3NSoT0';
+		$this->Controller->request->query['oauth_verifier'] = 'DUWU7DpwCGYNgKbq1B9Pf3uhwVDLyv9XvTP3T3DVAo';
+		$result = $this->Controller->Twitter->getAccessToken();
 
 		$this->assertIsA($result['oauth_token'], 'String');
 		$this->assertIsA($result['oauth_token_secret'], 'String');
@@ -232,9 +240,8 @@ class TwitterComponentTest extends CakeTestCase {
 		$this->Controller->Auth = $this->getMock('Object', array('getModel'));
 		$this->Controller->Auth->userModel = 'TwitterComponentMockUser';
 
-		$model = $this->getMock('TwitterComponentTestUser', array('save', 'createSaveDataByToken'), 'TwitterComponentMockUser');
-		$this->Controller->Auth->expectOnce('getModel');
-		$this->Controller->Auth->setReturnValue('getModel', $model);
+		$model = $this->getMock('TwitterComponentTestUser', array('save', 'createSaveDataByToken'), array(), 'TwitterComponentMockUser');
+		$this->Controller->Auth->expects($this->once())->method('getModel')->will($this->returnValue($model));
 
 		$token = array(
 			'user_id' => '123456789',
@@ -252,10 +259,8 @@ class TwitterComponentTest extends CakeTestCase {
 			),
 		);
 
-		$model->expectOnce('createSaveDataByToken', array($token));
-		$model->setReturnValue('createSaveDataByToken', $saveData);
-		$model->expectOnce('save', array($saveData));
-		$model->setReturnValue('save', $saveData);
+		$model->expects($this->once())->method('createSaveDataByToken')->with($token)->will($this->returnValue($saveData));
+		$model->expects($this->once())->method('save')->with($saveData)->will($this->returnValue($saveData));
 
 		$result = $this->Controller->Twitter->saveToUser($token);
 		$this->assertIdentical($result, $saveData);
