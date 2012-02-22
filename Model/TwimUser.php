@@ -3,7 +3,8 @@
 /**
  * for Users API
  *
- * PHP versions 5
+ * CakePHP 2.0
+ * PHP version 5
  *
  * Copyright 2012, nojimage (http://php-tips.com/)
  *
@@ -14,8 +15,9 @@
  * @author    nojimage <nojimage at gmail.com>
  * @copyright 2012 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
- * @package   twim
+ * @package   Twim
  * @since     File available since Release 1.0
+ *
  * @link      https://dev.twitter.com/docs/api/1/get/users/lookup
  * @link      https://dev.twitter.com/docs/api/1/get/users/profile_image/%3Ascreen_name
  * @link      https://dev.twitter.com/docs/api/1/get/users/search
@@ -64,7 +66,7 @@ class TwimUser extends TwimAppModel {
 
 	/**
 	 * The options allowed by each of the custom find types
-	 * 
+	 *
 	 * @var array
 	 */
 	public $allowedFindOptions = array(
@@ -124,7 +126,7 @@ class TwimUser extends TwimAppModel {
 	/**
 	 * profile image
 	 * -------------
-	 * 
+	 *
 	 * @param array $options
 	 *  screen_name: string<br />
 	 *  size: string (bigger or normal or mini or original)

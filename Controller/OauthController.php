@@ -32,7 +32,7 @@ class OauthController extends AppController {
 	public $helpers = array('Html', 'Form', 'Js', 'Twim.Twitter');
 
 	/**
-	 * 
+	 *
 	 */
 	public function beforeFilter() {
 		parent::beforeFilter();

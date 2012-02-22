@@ -3,7 +3,8 @@
 /**
  * for Account API
  *
- * PHP versions 5
+ * CakePHP 2.0
+ * PHP version 5
  *
  * Copyright 2012, nojimage (http://php-tips.com/)
  *
@@ -14,8 +15,9 @@
  * @author    nojimage <nojimage at gmail.com>
  * @copyright 2012 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
- * @package   twim
- * @since   　File available since Release 1.0
+ * @package   Twim
+ * @since     File available since Release 1.0
+ *
  * @link      https://dev.twitter.com/docs/api/1/get/account/rate_limit_status
  * @link      https://dev.twitter.com/docs/api/1/get/account/verify_credentials
  * @link      https://dev.twitter.com/docs/api/1/post/account/end_session
@@ -33,7 +35,7 @@
 App::uses('TwimAppModel', 'Twim.Model');
 
 /**
- * 
+ *
  */
 class TwimAccount extends TwimAppModel {
 
@@ -64,7 +66,7 @@ class TwimAccount extends TwimAppModel {
 
 	/**
 	 * The options allowed by each of the custom find types
-	 * 
+	 *
 	 * @var array
 	 */
 	public $allowedFindOptions = array(
@@ -120,7 +122,7 @@ class TwimAccount extends TwimAppModel {
 
 	/**
 	 * get api call remaining
-	 * 
+	 *
 	 * @package bool $refresh
 	 * @return bool
 	 */
@@ -133,7 +135,7 @@ class TwimAccount extends TwimAppModel {
 
 	/**
 	 * get api limit refresh time (sec)
-	 * 
+	 *
 	 * @package bool $refresh
 	 * @return int
 	 */

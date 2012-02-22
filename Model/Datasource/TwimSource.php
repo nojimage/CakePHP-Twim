@@ -1,13 +1,10 @@
 <?php
 
-App::uses('RestSource', 'Rest.Model/Datasource');
-App::uses('HttpSocketOauth', 'Twim.Network/Http');
-
 /**
  * Twitter API Datasource
  *
- * for CakePHP 2.0
- * PHP version 5.3
+ * CakePHP 2.0
+ * PHP version 5
  *
  * Copyright 2012, nojimage (http://php-tips.com/)
  *
@@ -19,7 +16,13 @@ App::uses('HttpSocketOauth', 'Twim.Network/Http');
  * @copyright 2012 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   Twim
- * @link      http://dev.twitter.com/doc
+ * @since     File available since Release 1.0
+ *
+ */
+App::uses('RestSource', 'Rest.Model/Datasource');
+App::uses('HttpSocketOauth', 'Twim.Network/Http');
+
+/**
  *
  */
 class TwimSource extends RestSource {

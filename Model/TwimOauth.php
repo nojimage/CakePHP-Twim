@@ -3,7 +3,8 @@
 /**
  * for Oauth API
  *
- * PHP versions 5
+ * CakePHP 2.0
+ * PHP version 5
  *
  * Copyright 2012, nojimage (http://php-tips.com/)
  *
@@ -15,11 +16,17 @@
  * @copyright 2012 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   Twim
- * @since   　File available since Release 1.0
+ * @since     File available since Release 1.0
+ *
  * @link      https://dev.twitter.com/docs/api/1/get/oauth/authenticate
  * @link      https://dev.twitter.com/docs/api/1/get/oauth/authorize
  * @link      https://dev.twitter.com/docs/api/1/post/oauth/access_token
  * @link      https://dev.twitter.com/docs/api/1/post/oauth/request_token
+ *
+ */
+App::uses('TwimAppModel', 'Twim.Model');
+
+/**
  *
  */
 class TwimOauth extends TwimAppModel {
@@ -27,7 +34,7 @@ class TwimOauth extends TwimAppModel {
 	/**
 	 * get OAuth Request Token
 	 *
-	 * @param array $params 
+	 * @param array $params
 	 *      oauth_callback: url
 	 *      x_auth_access_type: read or write
 	 * @return string
@@ -72,7 +79,7 @@ class TwimOauth extends TwimAppModel {
 	 * get OAuth authorize url
 	 *
 	 * @param array or string $requestToken
-	 * @return string 
+	 * @return string
 	 */
 	public function getAuthorizeUrl($requestToken) {
 		if (is_string($requestToken)) {
@@ -85,7 +92,7 @@ class TwimOauth extends TwimAppModel {
 	 * get OAuth authenticate url
 	 *
 	 * @param array or string $requestToken
-	 * @return string 
+	 * @return string
 	 */
 	public function getAuthenticateUrl($requestToken) {
 		if (is_string($requestToken)) {
@@ -97,12 +104,12 @@ class TwimOauth extends TwimAppModel {
 	/**
 	 * get OAuth Access Token
 	 *
-	 * @param array $params 
-	 *      oauth_token: 
-	 *      oauth_verifier: 
-	 *      x_auth_password: 
-	 *      x_auth_username: 
-	 *      x_auth_mode: 
+	 * @param array $params
+	 *      oauth_token:
+	 *      oauth_verifier:
+	 *      x_auth_password:
+	 *      x_auth_username:
+	 *      x_auth_mode:
 	 * @return string
 	 */
 	public function getAccessToken($params = array()) {
@@ -150,7 +157,7 @@ class TwimOauth extends TwimAppModel {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function onError() {
 		if (isset($this->response) && is_string($this->response)) {

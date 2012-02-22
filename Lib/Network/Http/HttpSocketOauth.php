@@ -85,7 +85,7 @@ class HttpSocketOauth extends HttpSocket {
 	 *   the HTTP header (e.g. it should look like OAuth oauth_consumer_key="...",
 	 *   oauth_token="...", oauth_signature_method="...", oauth_signature="...",
 	 *   oauth_timestamp="...", oauth_nonce="...", oauth_version="...".
-	 * 
+	 *
 	 * @param array $request As required by HttpSocket::request(). NOTE ONLY
 	 *   THE ARRAY TYPE OF REQUEST IS SUPPORTED
 	 * @return String

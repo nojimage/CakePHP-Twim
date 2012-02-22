@@ -1,8 +1,7 @@
-for CakePHP 1.3 and PHP5.2 later
+for CakePHP 2.0 and PHP 5.3 later
 
-This plugin require CakePHP-Twitter-API-Plugin and CakePHP-ReST-DataSource-Plugin.
+This plugin require CakePHP-ReST-DataSource-Plugin for CakePHP 2.0.
 
 get and install here.
 
-https://github.com/neilcrookes/CakePHP-ReST-DataSource-Plugin
-https://github.com/neilcrookes/CakePHP-Twitter-API-Plugin
+https://github.com/nojimage/CakePHP-ReST-DataSource-Plugin/tree/2.0

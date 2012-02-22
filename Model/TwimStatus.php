@@ -3,7 +3,8 @@
 /**
  * for Status API
  *
- * PHP versions 5
+ * CakePHP 2.0
+ * PHP version 5
  *
  * Copyright 2012, nojimage (http://php-tips.com/)
  *
@@ -14,8 +15,9 @@
  * @author    nojimage <nojimage at gmail.com>
  * @copyright 2012 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
- * @package   twim
- * @since   　File available since Release 1.0
+ * @package   Twim
+ * @since     File available since Release 1.0
+ *
  * @link      http://dev.twitter.com/doc/get/statuses/public_timeline
  * @link      http://dev.twitter.com/doc/get/statuses/home_timeline
  * @link      http://dev.twitter.com/doc/get/statuses/friends_timeline
@@ -140,7 +142,7 @@ class TwimStatus extends TwimAppModel {
 
 	/**
 	 * The options allowed by each of the custom find types
-	 * 
+	 *
 	 * @var array
 	 */
 	public $allowedFindOptions = array(

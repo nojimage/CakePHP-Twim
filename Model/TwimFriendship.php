@@ -3,7 +3,8 @@
 /**
  * for Friendships API
  *
- * PHP versions 5
+ * CakePHP 2.0
+ * PHP version 5
  *
  * Copyright 2012, nojimage (http://php-tips.com/)
  *
@@ -14,8 +15,9 @@
  * @author    nojimage <nojimage at gmail.com>
  * @copyright 2012 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
- * @package   twim
+ * @package   Twim
  * @since     File available since Release 1.0
+ *
  * @link      https://dev.twitter.com/docs/api/1/get/friendships/exists
  * @link      https://dev.twitter.com/docs/api/1/get/friendships/incoming
  * @link      https://dev.twitter.com/docs/api/1/get/friendships/outgoing
