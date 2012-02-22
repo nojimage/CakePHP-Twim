@@ -2,75 +2,92 @@
 
 /**
  * Twitter Authenticatable Behavior Test Case
+ *
+ * PHP versions 5
+ *
+ * Copyright 2012, nojimage (http://php-tips.com/)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @filesource
+ * @version   2.0
+ * @author    nojimage <nojimage at gmail.com>
+ * @copyright 2012 nojimage (http://php-tips.com/)
+ * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @link    　http://php-tips.com/
+ * @since   　File available since Release 1.0
+ *
  */
-App::import('Core', array('AppModel', 'Model'));
-App::import('Behavior', array('Twim.TwitterAuth'));
+App::uses('TwimConnectionTestCase', 'Twim.TestSuite');
+App::uses('Model', 'Model');
 
-Mock::generate('AppModel', 'MockModel');
+class TwitterAuthBehaviorTestModel extends Model {
 
-class TwitterAuthTestModel extends AppModel {
+	public $name = 'TwitterUser';
 
-    public $name = 'TwitterUser';
-    public $alias = 'TwitterUser';
-    public $useTable = false;
-    public $actsAs = array(
-        'Twim.TwitterAuth',
-    );
-    public $_schema = array(
-        'id' => true,
-        'username' => true,
-        'password' => true,
-        'oauth_token' => true,
-        'oauth_token_secret' => true,
-    );
+	public $alias = 'TwitterUser';
+
+	public $useTable = false;
+
+	public $actsAs = array(
+		'Twim.TwitterAuth',
+	);
+
+	public $_schema = array(
+		'id' => true,
+		'username' => true,
+		'password' => true,
+		'oauth_token' => true,
+		'oauth_token_secret' => true,
+	);
 
 }
 
 /**
- * @property TwitterAuthenticatableTestModel $Model
+ * @property TwitterAuthBehaviorTestModel $Model
  */
-class TwitterAuthBehaviorTest extends CakeTestCase {
+class TwitterAuthBehaviorTest extends TwimConnectionTestCase {
 
-    public $fixtures = array();
+	/**
+	 * startTest method
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function setUp() {
+		parent::setUp();
+		$this->Model = ClassRegistry::init('TwitterAuthBehaviorTestModel');
+	}
 
-    /**
-     * startTest method
-     *
-     * @access public
-     * @return void
-     */
-    public function startTest($method) {
-        $this->Model = ClassRegistry::init('TwitterAuthTestModel');
-    }
+	/**
+	 * endTest method
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function tearDown() {
+		unset($this->Model);
+		parent::tearDown();
+	}
 
-    /**
-     * endTest method
-     *
-     * @access public
-     * @return void
-     */
-    public function endTest($method) {
-        unset($this->Model);
-        ClassRegistry::flush();
-    }
-
-    public function testCreateSaveDataByToken() {
-        $data = array(
-            'user_id' => '123456789',
-            'screen_name' => 'dummy_user',
-            'oauth_token' => 'dummy token',
-            'oauth_token_secret' => 'dummy secret token',
-        );
-        $ok = array(
-            'TwitterUser' => array(
-                'id' => '123456789',
-                'username' => 'dummy_user',
-                'oauth_token' => 'dummy token',
-                'oauth_token_secret' => 'dummy secret token',
-                'password' => 'ae9277742549f954cb43408b44fd3610a5b5e9db',
-            ),
-        );
-        $this->assertIdentical($ok, $this->Model->createSaveDataByToken($data));
-    }
+	public function testCreateSaveDataByToken() {
+		$data = array(
+			'user_id' => '123456789',
+			'screen_name' => 'dummy_user',
+			'oauth_token' => 'dummy token',
+			'oauth_token_secret' => 'dummy secret token',
+		);
+		$ok = array(
+			'TwitterUser' => array(
+				'id' => '123456789',
+				'username' => 'dummy_user',
+				'oauth_token' => 'dummy token',
+				'oauth_token_secret' => 'dummy secret token',
+				'password' => 'ae9277742549f954cb43408b44fd3610a5b5e9db',
+			),
+		);
+		$this->assertIdentical($ok, $this->Model->createSaveDataByToken($data));
+	}
 
 }
