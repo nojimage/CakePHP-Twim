@@ -65,14 +65,13 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 		$this->assertEqual($this->Search->request['uri']['query'], array('q' => 'test', 'page' => 1, 'rpp' => 100));
 	}
 
+	/**
+	 * @expectedException RuntimeException
+	 * @expectedExceptionMessage You must enter a query.
+	 */
 	public function testSerach_noquery() {
 		$this->Search->setDataSource($this->testDatasourceName);
-		try {
-			$this->Search->find('');
-		} catch (RuntimeException $e) {
-			$this->assertIdentical($e->getMessage(), 'You must enter a query.');
-		}
-		$this->assertEqual($this->Search->request['uri']['query'], array('q' => '', 'page' => 1, 'rpp' => 100));
+		$this->Search->find('');
 	}
 
 	public function testSerach_get_all_results() {
