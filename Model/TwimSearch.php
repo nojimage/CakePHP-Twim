@@ -5,21 +5,18 @@
  *
  * PHP versions 5
  *
- * Copyright 2011, nojimage (http://php-tips.com/)
+ * Copyright 2012, nojimage (http://php-tips.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   1.0
+ * @version   2.0
  * @author    nojimage <nojimage at gmail.com>
- * @copyright 2011 nojimage (http://php-tips.com/)
+ * @copyright 2012 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   twim
  * @since     File available since Release 1.0
  * @link      https://dev.twitter.com/docs/api/1/get/search
- *
- * NOTICE: Search API "from_user_id" doesn't match up with the proper Twitter "user_id"
- * see http://code.google.com/p/twitter-api/issues/detail?id=214
  *
  */
 App::uses('TwimAppModel', 'Twim.Model');
@@ -159,7 +156,7 @@ class TwimSearch extends TwimAppModel {
 			}
 		}
 
-		// 
+		//
 		for ($i = 0; $i < count($datas); $i++) {
 			if (isset($users[$datas[$i]['from_user']])) {
 				$datas[$i]['user'] = $users[$datas[$i]['from_user']];
