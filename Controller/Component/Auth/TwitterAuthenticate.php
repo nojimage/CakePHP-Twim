@@ -85,7 +85,8 @@ class TwitterAuthenticate extends BaseAuthenticate {
 		}
 
 		if ($result = $model->save($data)) {
-			return $model->read(null, $result[$model->alias][$model->primaryKey]);
+			$data = $model->read(null, $result[$model->alias][$model->primaryKey]);
+			return $data[$model->alias];
 		}
 
 		throw new Exception(__d('twim', 'The user could not be saved'));
