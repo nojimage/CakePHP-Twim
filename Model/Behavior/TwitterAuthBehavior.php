@@ -43,7 +43,7 @@ class TwitterAuthBehavior extends ModelBehavior {
 	 * @param array    $config
 	 */
 	public function setup($model, $config = array()) {
-		$this->settings[$model->name] = Set::merge($this->default, $config);
+		$this->settings[$model->alias] = Set::merge($this->default, $config);
 	}
 
 	/**
@@ -55,16 +55,16 @@ class TwitterAuthBehavior extends ModelBehavior {
 	 */
 	public function createSaveDataByToken($model, $token) {
 		$data = array(
-			$model->name => array(
-				$this->settings[$model->name]['user_id'] => $token['user_id'],
-				$this->settings[$model->name]['screen_name'] => $token['screen_name'],
-				$this->settings[$model->name]['oauth_token'] => $token['oauth_token'],
-				$this->settings[$model->name]['oauth_token_secret'] => $token['oauth_token_secret'],
+			$model->alias => array(
+				$this->settings[$model->alias]['user_id'] => $token['user_id'],
+				$this->settings[$model->alias]['screen_name'] => $token['screen_name'],
+				$this->settings[$model->alias]['oauth_token'] => $token['oauth_token'],
+				$this->settings[$model->alias]['oauth_token_secret'] => $token['oauth_token_secret'],
 			),
 		);
 
-		if ($model->hasField($this->settings[$model->name]['password'])) {
-			$data[$model->name][$this->settings[$model->name]['password']] = Security::hash($token['oauth_token']);
+		if ($model->hasField($this->settings[$model->alias]['password'])) {
+			$data[$model->alias][$this->settings[$model->alias]['password']] = Security::hash($token['oauth_token']);
 		}
 
 		return $data;
