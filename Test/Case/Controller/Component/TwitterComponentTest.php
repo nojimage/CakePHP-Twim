@@ -22,6 +22,8 @@
 App::uses('TwitterComponent', 'Twim.Controller/Component');
 App::uses('Controller', 'Controller');
 App::uses('Model', 'Model');
+App::uses('CakeRequest', 'Network');
+App::uses('CakeResponse', 'Network');
 
 /**
  * @property TwitterComponent $Twitter
@@ -70,6 +72,8 @@ class TwitterComponentTestUser extends Model {
 /**
  *
  * @property TwitterComponentTestController $Controller
+ * @property CakeRequest $request
+ * @property CakeResponse $response
  */
 class TwitterComponentTest extends CakeTestCase {
 
@@ -94,13 +98,15 @@ class TwitterComponentTest extends CakeTestCase {
 
 	public function setUp() {
 		parent::setUp();
-		$this->Controller = new TwitterComponentTestController(null);
+		$this->request = $this->getMock('CakeRequest');
+		$this->response = $this->getMock('CakeResponse');
+		$this->Controller = new TwitterComponentTestController($this->request, $this->response);
 		$this->Controller->constructClasses();
 		$this->Controller->startupProcess();
 	}
 
 	public function tearDown() {
-		unset($this->Controller);
+		unset($this->Controller, $this->request, $this->response);
 		parent::tearDown();
 		ob_flush();
 	}
@@ -130,9 +136,9 @@ class TwitterComponentTest extends CakeTestCase {
 
 	public function testInitialize_with_AuthComponent() {
 		Configure::write('Routing.prefixes', array('admin'));
-		$this->Controller->Auth = new Object();
-		$this->Controller->Twitter->initialize($this->Controller);
-		$this->assertSame(array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'login', 'admin' => false), $this->Controller->Auth->loginAction);
+		$this->Controller->Components->load('Auth');
+		$this->Controller->startupProcess();
+		$this->assertSame(array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'login', 'admin' => false), $this->Controller->Components->Auth->loginAction);
 	}
 
 	// =========================================================================
@@ -167,7 +173,8 @@ class TwitterComponentTest extends CakeTestCase {
 	}
 
 	public function testConnect_authorize() {
-		$this->Controller->request->named['authorize'] = 'true';
+		$request = new CakeRequest();
+		$this->Controller->request->named = array('authorize' => 'true');
 		$this->Controller->Twitter->connect();
 		$this->assertRegExp('!https://api\.twitter\.com/oauth/authorize\?oauth_token=.+!', $this->Controller->redirectUrl);
 	}

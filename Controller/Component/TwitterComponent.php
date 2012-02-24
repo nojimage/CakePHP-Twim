@@ -61,14 +61,20 @@ class TwitterComponent extends Component {
 	 */
 	public function initialize($controller) {
 		$this->Controller = $controller;
-		if (isset($this->Controller->Auth)) {
+		if ($this->Controller->Components->attached('Auth')) {
 			$url = array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'login');
 			if (Configure::read('Routing.prefixes')) {
 				foreach (Configure::read('Routing.prefixes') as $prefix) {
 					$url[$prefix] = false;
 				}
 			}
-			$this->Controller->Auth->loginAction = $url;
+			$this->Controller->Components->Auth->loginAction = $url;
+
+			// register authenticate
+			if (!isset($this->Controller->Components->Auth->authenticate['Twim.Twitter'])
+				&& in_array('Twim.Twitter', $this->Controller->Components->Auth->authenticate)) {
+				$this->Controller->Components->Auth->authenticate[] = 'Twim.Twitter';
+			}
 		}
 	}
 
@@ -221,6 +227,7 @@ class TwitterComponent extends Component {
 	 *
 	 * @param array $token
 	 * @return array User record
+	 * @deprecated
 	 */
 	public function saveToUser($token) {
 		$model = $this->Controller->Auth->getModel();

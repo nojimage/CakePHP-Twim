@@ -77,39 +77,32 @@ class OauthController extends AppController {
 	 */
 	public function callback($dataSource = null) {
 		$this->Twitter->TwimOauth->setDataSource($dataSource);
+		$this->Twitter->deleteCachedAuthorizeUrl();
 
-		try {
+		// check return token
+		if (empty($this->query['oauth_token']) || empty($this->query['oauth_verifier'])) {
+			throw new InvalidArgumentException(__d('twim', 'invalid request.'));
+		}
 
-			$useAuth = isset($this->Auth);
-
-			// check return token
-			if (empty($this->params['url']['oauth_token']) || empty($this->params['url']['oauth_verifier'])) {
-				throw new Exception(__d('twim', 'invalid request.'));
-			}
-
+		if (!$this->Components->enabled('Auth')) {
+			// only set token to session, if AuthComponent not active.
 			// get access token
 			$token = $this->Twitter->getAccessToken();
+			$this->Session->write('TwitterAuth', $token);
+			$this->redirect('/');
+		}
 
-			if (!$useAuth) {
-				$this->Session->write('TwitterAuth', $token);
-				$this->redirect('/');
-			}
-
+		if ($this->Auth->login()) {
 			$loginRedirect = $this->Auth->redirect();
-			$data = $this->Twitter->saveToUser($token);
-			$this->Auth->login($data);
 			// Redirect
 			if (ini_get('session.referer_check') && env('HTTP_REFERER')) {
 				$this->flash(sprintf(__d('twim', 'Redirect to %s'), Router::url($loginRedirect, true) . ini_get('session.referer_check')), $loginRedirect, 0);
 				return;
 			}
-
 			$this->redirect($loginRedirect);
-		} catch (Exception $e) {
-			$this->Twitter->deleteCachedAuthorizeUrl();
-			$this->flash(__d('twim', 'Authorization Error: ') . $e->getMessage(), array('action' => 'login'), 5);
-			return;
 		}
+
+		$this->redirect(array('action' => 'login'));
 	}
 
 }
