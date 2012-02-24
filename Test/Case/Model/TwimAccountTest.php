@@ -36,6 +36,7 @@ class TwimAccountTestCase extends TwimConnectionTestCase {
 	public function tearDown() {
 		unset($this->Account);
 		parent::tearDown();
+		ob_flush();
 	}
 
 	// =========================================================================
@@ -43,16 +44,16 @@ class TwimAccountTestCase extends TwimConnectionTestCase {
 
 	public function testRateLimitStatus() {
 		$limit = $this->Account->find('rateLimitStatus');
-		$this->assertNotEmpty($limit['hourly_limit']);
-		$this->assertNotEmpty($limit['reset_time_in_seconds']);
+		$this->assertInternalType('integer', $limit['hourly_limit']);
+		$this->assertInternalType('integer', $limit['remaining_hits']);
+		$this->assertGreaterThan(time(), $limit['reset_time_in_seconds']);
 		$this->assertNotEmpty($limit['reset_time']);
-		$this->assertNotEmpty($limit['remaining_hits']);
 	}
 
 	// =========================================================================
 
 	public function testGetApiRemain() {
-		$this->assertGreaterThan(0, $this->Account->getApiRemain());
+		$this->assertGreaterThanOrEqual(0, $this->Account->getApiRemain());
 	}
 
 	// =========================================================================
