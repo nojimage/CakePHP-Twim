@@ -72,12 +72,14 @@ class TwimAppModelTestCase extends TwimConnectionTestCase {
 
 	public function setUp() {
 		parent::setUp();
+		ClassRegistry::config(array('ds' => null));
 		$this->Twim = ClassRegistry::init('TestTwimAppModel');
 	}
 
 	public function tearDown() {
 		unset($this->Twim);
 		parent::tearDown();
+		ob_flush();
 	}
 
 	public function testConstruct() {

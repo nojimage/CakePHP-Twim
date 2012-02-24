@@ -98,9 +98,9 @@ class TwimAppModel extends AppModel {
 	 * @param $ds
 	 */
 	public function __construct($id = false, $table = null, $ds = null) {
-		$sources = ConnectionManager::sourceList();
+		$sources = ConnectionManager::enumConnectionObjects();
 
-		if (!in_array('twitter', $sources)) {
+		if (!isset($sources['twitter'])) {
 			ConnectionManager::create('twitter', array('datasource' => 'Twim.TwimSource'));
 		}
 

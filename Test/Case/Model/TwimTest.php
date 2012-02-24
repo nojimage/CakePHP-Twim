@@ -30,6 +30,7 @@ class TwimTestCase extends TwimConnectionTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->Twim = ClassRegistry::init('Twim.Twim');
+		$this->Twim->Search->setDataSource($this->testDatasourceName);
 	}
 
 	public function tearDown() {

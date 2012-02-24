@@ -78,7 +78,8 @@ class TwimConnectionTestCase extends CakeTestCase {
 			$dataSourceName = $this->testDatasourceName;
 		}
 
-		if (!in_array($dataSourceName, ConnectionManager::sourceList())) {
+		$sources = ConnectionManager::enumConnectionObjects();
+		if (!isset($sources[$dataSourceName])) {
 			ConnectionManager::create($dataSourceName, array(
 				'datasource' => 'Twim.TwimSource',
 				'oauth_consumer_key' => 'cvEPr1xe1dxqZZd1UaifFA',
@@ -94,7 +95,8 @@ class TwimConnectionTestCase extends CakeTestCase {
 			$this->mockDatasourceName = $dataSourceName;
 		}
 
-		if (!in_array($dataSourceName, ConnectionManager::sourceList())) {
+		$sources = ConnectionManager::enumConnectionObjects();
+		if (!isset($sources[$dataSourceName])) {
 			ConnectionManager::create($dataSourceName, array(
 				'datasource' => 'MockTwimSource',
 			));
