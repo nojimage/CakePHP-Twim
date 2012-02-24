@@ -42,21 +42,21 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
 	// =========================================================================
 
 	public function testExists_call_find_method_using_user_id() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->find('exists', array('user_id_a' => '1234', 'user_id_b' => '5678'));
 		$this->assertSame('1/friendships/exists', $this->Friendship->request['uri']['path']);
 		$this->assertSame(array('user_id_a' => '1234', 'user_id_b' => '5678'), $this->Friendship->request['uri']['query']);
 	}
 
 	public function testExists_call_find_method_using_screen_name() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->find('exists', array('screen_name_a' => 'foo', 'screen_name_b' => 'bar'));
 		$this->assertSame('1/friendships/exists', $this->Friendship->request['uri']['path']);
 		$this->assertSame(array('screen_name_a' => 'foo', 'screen_name_b' => 'bar'), $this->Friendship->request['uri']['query']);
 	}
 
 	public function testExists_call_exists_method_using_one_user_id() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->set('id', '1234');
 		$this->Friendship->exists('5678');
 		$this->assertSame('1/friendships/exists', $this->Friendship->exists_request['uri']['path']);
@@ -64,14 +64,14 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
 	}
 
 	public function testExists_call_exists_method_using_two_user_id() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->exists('1234', '5678');
 		$this->assertSame('1/friendships/exists', $this->Friendship->exists_request['uri']['path']);
 		$this->assertSame(array('user_id_a' => '1234', 'user_id_b' => '5678'), $this->Friendship->exists_request['uri']['query']);
 	}
 
 	public function testExists_call_exists_method_using_screen_name() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->exists('foo', 'bar');
 		$this->assertSame('1/friendships/exists', $this->Friendship->exists_request['uri']['path']);
 		$this->assertSame(array('screen_name_a' => 'foo', 'screen_name_b' => 'bar'), $this->Friendship->exists_request['uri']['query']);
@@ -86,7 +86,7 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
 	// =========================================================================
 
 	public function testIncoming() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->find('incoming', array('stringify_ids' => true));
 		$this->assertSame('1/friendships/incoming', $this->Friendship->request['uri']['path']);
 		$this->assertSame(array('stringify_ids' => true), $this->Friendship->request['uri']['query']);
@@ -95,7 +95,7 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
 	// =========================================================================
 
 	public function testOutgoing() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->find('outgoing', array('stringify_ids' => true));
 		$this->assertSame('1/friendships/outgoing', $this->Friendship->request['uri']['path']);
 		$this->assertSame(array('stringify_ids' => true), $this->Friendship->request['uri']['query']);
@@ -104,14 +104,14 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
 	// =========================================================================
 
 	public function testShow_using_user_id() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->find('show', array('source_id' => '1234', 'target_id' => '5678'));
 		$this->assertSame('1/friendships/show', $this->Friendship->request['uri']['path']);
 		$this->assertSame(array('source_id' => '1234', 'target_id' => '5678'), $this->Friendship->request['uri']['query']);
 	}
 
 	public function testShow_using_screen_name() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->find('show', array('source_screen_name' => 'foo', 'target_screen_name' => 'bar'));
 		$this->assertSame('1/friendships/show', $this->Friendship->request['uri']['path']);
 		$this->assertSame(array('source_screen_name' => 'foo', 'target_screen_name' => 'bar'), $this->Friendship->request['uri']['query']);
@@ -131,14 +131,14 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
 	// =========================================================================
 
 	public function testLookup_using_user_id() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->find('lookup', array('user_id' => '783214,6253282'));
 		$this->assertSame('1/friendships/lookup', $this->Friendship->request['uri']['path']);
 		$this->assertSame(array('user_id' => '783214,6253282'), $this->Friendship->request['uri']['query']);
 	}
 
 	public function testLookupw_using_screen_name() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->find('lookup', array('screen_name' => 'twitterapi,twitter'));
 		$this->assertSame('1/friendships/lookup', $this->Friendship->request['uri']['path']);
 		$this->assertSame(array('screen_name' => 'twitterapi,twitter'), $this->Friendship->request['uri']['query']);
@@ -147,7 +147,7 @@ class TwimFriendshipTestCase extends TwimConnectionTestCase {
 	// =========================================================================
 
 	public function testNoRetweetIds() {
-		$this->Friendship->getDataSource()->expects($this->once())->method('request');
+		$this->Friendship->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Friendship->find('noRetweetIds', array('stringify_ids' => true));
 		$this->assertSame('1/friendships/no_retweet_ids', $this->Friendship->request['uri']['path']);
 		$this->assertSame(array('stringify_ids' => true), $this->Friendship->request['uri']['query']);
