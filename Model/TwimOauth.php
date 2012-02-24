@@ -52,7 +52,7 @@ class TwimOauth extends TwimAppModel {
 
 		// normalize url
 		if (!empty($params['oauth_callback']) && !preg_match('!^https?://!', $params['oauth_callback'])) {
-			$params['oauth_callback'] = Router::getInstance()->url($params['oauth_callback'], true);
+			$params['oauth_callback'] = Router::url($params['oauth_callback'], true);
 		}
 
 		if (empty($params['x_auth_access_type']) && !empty($config['x_auth_access_type'])) {

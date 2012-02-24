@@ -80,7 +80,7 @@ class OauthController extends AppController {
 		$this->Twitter->deleteCachedAuthorizeUrl();
 
 		// check return token
-		if (empty($this->query['oauth_token']) || empty($this->query['oauth_verifier'])) {
+		if (empty($this->request->query['oauth_token']) || empty($this->request->query['oauth_verifier'])) {
 			throw new InvalidArgumentException(__d('twim', 'invalid request.'));
 		}
 
