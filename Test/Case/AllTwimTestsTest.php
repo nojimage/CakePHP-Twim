@@ -23,8 +23,22 @@ class AllTwimTestsTest extends PHPUnit_Framework_TestSuite {
 
 	public static function suite() {
 		$suite = new CakeTestSuite('All Twim Plugin tests');
-		$suite->addTestDirectoryRecursive(dirname(__FILE__));
+		self::addTestDirectoryRecursive($suite, dirname(__FILE__));
 		return $suite;
+	}
+
+	public static function addTestDirectoryRecursive(PHPUnit_Framework_TestSuite $suite, $directory) {
+		$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+
+		while ($it->valid()) {
+			if (!$it->isDot()) {
+				$file = $it->key();
+				if (preg_match('|Test\.php$|', $file) && $file !== __FILE__) {
+					$suite->addTestFile($file);
+				}
+			}
+			$it->next();
+		}
 	}
 
 }
