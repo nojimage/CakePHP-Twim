@@ -32,6 +32,7 @@ class TwimDirectMessageNeedAuthTestCase extends TwimConnectionTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->DirectMessage = ClassRegistry::init('Twim.TwimDirectMessage');
+		$this->DirectMessage->setDataSource('twitter');
 	}
 
 	public function tearDown() {
@@ -43,6 +44,7 @@ class TwimDirectMessageNeedAuthTestCase extends TwimConnectionTestCase {
 	// =========================================================================
 
 	public function testSendAndDelete() {
+		$this->markTestIncomplete('need oauth token and change screen_name.');
 		$data = array(
 			'TwimDirectMessage' => array(
 				'screen_name' => 'nojimage',
