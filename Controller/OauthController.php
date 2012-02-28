@@ -29,7 +29,7 @@ class OauthController extends AppController {
 
 	public $components = array('Twim.Twitter');
 
-	public $helpers = array('Html', 'Form', 'Js', 'Twim.Twitter');
+	public $helpers = array('Js', 'Twim.Twitter');
 
 	/**
 	 *
