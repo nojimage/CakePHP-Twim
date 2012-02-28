@@ -32,6 +32,7 @@ class TwimUserNeedAuthTestCase extends TwimConnectionTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->User = ClassRegistry::init('Twim.TwimUser');
+		$this->User->setDataSource('twitter');
 	}
 
 	public function tearDown() {

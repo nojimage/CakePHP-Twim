@@ -169,6 +169,10 @@ class TwimAppModel extends AppModel {
 			$this->request['auth'] = true;
 		}
 
+		if (isset($this->request['body'])) {
+			unset($this->request['body']);
+		}
+
 		return $this;
 	}
 
