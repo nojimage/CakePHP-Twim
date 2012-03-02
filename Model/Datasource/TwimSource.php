@@ -255,14 +255,13 @@ class TwimSource extends RestSource {
 	 */
 	protected function _setupCache() {
 		if ($this->config['cache'] && !Cache::isInitialized($this->configKeyName)) {
-
 			if (!is_array($this->config['cache'])) {
-
 				$this->config['cache'] = array(
 					'engine' => 'File',
 					'duration' => '+5 min',
 					'path' => CACHE . 'twitter' . DS,
 					'prefix' => 'cake_' . Inflector::underscore($this->configKeyName) . '_',
+					'mask' => 0666,
 				);
 			}
 
