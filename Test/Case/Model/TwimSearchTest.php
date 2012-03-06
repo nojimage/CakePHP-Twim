@@ -67,7 +67,7 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 	}
 
 	/**
-	 * @expectedException RuntimeException
+	 * @expectedException InvalidArgumentException
 	 * @expectedExceptionMessage You must enter a query.
 	 */
 	public function testSerach_noquery() {

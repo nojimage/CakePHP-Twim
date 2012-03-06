@@ -58,7 +58,7 @@ class TwimDirectMessageTestCase extends TwimConnectionTestCase {
 		$this->DirectMessage->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->DirectMessage->find('receipt', array('page' => 2, 'count' => 200));
 		$this->assertSame('1/direct_messages', $this->DirectMessage->request['uri']['path']);
-		$this->assertSame(array('page' => 2, 'count' => 200), $this->DirectMessage->request['uri']['query']);
+		$this->assertSame(array('page' => 2, 'count' => 200,), $this->DirectMessage->request['uri']['query']);
 	}
 
 	// =========================================================================
@@ -67,14 +67,14 @@ class TwimDirectMessageTestCase extends TwimConnectionTestCase {
 		$this->DirectMessage->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->DirectMessage->find('sent');
 		$this->assertSame('1/direct_messages/sent', $this->DirectMessage->request['uri']['path']);
-		$this->assertSame(array('page' => 1, 'count' => 200), $this->DirectMessage->request['uri']['query']);
+		$this->assertSame(array('count' => 200, 'page' => 1), $this->DirectMessage->request['uri']['query']);
 	}
 
 	public function testFindSentWithPageCount() {
 		$this->DirectMessage->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->DirectMessage->find('sent', array('page' => 2, 'count' => 200));
 		$this->assertSame('1/direct_messages/sent', $this->DirectMessage->request['uri']['path']);
-		$this->assertSame(array('page' => 2, 'count' => 200), $this->DirectMessage->request['uri']['query']);
+		$this->assertSame(array('count' => 200, 'page' => 2), $this->DirectMessage->request['uri']['query']);
 	}
 
 	// =========================================================================

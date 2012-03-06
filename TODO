@@ -1,2 +1,5 @@
 
 account post methods
+
+https://dev.twitter.com/docs/api/1/post/statuses/update_with_media
+https://dev.twitter.com/docs/api/1/get/statuses/oembed

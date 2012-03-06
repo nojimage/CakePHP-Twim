@@ -18,21 +18,21 @@
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      http://dev.twitter.com/doc/get/statuses/public_timeline
- * @link      http://dev.twitter.com/doc/get/statuses/home_timeline
- * @link      http://dev.twitter.com/doc/get/statuses/friends_timeline
- * @link      http://dev.twitter.com/doc/get/statuses/user_timeline
- * @link      http://dev.twitter.com/doc/get/statuses/mentions
- * @link      http://dev.twitter.com/doc/get/statuses/retweeted_by_me
- * @link      http://dev.twitter.com/doc/get/statuses/retweeted_to_me
- * @link      http://dev.twitter.com/doc/get/statuses/retweets_of_me
- * @link      http://dev.twitter.com/doc/get/statuses/show/:id
- * @link      http://dev.twitter.com/doc/get/statuses/retweets/:id
- * @link      http://dev.twitter.com/doc/get/statuses/:id/retweeted_by
- * @link      http://dev.twitter.com/doc/get/statuses/:id/retweeted_by/ids
- * @link      http://dev.twitter.com/doc/post/statuses/update
- * @link      http://dev.twitter.com/doc/post/statuses/retweet/:id
- * @link      http://dev.twitter.com/doc/post/statuses/destroy/:id
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/public_timeline
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/home_timeline
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/friends_timeline
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/user_timeline
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/mentions
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweeted_by_me
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweeted_to_me
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweets_of_me
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/show/:id
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweets/:id
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/:id/retweeted_by
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/:id/retweeted_by/ids
+ * @link      https://dev.twitter.com/docs/api/1/post/statuses/update
+ * @link      https://dev.twitter.com/docs/api/1/post/statuses/retweet/:id
+ * @link      https://dev.twitter.com/docs/api/1/post/statuses/destroy/:id
  *
  */
 App::uses('TwimAppModel', 'Twim.Model');
@@ -161,6 +161,13 @@ class TwimStatus extends TwimAppModel {
 	);
 
 	/**
+	 * Statuses API max number of count
+	 *
+	 * @var int
+	 */
+	public $maxCount = 200;
+
+	/**
 	 * The vast majority of the custom find types actually follow the same format
 	 * so there was little point explicitly writing them all out. Instead, if the
 	 * method corresponding to the custom find type doesn't exist, the options are
@@ -183,19 +190,34 @@ class TwimStatus extends TwimAppModel {
 	 * @return mixed
 	 */
 	public function find($type, $options = array()) {
-		if (!empty($options['limit']) && empty($options['count'])) {
-			$options['count'] = $options['limit'];
+		if (in_array('count', $this->allowedFindOptions[$type])) {
+			$defaults = array('count' => $this->maxCount, 'strict' => false);
+			$options = array_merge($defaults, $options);
+
+			if (!empty($options['limit']) && $options['limit'] <= $this->maxCount) {
+				$options['count'] = $options['limit'];
+			}
 		}
-		if ((empty($options['page']) || empty($options['count']))
+
+		if (empty($options['page'])
 			&& array_key_exists($type, $this->allowedFindOptions)
 			&& in_array('page', $this->allowedFindOptions[$type])
 			&& in_array('count', $this->allowedFindOptions[$type])) {
 			$options['page'] = 1;
-			$options['count'] = 200;
 			$results = array();
-			while (($page = $this->find($type, $options)) != false) {
-				$results = array_merge($results, $page);
-				$options['page']++;
+			try {
+				while (($page = $this->find($type, $options)) != false) {
+					if (!empty($options['limit']) && count($results) >= $options['limit']) {
+						break;
+					}
+					$results = array_merge($results, $page);
+					$options['page']++;
+				}
+			} catch (RuntimeException $e) {
+				if ($options['strict']) {
+					throw $e;
+				}
+				$this->log($e->getMessage(), LOG_DEBUG);
 			}
 			return $results;
 		}
@@ -260,6 +282,9 @@ class TwimStatus extends TwimAppModel {
 
 			$type = 'retweets';
 
+			if ($query['count'] > 100) {
+				$query['count'] = 100;
+			}
 			$this->_setupRequest($type, $query);
 
 			$this->request['uri']['path'] = $this->apiUrlBase . $type . '/' . $query['id'];
