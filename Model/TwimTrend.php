@@ -18,10 +18,10 @@
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      http://dev.twitter.com/doc/get/trends/daily
- * @link      http://dev.twitter.com/doc/get/trends/weekly
- * @link      http://dev.twitter.com/doc/get/trends/available
- * @link      http://dev.twitter.com/doc/get/trends/1
+ * @link      https://dev.twitter.com/docs/api/1/get/trends/daily
+ * @link      https://dev.twitter.com/docs/api/1/get/trends/weekly
+ * @link      https://dev.twitter.com/docs/api/1/get/trends/available
+ * @link      https://dev.twitter.com/docs/api/1/get/trends/%3Awoeid
  *
  */
 App::uses('TwimAppModel', 'Twim.Model');

@@ -18,21 +18,21 @@
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      http://dev.twitter.com/doc/get/statuses/public_timeline
- * @link      http://dev.twitter.com/doc/get/statuses/home_timeline
- * @link      http://dev.twitter.com/doc/get/statuses/friends_timeline
- * @link      http://dev.twitter.com/doc/get/statuses/user_timeline
- * @link      http://dev.twitter.com/doc/get/statuses/mentions
- * @link      http://dev.twitter.com/doc/get/statuses/retweeted_by_me
- * @link      http://dev.twitter.com/doc/get/statuses/retweeted_to_me
- * @link      http://dev.twitter.com/doc/get/statuses/retweets_of_me
- * @link      http://dev.twitter.com/doc/get/statuses/show/:id
- * @link      http://dev.twitter.com/doc/get/statuses/retweets/:id
- * @link      http://dev.twitter.com/doc/get/statuses/:id/retweeted_by
- * @link      http://dev.twitter.com/doc/get/statuses/:id/retweeted_by/ids
- * @link      http://dev.twitter.com/doc/post/statuses/update
- * @link      http://dev.twitter.com/doc/post/statuses/retweet/:id
- * @link      http://dev.twitter.com/doc/post/statuses/destroy/:id
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/public_timeline
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/home_timeline
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/friends_timeline
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/user_timeline
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/mentions
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweeted_by_me
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweeted_to_me
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweets_of_me
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/show/:id
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweets/:id
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/:id/retweeted_by
+ * @link      https://dev.twitter.com/docs/api/1/get/statuses/:id/retweeted_by/ids
+ * @link      https://dev.twitter.com/docs/api/1/post/statuses/update
+ * @link      https://dev.twitter.com/docs/api/1/post/statuses/retweet/:id
+ * @link      https://dev.twitter.com/docs/api/1/post/statuses/destroy/:id
  *
  */
 App::uses('TwimAppModel', 'Twim.Model');
