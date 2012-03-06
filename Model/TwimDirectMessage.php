@@ -112,6 +112,13 @@ class TwimDirectMessage extends TwimAppModel {
 	);
 
 	/**
+	 * DirectMessage API max number of count
+	 *
+	 * @var int
+	 */
+	public $maxCount = 200;
+
+	/**
 	 * The vast majority of the custom find types actually follow the same format
 	 * so there was little point explicitly writing them all out. Instead, if the
 	 * method corresponding to the custom find type doesn't exist, the options are
@@ -134,17 +141,29 @@ class TwimDirectMessage extends TwimAppModel {
 	 * @return mixed
 	 */
 	public function find($type, $options = array()) {
-		if (!empty($options['limit']) && empty($options['count'])) {
-			$options['count'] = $options['limit'];
+		if ($type === 'all') {
+			$type = 'receipt';
 		}
-		if ((empty($options['page']) || empty($options['count']))
+
+		if (in_array('count', $this->allowedFindOptions[$type])) {
+			$defaults = array('count' => $this->maxCount);
+			$options = array_merge($defaults, $options);
+
+			if (!empty($options['limit']) && $options['limit'] <= $this->maxCount) {
+				$options['count'] = $options['limit'];
+			}
+		}
+
+		if (empty($options['page'])
 			&& array_key_exists($type, $this->allowedFindOptions)
 			&& in_array('page', $this->allowedFindOptions[$type])
 			&& in_array('count', $this->allowedFindOptions[$type])) {
 			$options['page'] = 1;
-			$options['count'] = 200;
 			$results = array();
 			while (($page = $this->find($type, $options)) != false) {
+				if (!empty($options['limit']) && count($results) >= $options['limit']) {
+					break;
+				}
 				$results = array_merge($results, $page);
 				$options['page']++;
 			}
