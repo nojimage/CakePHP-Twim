@@ -96,6 +96,10 @@ class TwimSearch extends TwimAppModel {
 			$options = array('q' => $options);
 		}
 
+		if (empty($options['q'])) {
+			throw new InvalidArgumentException(__d('twim', 'You must enter a query.'));
+		}
+
 		$defaults = array('rpp' => $this->maxRpp, 'limit' => $this->resultLimit, 'users_lookup' => false, 'strict' => false);
 
 		$options = array_merge($defaults, $options);
