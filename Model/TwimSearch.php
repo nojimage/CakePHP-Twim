@@ -96,7 +96,7 @@ class TwimSearch extends TwimAppModel {
 			$options = array('q' => $options);
 		}
 
-		$defaults = array('rpp' => $this->maxRpp, 'limit' => $this->resultLimit, 'users_lookup' => false);
+		$defaults = array('rpp' => $this->maxRpp, 'limit' => $this->resultLimit, 'users_lookup' => false, 'strict' => false);
 
 		$options = array_merge($defaults, $options);
 
@@ -107,12 +107,19 @@ class TwimSearch extends TwimAppModel {
 		if (empty($options['page'])) {
 			$options['page'] = 1;
 			$results = array();
-			while ($pageData = $this->find($type, $options)) {
-				$results = array_merge($results, array_slice($pageData, 0, $options['limit'] - count($results)));
-				$options['page']++;
-				if ($options['rpp'] * $options['page'] > $this->resultLimit || count($results) >= $options['limit'] || empty($this->response['next_page'])) {
-					break;
+			try {
+				while ($pageData = $this->find($type, $options)) {
+					$results = array_merge($results, array_slice($pageData, 0, $options['limit'] - count($results)));
+					$options['page']++;
+					if ($options['rpp'] * $options['page'] > $this->resultLimit || count($results) >= $options['limit'] || empty($this->response['next_page'])) {
+						break;
+					}
 				}
+			} catch (RuntimeException $e) {
+				if ($options['strict']) {
+					throw $e;
+				}
+				$this->log($e->getMessage(), LOG_DEBUG);
 			}
 			return $results;
 		}

@@ -191,7 +191,7 @@ class TwimStatus extends TwimAppModel {
 	 */
 	public function find($type, $options = array()) {
 		if (in_array('count', $this->allowedFindOptions[$type])) {
-			$defaults = array('count' => $this->maxCount);
+			$defaults = array('count' => $this->maxCount, 'strict' => false);
 			$options = array_merge($defaults, $options);
 
 			if (!empty($options['limit']) && $options['limit'] <= $this->maxCount) {
@@ -205,12 +205,19 @@ class TwimStatus extends TwimAppModel {
 			&& in_array('count', $this->allowedFindOptions[$type])) {
 			$options['page'] = 1;
 			$results = array();
-			while (($page = $this->find($type, $options)) != false) {
-				if (!empty($options['limit']) && count($results) >= $options['limit']) {
-					break;
+			try {
+				while (($page = $this->find($type, $options)) != false) {
+					if (!empty($options['limit']) && count($results) >= $options['limit']) {
+						break;
+					}
+					$results = array_merge($results, $page);
+					$options['page']++;
 				}
-				$results = array_merge($results, $page);
-				$options['page']++;
+			} catch (RuntimeException $e) {
+				if ($options['strict']) {
+					throw $e;
+				}
+				$this->log($e->getMessage(), LOG_DEBUG);
 			}
 			return $results;
 		}
