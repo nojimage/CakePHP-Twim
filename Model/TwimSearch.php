@@ -114,7 +114,12 @@ class TwimSearch extends TwimAppModel {
 			try {
 				while ($pageData = $this->find($type, $options)) {
 					$results = array_merge($results, array_slice($pageData, 0, $options['limit'] - count($results)));
-					$options['page']++;
+					if (isset($this->response['next_page'])) {
+						parse_str(parse_url($this->response['next_page'], PHP_URL_QUERY), $nextPage);
+						$options = am($options, $nextPage);
+					} else {
+						$options['page']++;
+					}
 					if ($options['rpp'] * $options['page'] > $this->resultLimit || count($results) >= $options['limit'] || empty($this->response['next_page'])) {
 						break;
 					}
