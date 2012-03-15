@@ -211,7 +211,12 @@ class TwimStatus extends TwimAppModel {
 						break;
 					}
 					$results = array_merge($results, $page);
-					$options['page']++;
+					if (isset($this->response['next_page'])) {
+						parse_str(parse_url($this->response['next_page'], PHP_URL_QUERY), $nextPage);
+						$options = am($options, $nextPage);
+					} else {
+						$options['page']++;
+					}
 				}
 			} catch (RuntimeException $e) {
 				if ($options['strict']) {
