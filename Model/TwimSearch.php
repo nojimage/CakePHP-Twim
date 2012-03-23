@@ -54,7 +54,7 @@ class TwimSearch extends TwimAppModel {
 	 * @var array
 	 */
 	public $allowedFindOptions = array(
-		'search' => array('lang', 'locale', 'max_id', 'q', 'rpp', 'page', 'since', 'since_id', 'geocode', 'show_user', 'until', 'result_type'),
+		'search' => array('q', 'callback', 'geocode', 'lang', 'locale', 'page', 'result_type', 'rpp', 'show_user', 'until', 'since_id', 'max_id', 'include_entities'),
 	);
 
 	/**
