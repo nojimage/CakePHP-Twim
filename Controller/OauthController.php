@@ -79,6 +79,11 @@ class OauthController extends AppController {
 		$this->Twitter->TwimOauth->setDataSource($dataSource);
 		$this->Twitter->deleteCachedAuthorizeUrl();
 
+		if (isset($this->request->query['denied'])) {
+			$this->redirect($this->Auth->loginAction);
+			return;
+		}
+
 		// check return token
 		if (empty($this->request->query['oauth_token']) || empty($this->request->query['oauth_verifier'])) {
 			throw new InvalidArgumentException(__d('twim', 'invalid request.'));
