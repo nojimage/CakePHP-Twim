@@ -1,0 +1,3 @@
+[submodule "Vendor/twitter-text-php"]
+	path = Vendor/twitter-text-php
+	url = https://github.com/nojimage/twitter-text-php.git

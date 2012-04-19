@@ -42,102 +42,205 @@ class TwitterHelperTest extends CakeTestCase {
 
 	public function testLinkify_username() {
 		$value = '@username';
-		$expected = '<a href="http://twitter.com/username">@username</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
-		$this->assertEquals($value, $this->Twitter->linkify($value, array('username' => false)));
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'username',
+			'attributes' => array(
+				'href' => 'https://twitter.com/username',
+			),
+			), $this->Twitter->linkify($value));
+		$this->assertSame($value, $this->Twitter->linkify($value, array('username' => false)));
 	}
 
 	public function testLinkify_hashtag() {
 		$value = '#hashtag';
-		$expected = '<a href="http://search.twitter.com/search?q=%23hashtag">#hashtag</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
-		$this->assertEquals($value, $this->Twitter->linkify($value, array('hashtag' => false)));
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => '#hashtag',
+			'attributes' => array(
+				'href' => 'https://twitter.com/#!/search?q=%23hashtag',
+			),
+			), $this->Twitter->linkify($value));
+		$this->assertSame($value, $this->Twitter->linkify($value, array('hashtag' => false)));
 	}
 
 	public function testLinkify_url() {
 		$value = 'http://example.com';
-		$expected = '<a href="http://example.com">http://example.com</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
-		$this->assertEquals($value, $this->Twitter->linkify($value, array('url' => false)));
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'http://example.com',
+			'attributes' => array(
+				'href' => 'http://example.com',
+			),
+			), $this->Twitter->linkify($value));
+		$this->assertSame($value, $this->Twitter->linkify($value, array('url' => false)));
 	}
 
 	public function testLinkify_username_and_hashtag() {
 		$value = '@username #hashtag';
-		$expected = '<a href="http://twitter.com/username">@username</a> <a href="http://search.twitter.com/search?q=%23hashtag">#hashtag</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
-	}
-
-	public function testLinkify_username_and_hashtag_no_space() {
-		$value = '@username#hashtag';
-		$expected = '<a href="http://twitter.com/username">@username</a><a href="http://search.twitter.com/search?q=%23hashtag">#hashtag</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
+		$result = $this->Twitter->linkify($value);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'username',
+			'attributes' => array(
+				'href' => 'https://twitter.com/username',
+			),
+			), $result);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => '#hashtag',
+			'attributes' => array(
+				'href' => 'https://twitter.com/#!/search?q=%23hashtag',
+			),
+			), $result);
 	}
 
 	public function testLinkify_username_and_url() {
 		$value = '@username http://example.com';
-		$expected = '<a href="http://twitter.com/username">@username</a> <a href="http://example.com">http://example.com</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
+		$result = $this->Twitter->linkify($value);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'username',
+			'attributes' => array(
+				'href' => 'https://twitter.com/username',
+			),
+			), $result);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'http://example.com',
+			'attributes' => array(
+				'href' => 'http://example.com',
+			),
+			), $result);
 	}
 
 	public function testLinkify_url_and_hashtag() {
-
 		$value = 'http://example.com #hashtag';
-		$expected = '<a href="http://example.com">http://example.com</a> <a href="http://search.twitter.com/search?q=%23hashtag">#hashtag</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
+		$result = $this->Twitter->linkify($value);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => '#hashtag',
+			'attributes' => array(
+				'href' => 'https://twitter.com/#!/search?q=%23hashtag',
+			),
+			), $result);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'http://example.com',
+			'attributes' => array(
+				'href' => 'http://example.com',
+			),
+			), $result);
 	}
 
 	public function testLinkify_url_with_anchor() {
 		$value = 'http://example.com/#hashtag';
-		$expected = '<a href="http://example.com/#hashtag">http://example.com/#hashtag</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
+		$result = $this->Twitter->linkify($value);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'http://example.com/#hashtag',
+			'attributes' => array(
+				'href' => 'http://example.com/#hashtag',
+			),
+			), $result);
 	}
 
 	public function testLinkify_username_underbar() {
 		$value = '@user_name';
-		$expected = '<a href="http://twitter.com/user_name">@user_name</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
+		$result = $this->Twitter->linkify($value);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'user_name',
+			'attributes' => array(
+				'href' => 'https://twitter.com/user_name',
+			),
+			), $result);
 	}
 
 	public function testLinkify_hashtag_underbar() {
 		$value = '#hash_tag';
-		$expected = '<a href="http://search.twitter.com/search?q=%23hash_tag">#hash_tag</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
+		$result = $this->Twitter->linkify($value);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => '#hash_tag',
+			'attributes' => array(
+				'href' => 'https://twitter.com/#!/search?q=%23hash_tag',
+			),
+			), $result);
 	}
 
 	public function testLinkify_username_another_string() {
 		$value = '@user%name';
-		$expected = '<a href="http://twitter.com/user">@user</a>%name';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
+		$result = $this->Twitter->linkify($value);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'user',
+			'attributes' => array(
+				'href' => 'https://twitter.com/user',
+			),
+			), $result);
 	}
 
 	public function testLinkify_fullurl() {
 		$value = 'http://example.com:8080/path?query=search&order=asc#hashtag';
-		$expected = '<a href="http://example.com:8080/path?query=search&order=asc#hashtag">http://example.com:8080/path?query=search&order=asc#hashtag</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
+		$result = $this->Twitter->linkify($value);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'http://example.com:8080/path?query=search&order=asc#hashtag',
+			'attributes' => array(
+				'href' => 'http://example.com:8080/path?query=search&order=asc#hashtag',
+			),
+			), $result);
 	}
 
 	public function testLinkify_fullurl2() {
 		$value = 'http://subdomain.example.com:8080/?query=search&order=asc#hashtag';
-		$expected = '<a href="http://subdomain.example.com:8080/?query=search&order=asc#hashtag">http://subdomain.example.com:8080/?query=search&order=asc#hashtag</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
-	}
-
-	public function testLinkify_fullurl3() {
-		$value = 'http://subdomain.example.com:8080/?#hashtag';
-		$expected = '<a href="http://subdomain.example.com:8080/?#hashtag">http://subdomain.example.com:8080/?#hashtag</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
+		$result = $this->Twitter->linkify($value);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'http://subdomain.example.com:8080/?query=search&order=asc#hashtag',
+			'attributes' => array(
+				'href' => 'http://subdomain.example.com:8080/?query=search&order=asc#hashtag',
+			),
+			), $result);
 	}
 
 	public function testLinkify_double_username() {
 		$value = '@username @nameuser';
-		$expected = '<a href="http://twitter.com/username">@username</a> <a href="http://twitter.com/nameuser">@nameuser</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
+		$result = $this->Twitter->linkify($value);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'username',
+			'attributes' => array(
+				'href' => 'https://twitter.com/username',
+			),
+			), $result);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => 'nameuser',
+			'attributes' => array(
+				'href' => 'https://twitter.com/nameuser',
+			),
+			), $result);
 	}
 
 	public function testLinkify_double_hashtag() {
 		$value = '#hashtag #taghash';
-		$expected = '<a href="http://search.twitter.com/search?q=%23hashtag">#hashtag</a> <a href="http://search.twitter.com/search?q=%23taghash">#taghash</a>';
-		$this->assertEquals($expected, $this->Twitter->linkify($value));
+		$result = $this->Twitter->linkify($value);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => '#hashtag',
+			'attributes' => array(
+				'href' => 'https://twitter.com/#!/search?q=%23hashtag',
+			),
+			), $result);
+		$this->assertTag(array(
+			'tag' => 'a',
+			'content' => '#taghash',
+			'attributes' => array(
+				'href' => 'https://twitter.com/#!/search?q=%23taghash',
+			),
+			), $result);
 	}
 
 	// =========================================================================
