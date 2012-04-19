@@ -19,6 +19,7 @@
  * @since     File available since Release 1.0
  */
 App::uses('AppHelper', 'View/Helper');
+App::uses('TwimAutolink', 'Twim.Lib');
 
 /**
  * @property HtmlHelper $Html
@@ -140,26 +141,21 @@ class TwitterHelper extends AppHelper {
 			'username' => true,
 			'hashtag' => true,
 		);
-
-		$validChars = '(?:[' . preg_quote('!"$&\'()*+,-.@_:;=~', '!') . '\/0-9a-z]|(?:%[0-9a-f]{2}))';
-		$_urlMatch = 'https?://(?:[a-z0-9][-a-z0-9]*\.)*(?:[a-z0-9][-a-z0-9]{0,62})\.(?:(?:[a-z]{2}\.)?[a-z]{2,6})' .
-			'(?::[1-9][0-9]{0,4})?' . '(?:\/' . $validChars . '*)?' . '(?:\?' . $validChars . '*)?' . '(?:#' . $validChars . '*)?';
-
-		$replaces = array(
-			'url' => array('!(^|[\W])(' . $_urlMatch . ')([\W]|$)!iu' => '$1<a href="$2">$2</a>$3'),
-			'username' => array('!(^|[^\w/?&;])@(\w+)!iu' => '$1<a href="http://twitter.com/$2">@$2</a>$3'),
-			'hashtag' => array('!(^|[^\w/?&;])#(\w+)!iu' => '$1<a href="http://search.twitter.com/search?q=%23$2">#$2</a>$3'),
-		);
-
 		$options = am($default, $options);
 
-		foreach ($replaces as $key => $_replace) {
-			if ($options[$key]) {
-				$value = preg_replace(array_keys($replaces[$key]), array_values($replaces[$key]), $value);
-			}
+		$autoLink = TwimAutolink::create($value, $options);
+		// autolink
+		if ($options['hashtag']) {
+			$autoLink->setTweet($autoLink->addLinksToHashtags());
+		}
+		if ($options['url']) {
+			$autoLink->setTweet($autoLink->addLinksToURLs());
+		}
+		if ($options['username']) {
+			$autoLink->setTweet($autoLink->addLinksToUsernamesAndLists());
 		}
 
-		return $value;
+		return $autoLink->getTweet();
 	}
 
 	/**
