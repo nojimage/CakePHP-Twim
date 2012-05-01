@@ -26,57 +26,57 @@ App::uses('AppModel', 'Model');
  */
 class TwimAppModel extends AppModel {
 
-	/**
-	 * The datasource all models in the plugin use.
-	 *
-	 * @var string
-	 */
+/**
+ * The datasource all models in the plugin use.
+ *
+ * @var string
+ */
 	public $useDbConfig = 'twitter';
 
-	/**
-	 * The models in the plugin get data from the web service, so they don't need
-	 * a table.
-	 *
-	 * @var string
-	 */
+/**
+ * The models in the plugin get data from the web service, so they don't need
+ * a table.
+ *
+ * @var string
+ */
 	public $useTable = false;
 
-	/**
-	 * Methods in the models result in HTTP requests using the HttpSocket. So
-	 * rather than do all the heavy lifting in the datasource, we set the various
-	 * params of the request in the individual model methods. This ties the model
-	 * to the data layer, but these models are especially for this datasource.
-	 *
-	 * @var array
-	 */
+/**
+ * Methods in the models result in HTTP requests using the HttpSocket. So
+ * rather than do all the heavy lifting in the datasource, we set the various
+ * params of the request in the individual model methods. This ties the model
+ * to the data layer, but these models are especially for this datasource.
+ *
+ * @var array
+ */
 	public $request = array();
 
-	/**
-	 * responese body
-	 *
-	 * @var array
-	 */
+/**
+ * responese body
+ *
+ * @var array
+ */
 	public $response = null;
 
-	/**
-	 * Twitter API url base
-	 *
-	 * @var string
-	 */
+/**
+ * Twitter API url base
+ *
+ * @var string
+ */
 	public $apiUrlBase = '';
 
-	/**
-	 * The custom find types that require authentication
-	 *
-	 * @var array
-	 */
+/**
+ * The custom find types that require authentication
+ *
+ * @var array
+ */
 	public $findMethodsRequiringAuth = array();
 
-	/**
-	 * The options allowed by each of the custom find types
-	 *
-	 * @var array
-	 */
+/**
+ * The options allowed by each of the custom find types
+ *
+ * @var array
+ */
 	public $allowedFindOptions = array();
 
 	public function __get($name) {
@@ -88,15 +88,15 @@ class TwimAppModel extends AppModel {
 		$this->$name = $value;
 	}
 
-	/**
-	 * Adds the datasource to the connection manager if it's not already there,
-	 * which it won't be if you've not added it to your app/config/database.php
-	 * file.
-	 *
-	 * @param $id
-	 * @param $table
-	 * @param $ds
-	 */
+/**
+ * Adds the datasource to the connection manager if it's not already there,
+ * which it won't be if you've not added it to your app/config/database.php
+ * file.
+ *
+ * @param $id
+ * @param $table
+ * @param $ds
+ */
 	public function __construct($id = false, $table = null, $ds = null) {
 		$sources = ConnectionManager::enumConnectionObjects();
 
@@ -107,10 +107,10 @@ class TwimAppModel extends AppModel {
 		parent::__construct($id, $table, $ds);
 	}
 
-	/**
-	 *
-	 * @return TwimSource
-	 */
+/**
+ *
+ * @return TwimSource
+ */
 	public function getDataSource() {
 		return ConnectionManager::getDataSource($this->useDbConfig);
 	}
@@ -152,12 +152,12 @@ class TwimAppModel extends AppModel {
 		}
 	}
 
-	/**
-	 * filter options and setup request
-	 *
-	 * @param type $type
-	 * @param array $options
-	 */
+/**
+ * filter options and setup request
+ *
+ * @param type $type
+ * @param array $options
+ */
 	protected function _setupRequest($type, array $options) {
 		$this->request['uri']['path'] = $this->apiUrlBase . Inflector::underscore($type);
 

@@ -22,16 +22,16 @@ require_once dirname(dirname(__FILE__)) . '/Vendor/twitter-text-php/lib/Twitter/
 
 class TwimAutolink extends Twitter_Autolink {
 
-	/**
-	 * Provides fluent method chaining.
-	 *
-	 * @param  string  $tweet        The tweet to be converted.
-	 * @param  array   $options      Initialize options
-	 *
-	 * @see  __construct()
-	 *
-	 * @return  TwimAutolink
-	 */
+/**
+ * Provides fluent method chaining.
+ *
+ * @param  string  $tweet        The tweet to be converted.
+ * @param  array   $options      Initialize options
+ *
+ * @see  __construct()
+ *
+ * @return  TwimAutolink
+ */
 	public static function create($tweet, $options = array()) {
 		$defaults = array(
 			'escape' => false,
@@ -65,44 +65,44 @@ class TwimAutolink extends Twitter_Autolink {
 		return $autoLink;
 	}
 
-	/**
-	 * @param string $tweet
-	 * @return \TwimAutolink
-	 */
+/**
+ * @param string $tweet
+ * @return \TwimAutolink
+ */
 	public function setTweet($tweet) {
 		$this->tweet = $tweet;
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
+/**
+ * @return string
+ */
 	public function getTweet() {
 		return $this->tweet;
 	}
 
-	/**
-	 * @param string $v
-	 * @return \TwimAutolink
-	 */
+/**
+ * @param string $v
+ * @return \TwimAutolink
+ */
 	public function setUrlBaseUser($v) {
 		$this->url_base_user = trim($v);
 		return $this;
 	}
 
-	/**
-	 * @param string $v
-	 * @return \TwimAutolink
-	 */
+/**
+ * @param string $v
+ * @return \TwimAutolink
+ */
 	public function setUrlBaseList($v) {
 		$this->url_base_list = trim($v);
 		return $this;
 	}
 
-	/**
-	 * @param string $v
-	 * @return \TwimAutolink
-	 */
+/**
+ * @param string $v
+ * @return \TwimAutolink
+ */
 	public function setUrlBaseHash($v) {
 		$this->url_base_hash = trim($v);
 		return $this;

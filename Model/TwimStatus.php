@@ -45,11 +45,11 @@ class TwimStatus extends TwimAppModel {
 
 	public $apiUrlBase = '1/statuses/';
 
-	/**
-	 * The model's schema. Used by FormHelper
-	 *
-	 * @var array
-	 */
+/**
+ * The model's schema. Used by FormHelper
+ *
+ * @var array
+ */
 	protected $_schema = array(
 		'id' => array('type' => 'integer', 'length' => '11'),
 		'status' => array('type' => 'string', 'length' => '140'),
@@ -58,11 +58,11 @@ class TwimStatus extends TwimAppModel {
 		'in_reply_to_screen_name' => array('type' => 'string', 'length' => '255'),
 	);
 
-	/**
-	 * Validation rules for the model
-	 *
-	 * @var array
-	 */
+/**
+ * Validation rules for the model
+ *
+ * @var array
+ */
 	public $validate = array(
 		'status' => array(
 			'notEmpty' => array(
@@ -92,19 +92,19 @@ class TwimStatus extends TwimAppModel {
 		),
 	);
 
-	/**
-	 *
-	 * @var array
-	 */
+/**
+ *
+ * @var array
+ */
 	public $actsAs = array(
 		'Twim.ExpandTweetEntity' => array('expandHashtag' => false, 'expandUrl' => false),
 	);
 
-	/**
-	 * Custom find types available on this model
-	 *
-	 * @var array
-	 */
+/**
+ * Custom find types available on this model
+ *
+ * @var array
+ */
 	public $findMethods = array(
 		'homeTimeline' => true,
 		'userTimeline' => true,
@@ -118,11 +118,11 @@ class TwimStatus extends TwimAppModel {
 		'retweetedByIds' => true,
 	);
 
-	/**
-	 * The custom find types that require authentication
-	 *
-	 * @var array
-	 */
+/**
+ * The custom find types that require authentication
+ *
+ * @var array
+ */
 	public $findMethodsRequiringAuth = array(
 		'homeTimeline',
 		'userTimeline',
@@ -135,11 +135,11 @@ class TwimStatus extends TwimAppModel {
 		'retweetedByIds',
 	);
 
-	/**
-	 * The options allowed by each of the custom find types
-	 *
-	 * @var array
-	 */
+/**
+ * The options allowed by each of the custom find types
+ *
+ * @var array
+ */
 	public $allowedFindOptions = array(
 		'homeTimeline' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
 		'userTimeline' => array('user_id', 'screen_name', 'since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
@@ -153,35 +153,35 @@ class TwimStatus extends TwimAppModel {
 		'retweetedByIds' => array('id', 'count', 'page', 'trim_user', 'include_entities'),
 	);
 
-	/**
-	 * Statuses API max number of count
-	 *
-	 * @var int
-	 */
+/**
+ * Statuses API max number of count
+ *
+ * @var int
+ */
 	public $maxCount = 200;
 
-	/**
-	 * The vast majority of the custom find types actually follow the same format
-	 * so there was little point explicitly writing them all out. Instead, if the
-	 * method corresponding to the custom find type doesn't exist, the options are
-	 * applied to the model's request property here and then we just call
-	 * parent::find('all') to actually trigger the request and return the response
-	 * from the API.
-	 *
-	 * In addition, if you try to fetch a timeline that supports paging, but you
-	 * don't specify paging params, you really want all tweets in that timeline
-	 * since time imemoriam. But twitter will only return a maximum of 200 per
-	 * request. So, we make multiple calls to the API for 200 tweets at a go, for
-	 * subsequent pages, then merge the results together before returning them.
-	 *
-	 * Twitter's API uses a count parameter where in CakePHP we'd normally use
-	 * limit, so we also copy the limit value to count so we can use our familiar
-	 * params.
-	 *
-	 * @param string $type
-	 * @param array $options
-	 * @return mixed
-	 */
+/**
+ * The vast majority of the custom find types actually follow the same format
+ * so there was little point explicitly writing them all out. Instead, if the
+ * method corresponding to the custom find type doesn't exist, the options are
+ * applied to the model's request property here and then we just call
+ * parent::find('all') to actually trigger the request and return the response
+ * from the API.
+ *
+ * In addition, if you try to fetch a timeline that supports paging, but you
+ * don't specify paging params, you really want all tweets in that timeline
+ * since time imemoriam. But twitter will only return a maximum of 200 per
+ * request. So, we make multiple calls to the API for 200 tweets at a go, for
+ * subsequent pages, then merge the results together before returning them.
+ *
+ * Twitter's API uses a count parameter where in CakePHP we'd normally use
+ * limit, so we also copy the limit value to count so we can use our familiar
+ * params.
+ *
+ * @param string $type
+ * @param array $options
+ * @return mixed
+ */
 	public function find($type, $options = array()) {
 		if (in_array('count', $this->allowedFindOptions[$type])) {
 			$defaults = array('count' => $this->maxCount, 'strict' => false);
@@ -230,18 +230,18 @@ class TwimStatus extends TwimAppModel {
 		return parent::find('all', $options);
 	}
 
-	/**
-	 * show
-	 * -------------
-	 *
-	 *     TwitterStatus::find('show', $options)
-	 *
-	 * @param $state string 'before' or 'after'
-	 * @param $query array
-	 * @param $results array
-	 * @return mixed
-	 * @access protected
-	 * */
+/**
+ * show
+ * -------------
+ *
+ *     TwitterStatus::find('show', $options)
+ *
+ * @param $state string 'before' or 'after'
+ * @param $query array
+ * @param $results array
+ * @return mixed
+ * @access protected
+ * */
 	protected function _findShow($state, $query = array(), $results = array()) {
 		if ($state === 'before') {
 			if (empty($query['id'])) {
@@ -262,18 +262,18 @@ class TwimStatus extends TwimAppModel {
 		}
 	}
 
-	/**
-	 * retweets
-	 * -------------
-	 *
-	 *     TwitterStatus::find('retweets', $options)
-	 *
-	 * @param $state string 'before' or 'after'
-	 * @param $query array
-	 * @param $results array
-	 * @return mixed
-	 * @access protected
-	 * */
+/**
+ * retweets
+ * -------------
+ *
+ *     TwitterStatus::find('retweets', $options)
+ *
+ * @param $state string 'before' or 'after'
+ * @param $query array
+ * @param $results array
+ * @return mixed
+ * @access protected
+ * */
 	protected function _findRetweets($state, $query = array(), $results = array()) {
 		if ($state === 'before') {
 			if (empty($query['id'])) {
@@ -296,18 +296,18 @@ class TwimStatus extends TwimAppModel {
 		}
 	}
 
-	/**
-	 * Retweeted By
-	 * -------------
-	 *
-	 *     TwitterStatus::find('retweetedBy', $options)
-	 *
-	 * @param $state string 'before' or 'after'
-	 * @param $query array
-	 * @param $results array
-	 * @return mixed
-	 * @access protected
-	 * */
+/**
+ * Retweeted By
+ * -------------
+ *
+ *     TwitterStatus::find('retweetedBy', $options)
+ *
+ * @param $state string 'before' or 'after'
+ * @param $query array
+ * @param $results array
+ * @return mixed
+ * @access protected
+ * */
 	protected function _findRetweetedBy($state, $query = array(), $results = array()) {
 		if ($state === 'before') {
 			if (empty($query['id'])) {
@@ -331,18 +331,18 @@ class TwimStatus extends TwimAppModel {
 		}
 	}
 
-	/**
-	 * Retweeted By Ids
-	 * -------------
-	 *
-	 *     TwitterStatus::find('retweetedByIds', $options)
-	 *
-	 * @param $state string 'before' or 'after'
-	 * @param $query array
-	 * @param $results array
-	 * @return mixed
-	 * @access protected
-	 * */
+/**
+ * Retweeted By Ids
+ * -------------
+ *
+ *     TwitterStatus::find('retweetedByIds', $options)
+ *
+ * @param $state string 'before' or 'after'
+ * @param $query array
+ * @param $results array
+ * @return mixed
+ * @access protected
+ * */
 	protected function _findRetweetedByIds($state, $query = array(), $results = array()) {
 		if ($state === 'before') {
 			if (empty($query['id'])) {
@@ -366,14 +366,14 @@ class TwimStatus extends TwimAppModel {
 		}
 	}
 
-	/**
-	 * Creates a tweet
-	 *
-	 * @param mixed $data
-	 * @param mixed $validate
-	 * @param mixed $fieldList
-	 * @return mixed
-	 */
+/**
+ * Creates a tweet
+ *
+ * @param mixed $data
+ * @param mixed $validate
+ * @param mixed $fieldList
+ * @return mixed
+ */
 	public function tweet($data = null, $validate = true, $fieldList = array()) {
 		$this->request = array(
 			'uri' => array(
@@ -398,12 +398,12 @@ class TwimStatus extends TwimAppModel {
 		return $this->save($data, $validate, $fieldList);
 	}
 
-	/**
-	 * Retweets a tweet
-	 *
-	 * @param integer $id Id of the tweet you want to retweet
-	 * @return mixed
-	 */
+/**
+ * Retweets a tweet
+ *
+ * @param integer $id Id of the tweet you want to retweet
+ * @return mixed
+ */
 	public function retweet($id = null) {
 		if (!$id) {
 			return false;
@@ -422,14 +422,14 @@ class TwimStatus extends TwimAppModel {
 		return $this->save($data);
 	}
 
-	/**
-	 * Called by tweet or retweet
-	 *
-	 * @param mixed $data
-	 * @param mixed $validate
-	 * @param mixed $fieldList
-	 * @return mixed
-	 */
+/**
+ * Called by tweet or retweet
+ *
+ * @param mixed $data
+ * @param mixed $validate
+ * @param mixed $fieldList
+ * @return mixed
+ */
 	public function save($data = null, $validate = true, $fieldList = array()) {
 		$this->request['auth'] = true;
 		$result = parent::save($data, $validate, $fieldList);
@@ -439,13 +439,13 @@ class TwimStatus extends TwimAppModel {
 		return $result;
 	}
 
-	/**
-	 * Deletes a tweet
-	 *
-	 * @param integer $id Id of the tweet to be deleted
-	 * @param boolean $cascade
-	 * @return boolean
-	 */
+/**
+ * Deletes a tweet
+ *
+ * @param integer $id Id of the tweet to be deleted
+ * @param boolean $cascade
+ * @return boolean
+ */
 	public function delete($id = null, $cascade = true) {
 		$this->request = array(
 			'uri' => array(
@@ -457,12 +457,12 @@ class TwimStatus extends TwimAppModel {
 		return parent::delete($id, $cascade);
 	}
 
-	/**
-	 * Returns true if a status with the currently set ID exists.
-	 *
-	 * @return boolean True if such a status exists
-	 * @access public
-	 */
+/**
+ * Returns true if a status with the currently set ID exists.
+ *
+ * @return boolean True if such a status exists
+ * @access public
+ */
 	public function exists() {
 		if ($this->getID() === false) {
 			return false;

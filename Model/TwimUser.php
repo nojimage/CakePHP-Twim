@@ -38,11 +38,11 @@ class TwimUser extends TwimAppModel {
 
 	public $apiUrlBase = '1/users/';
 
-	/**
-	 * Custom find types available on this model
-	 *
-	 * @var array
-	 */
+/**
+ * Custom find types available on this model
+ *
+ * @var array
+ */
 	public $findMethods = array(
 		'lookup' => true,
 		'profileImage' => true,
@@ -55,20 +55,20 @@ class TwimUser extends TwimAppModel {
 		# 'suggestionsMembers' => true,
 	);
 
-	/**
-	 * The custom find types that require authentication
-	 *
-	 * @var array
-	 */
+/**
+ * The custom find types that require authentication
+ *
+ * @var array
+ */
 	public $findMethodsRequiringAuth = array(
 		'search',
 	);
 
-	/**
-	 * The options allowed by each of the custom find types
-	 *
-	 * @var array
-	 */
+/**
+ * The options allowed by each of the custom find types
+ *
+ * @var array
+ */
 	public $allowedFindOptions = array(
 		'lookup' => array('screen_name', 'user_id', 'include_entities'),
 		'profileImage' => array('screen_name', 'size'),
@@ -80,35 +80,35 @@ class TwimUser extends TwimAppModel {
 		'suggestionsMembers' => array('slug'),
 	);
 
-	/**
-	 * max items per page for users/search
-	 *
-	 * @var int
-	 */
+/**
+ * max items per page for users/search
+ *
+ * @var int
+ */
 	public $maxPerPage = 20;
 
-	/**
-	 * The vast majority of the custom find types actually follow the same format
-	 * so there was little point explicitly writing them all out. Instead, if the
-	 * method corresponding to the custom find type doesn't exist, the options are
-	 * applied to the model's request property here and then we just call
-	 * parent::find('all') to actually trigger the request and return the response
-	 * from the API.
-	 *
-	 * In addition, if you try to fetch a timeline that supports paging, but you
-	 * don't specify paging params, you really want all tweets in that timeline
-	 * since time imemoriam. But twitter will only return a maximum of 200 per
-	 * request. So, we make multiple calls to the API for 200 tweets at a go, for
-	 * subsequent pages, then merge the results together before returning them.
-	 *
-	 * Twitter's API uses a count parameter where in CakePHP we'd normally use
-	 * limit, so we also copy the limit value to count so we can use our familiar
-	 * params.
-	 *
-	 * @param string $type
-	 * @param array $options
-	 * @return mixed
-	 */
+/**
+ * The vast majority of the custom find types actually follow the same format
+ * so there was little point explicitly writing them all out. Instead, if the
+ * method corresponding to the custom find type doesn't exist, the options are
+ * applied to the model's request property here and then we just call
+ * parent::find('all') to actually trigger the request and return the response
+ * from the API.
+ *
+ * In addition, if you try to fetch a timeline that supports paging, but you
+ * don't specify paging params, you really want all tweets in that timeline
+ * since time imemoriam. But twitter will only return a maximum of 200 per
+ * request. So, we make multiple calls to the API for 200 tweets at a go, for
+ * subsequent pages, then merge the results together before returning them.
+ *
+ * Twitter's API uses a count parameter where in CakePHP we'd normally use
+ * limit, so we also copy the limit value to count so we can use our familiar
+ * params.
+ *
+ * @param string $type
+ * @param array $options
+ * @return mixed
+ */
 	public function find($type, $options = array()) {
 		if (Inflector::camelize($type) === 'ProfileImage') {
 			return $this->profileImage($options);
@@ -123,15 +123,15 @@ class TwimUser extends TwimAppModel {
 		return parent::find('all', $options);
 	}
 
-	/**
-	 * profile image
-	 * -------------
-	 *
-	 * @param array $options
-	 *  screen_name: string<br />
-	 *  size: string (bigger or normal or mini or original)
-	 * @return string
-	 */
+/**
+ * profile image
+ * -------------
+ *
+ * @param array $options
+ *  screen_name: string<br />
+ *  size: string (bigger or normal or mini or original)
+ * @return string
+ */
 	public function profileImage($options) {
 		$this->_setupRequest('profileImage', $options);
 
@@ -151,18 +151,18 @@ class TwimUser extends TwimAppModel {
 		return $ds->Http->response['header']['Location'];
 	}
 
-	/**
-	 * lookup
-	 * -------------
-	 *
-	 *     TwitterUser::find('lookup', $options)
-	 *
-	 * @param $state string 'before' or 'after'
-	 * @param $query array
-	 * @param $results array
-	 * @return mixed
-	 * @access protected
-	 * */
+/**
+ * lookup
+ * -------------
+ *
+ *     TwitterUser::find('lookup', $options)
+ *
+ * @param $state string 'before' or 'after'
+ * @param $query array
+ * @param $results array
+ * @return mixed
+ * @access protected
+ * */
 	protected function _findLookup($state, $query = array(), $results = array()) {
 		if ($state === 'before') {
 			if (empty($query['user_id']) && empty($query['screen_name'])) {
@@ -184,18 +184,18 @@ class TwimUser extends TwimAppModel {
 		}
 	}
 
-	/**
-	 * search
-	 * -------------
-	 *
-	 *     TwitterUser::find('search', $options)
-	 *
-	 * @param $state string 'before' or 'after'
-	 * @param $query array
-	 * @param $results array
-	 * @return mixed
-	 * @access protected
-	 * */
+/**
+ * search
+ * -------------
+ *
+ *     TwitterUser::find('search', $options)
+ *
+ * @param $state string 'before' or 'after'
+ * @param $query array
+ * @param $results array
+ * @return mixed
+ * @access protected
+ * */
 	protected function _findSearch($state, $query = array(), $results = array()) {
 		if ($state === 'before') {
 			if (empty($query['q'])) {

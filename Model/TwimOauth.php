@@ -31,14 +31,14 @@ App::uses('TwimAppModel', 'Twim.Model');
  */
 class TwimOauth extends TwimAppModel {
 
-	/**
-	 * get OAuth Request Token
-	 *
-	 * @param array $params
-	 *      oauth_callback: url
-	 *      x_auth_access_type: read or write
-	 * @return string
-	 */
+/**
+ * get OAuth Request Token
+ *
+ * @param array $params
+ *      oauth_callback: url
+ *      x_auth_access_type: read or write
+ * @return string
+ */
 	public function getRequestToken($params = array()) {
 		if (is_string($params)) {
 			$params = array('oauth_callback' => $params);
@@ -75,12 +75,12 @@ class TwimOauth extends TwimAppModel {
 		return $requestToken;
 	}
 
-	/**
-	 * get OAuth authorize url
-	 *
-	 * @param array or string $requestToken
-	 * @return string
-	 */
+/**
+ * get OAuth authorize url
+ *
+ * @param array or string $requestToken
+ * @return string
+ */
 	public function getAuthorizeUrl($requestToken) {
 		if (is_string($requestToken)) {
 			$requestToken = array('oauth_token' => $requestToken);
@@ -88,12 +88,12 @@ class TwimOauth extends TwimAppModel {
 		return 'https://api.twitter.com/oauth/authorize?' . http_build_query($requestToken);
 	}
 
-	/**
-	 * get OAuth authenticate url
-	 *
-	 * @param array or string $requestToken
-	 * @return string
-	 */
+/**
+ * get OAuth authenticate url
+ *
+ * @param array or string $requestToken
+ * @return string
+ */
 	public function getAuthenticateUrl($requestToken) {
 		if (is_string($requestToken)) {
 			$requestToken = array('oauth_token' => $requestToken);
@@ -101,17 +101,17 @@ class TwimOauth extends TwimAppModel {
 		return 'https://api.twitter.com/oauth/authenticate?' . http_build_query($requestToken);
 	}
 
-	/**
-	 * get OAuth Access Token
-	 *
-	 * @param array $params
-	 *      oauth_token:
-	 *      oauth_verifier:
-	 *      x_auth_password:
-	 *      x_auth_username:
-	 *      x_auth_mode:
-	 * @return string
-	 */
+/**
+ * get OAuth Access Token
+ *
+ * @param array $params
+ *      oauth_token:
+ *      oauth_verifier:
+ *      x_auth_password:
+ *      x_auth_username:
+ *      x_auth_mode:
+ * @return string
+ */
 	public function getAccessToken($params = array()) {
 
 		$this->request = array(
@@ -146,19 +146,19 @@ class TwimOauth extends TwimAppModel {
 		return $accessToken;
 	}
 
-	/**
-	 * set access token
-	 *
-	 * @param mixed $oauth_token
-	 * @param string $oauth_token_secret
-	 */
+/**
+ * set access token
+ *
+ * @param mixed $oauth_token
+ * @param string $oauth_token_secret
+ */
 	public function setToken($oauth_token, $oauth_token_secret = null) {
 		$this->getDataSource()->setToken($oauth_token, $oauth_token_secret);
 	}
 
-	/**
-	 *
-	 */
+/**
+ *
+ */
 	public function onError() {
 		if (isset($this->response) && is_string($this->response)) {
 			if (preg_match('/<\?xml /', $this->response)) {

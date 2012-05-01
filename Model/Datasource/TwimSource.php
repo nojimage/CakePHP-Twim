@@ -27,10 +27,10 @@ App::uses('HttpSocketOauth', 'Twim.Network/Http');
  */
 class TwimSource extends RestSource {
 
-	/**
-	 *
-	 * @var array
-	 */
+/**
+ *
+ * @var array
+ */
 	public $_baseConfig = array(
 		'oauth_consumer_key' => '',
 		'oauth_consumer_secret' => '',
@@ -49,16 +49,16 @@ class TwimSource extends RestSource {
 		),
 	);
 
-	/**
-	 * Overrides RestSource constructor to use the OAuth extension to CakePHP's
-	 * default HttpSocket class to issue the requests.
-	 *
-	 * If no config is passed into the constructor, i.e. the config is not in
-	 * app/config/database.php check if any config is in the config directory of
-	 * the plugin, or in the configure class and use that instead.
-	 *
-	 * @param array $config
-	 */
+/**
+ * Overrides RestSource constructor to use the OAuth extension to CakePHP's
+ * default HttpSocket class to issue the requests.
+ *
+ * If no config is passed into the constructor, i.e. the config is not in
+ * app/config/database.php check if any config is in the config directory of
+ * the plugin, or in the configure class and use that instead.
+ *
+ * @param array $config
+ */
 	public function __construct($config = null) {
 		if (!is_array($config)) {
 			$config = array();
@@ -94,28 +94,28 @@ class TwimSource extends RestSource {
 		}
 	}
 
-	/**
-	 * Enable Cache
-	 *
-	 * @params mixed $config
-	 */
+/**
+ * Enable Cache
+ *
+ * @params mixed $config
+ */
 	public function enableCache($config = true) {
 		$this->setConfig(array('cache' => $config));
 	}
 
-	/**
-	 * Next request force update cache
-	 */
+/**
+ * Next request force update cache
+ */
 	public function refreshCache() {
 		$this->setConfig(array('refresh_cache' => true));
 	}
 
-	/**
-	 * set access token
-	 *
-	 * @param mixed $oauth_token
-	 * @param string $oauth_token_secret
-	 */
+/**
+ * set access token
+ *
+ * @param mixed $oauth_token
+ * @param string $oauth_token_secret
+ */
 	public function setToken($oauth_token, $oauth_token_secret = null) {
 		if (is_array($oauth_token) && isset($oauth_token['oauth_token']) && isset($oauth_token['oauth_token_secret'])) {
 			$oauth_token_secret = $oauth_token['oauth_token_secret'];
@@ -124,11 +124,11 @@ class TwimSource extends RestSource {
 		$this->setConfig(compact('oauth_token', 'oauth_token_secret'));
 	}
 
-	/**
-	 * get api call remaining
-	 *
-	 * @return array
-	 */
+/**
+ * get api call remaining
+ *
+ * @return array
+ */
 	public function getRatelimit() {
 		if (empty($this->Http->response['header'])) {
 			return array();
@@ -144,14 +144,14 @@ class TwimSource extends RestSource {
 		return array_intersect_key($this->Http->response['header'], $headers);
 	}
 
-	/**
-	 * Adds in common elements to the request such as the host and extension and
-	 * OAuth params from config if not set in the request already
-	 *
-	 * @param AppModel $model The model the operation is called on. Should have a
-	 *  request property in the format described in HttpSocket::request
-	 * @return mixed Depending on what is returned from RestSource::request()
-	 */
+/**
+ * Adds in common elements to the request such as the host and extension and
+ * OAuth params from config if not set in the request already
+ *
+ * @param AppModel $model The model the operation is called on. Should have a
+ *  request property in the format described in HttpSocket::request
+ * @return mixed Depending on what is returned from RestSource::request()
+ */
 	protected function _request($model) {
 		// If auth key is set and not false, fill the request with auth params from
 		// config if not already present in the request and set the method to OAuth
@@ -195,12 +195,12 @@ class TwimSource extends RestSource {
 		return $response;
 	}
 
-	/**
-	 * Request API and process responce
-	 *
-	 * @param TwimAppModel $model
-	 * @return mixed
-	 */
+/**
+ * Request API and process responce
+ *
+ * @param TwimAppModel $model
+ * @return mixed
+ */
 	public function request($model) {
 		if ($this->_cacheable($model->request)) {
 			$this->_setupCache();
@@ -226,33 +226,33 @@ class TwimSource extends RestSource {
 		return $response;
 	}
 
-	/**
-	 * Set proxy settings
-	 *
-	 * @param mixed $host Proxy host. Can be an array with settings to authentication class
-	 * @param integer $port Port. Default 3128.
-	 * @param string $method Proxy method (ie, Basic, Digest). If empty, disable proxy authentication
-	 * @param string $user Username if your proxy need authentication
-	 * @param string $pass Password to proxy authentication
-	 * @return void
-	 */
+/**
+ * Set proxy settings
+ *
+ * @param mixed $host Proxy host. Can be an array with settings to authentication class
+ * @param integer $port Port. Default 3128.
+ * @param string $method Proxy method (ie, Basic, Digest). If empty, disable proxy authentication
+ * @param string $user Username if your proxy need authentication
+ * @param string $pass Password to proxy authentication
+ * @return void
+ */
 	public function configProxy($host, $port = 3128, $method = null, $user = null, $pass = null) {
 		$this->Http->configProxy($host, $port, $method, $user, $pass);
 	}
 
-	/**
-	 * get Cache key
-	 *
-	 * @param array $params
-	 * @return stirng
-	 */
+/**
+ * get Cache key
+ *
+ * @param array $params
+ * @return stirng
+ */
 	protected function _getCacheKey($params) {
 		return sha1($this->config['oauth_token'] . serialize($params));
 	}
 
-	/**
-	 *
-	 */
+/**
+ *
+ */
 	protected function _setupCache() {
 		if ($this->config['cache'] && !Cache::isInitialized($this->configKeyName)) {
 			if (!is_array($this->config['cache'])) {
@@ -269,12 +269,12 @@ class TwimSource extends RestSource {
 		}
 	}
 
-	/**
-	 * is cacheable
-	 *
-	 * @param array $params
-	 * @return bool
-	 */
+/**
+ * is cacheable
+ *
+ * @param array $params
+ * @return bool
+ */
 	protected function _cacheable($request) {
 		return $this->config['cache'] && strtoupper($request['method']) === 'GET' && !preg_match('!oauth/!i', $request['uri']['path']);
 	}

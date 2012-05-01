@@ -29,12 +29,6 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 
 	public $fixtures = array();
 
-	/**
-	 * startTest method
-	 *
-	 * @access public
-	 * @return void
-	 */
 	public function setUp() {
 		parent::setUp();
 		$this->Search = ClassRegistry::init('Twim.TwimSearch');
@@ -43,12 +37,6 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 		$this->Status->setDataSource($this->mockDatasourceName);
 	}
 
-	/**
-	 * endTest method
-	 *
-	 * @access public
-	 * @return void
-	 */
 	public function tearDown() {
 		unset($this->Search);
 		unset($this->Status);

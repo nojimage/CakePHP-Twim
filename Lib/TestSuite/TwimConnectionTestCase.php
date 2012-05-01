@@ -39,7 +39,7 @@ class TwimConnectionTestCase extends CakeTestCase {
 			return;
 		}
 		$sock = @fsockopen('twitter.com', 80, $errno, $errstr, 15);
-		$this->skipIf($sock === FALSE, 'unable to connect to twitter.com ' . $errstr);
+		$this->skipIf($sock === false, 'unable to connect to twitter.com ' . $errstr);
 		if ($sock) {
 			fclose($sock);
 		}
@@ -63,8 +63,8 @@ class TwimConnectionTestCase extends CakeTestCase {
 		if (!class_exists('MockTwimSource')) {
 			$this->getMock('TwimSource', array('request'), array(), 'MockTwimSource');
 		}
-		$this->createTestDatasource();
-		$this->createMockDatasource();
+		$this->_createTestDatasource();
+		$this->_createMockDatasource();
 	}
 
 	public function tearDown() {
@@ -73,7 +73,7 @@ class TwimConnectionTestCase extends CakeTestCase {
 		ConnectionManager::drop($this->mockDatasourceName);
 	}
 
-	protected function createTestDatasource($dataSourceName = '') {
+	protected function _createTestDatasource($dataSourceName = '') {
 		if (empty($dataSourceName)) {
 			$dataSourceName = $this->testDatasourceName;
 		}
@@ -89,7 +89,7 @@ class TwimConnectionTestCase extends CakeTestCase {
 		}
 	}
 
-	protected function createMockDatasource($dataSourceName = '') {
+	protected function _createMockDatasource($dataSourceName = '') {
 		if (empty($dataSourceName)) {
 			$dataSourceName = 'mock_twim_source_' . Inflector::underscore(get_class($this));
 			$this->mockDatasourceName = $dataSourceName;

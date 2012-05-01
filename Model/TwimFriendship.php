@@ -38,11 +38,11 @@ class TwimFriendship extends TwimAppModel {
 
 	public $apiUrlBase = '1/friendships/';
 
-	/**
-	 * The model's schema. Used by FormHelper
-	 *
-	 * @var array
-	 */
+/**
+ * The model's schema. Used by FormHelper
+ *
+ * @var array
+ */
 	public $_schema = array(
 		'id' => array('type' => 'integer', 'length' => '11'),
 		'user_id' => array('type' => 'integer', 'length' => '11'),
@@ -50,11 +50,11 @@ class TwimFriendship extends TwimAppModel {
 		'follow' => array('type' => 'integer', 'length' => '4'),
 	);
 
-	/**
-	 * Validation rules for the model
-	 *
-	 * @var array
-	 */
+/**
+ * Validation rules for the model
+ *
+ * @var array
+ */
 	public $validate = array(
 		'user_id' => array(
 			'numeric' => array(
@@ -66,17 +66,17 @@ class TwimFriendship extends TwimAppModel {
 		),
 	);
 
-	/**
-	 *
-	 * @var array
-	 */
+/**
+ *
+ * @var array
+ */
 	public $actsAs = array();
 
-	/**
-	 * Custom find types available on this model
-	 *
-	 * @var array
-	 */
+/**
+ * Custom find types available on this model
+ *
+ * @var array
+ */
 	public $findMethods = array(
 		'exists' => true,
 		'incoming' => true,
@@ -86,11 +86,11 @@ class TwimFriendship extends TwimAppModel {
 		'noRetweetIds' => true,
 	);
 
-	/**
-	 * The custom find types that require authentication
-	 *
-	 * @var array
-	 */
+/**
+ * The custom find types that require authentication
+ *
+ * @var array
+ */
 	public $findMethodsRequiringAuth = array(
 		'incoming',
 		'outgoing',
@@ -98,11 +98,11 @@ class TwimFriendship extends TwimAppModel {
 		'noRetweetIds',
 	);
 
-	/**
-	 * The options allowed by each of the custom find types
-	 *
-	 * @var array
-	 */
+/**
+ * The options allowed by each of the custom find types
+ *
+ * @var array
+ */
 	public $allowedFindOptions = array(
 		'exists' => array('user_id_a', 'user_id_b', 'screen_name_a', 'screen_name_b'),
 		'incoming' => array('cursor', 'stringify_ids'),
@@ -112,28 +112,28 @@ class TwimFriendship extends TwimAppModel {
 		'noRetweetIds' => array('stringify_ids'),
 	);
 
-	/**
-	 * The vast majority of the custom find types actually follow the same format
-	 * so there was little point explicitly writing them all out. Instead, if the
-	 * method corresponding to the custom find type doesn't exist, the options are
-	 * applied to the model's request property here and then we just call
-	 * parent::find('all') to actually trigger the request and return the response
-	 * from the API.
-	 *
-	 * In addition, if you try to fetch a timeline that supports paging, but you
-	 * don't specify paging params, you really want all tweets in that timeline
-	 * since time imemoriam. But twitter will only return a maximum of 200 per
-	 * request. So, we make multiple calls to the API for 200 tweets at a go, for
-	 * subsequent pages, then merge the results together before returning them.
-	 *
-	 * Twitter's API uses a count parameter where in CakePHP we'd normally use
-	 * limit, so we also copy the limit value to count so we can use our familiar
-	 * params.
-	 *
-	 * @param string $type
-	 * @param array $options
-	 * @return mixed
-	 */
+/**
+ * The vast majority of the custom find types actually follow the same format
+ * so there was little point explicitly writing them all out. Instead, if the
+ * method corresponding to the custom find type doesn't exist, the options are
+ * applied to the model's request property here and then we just call
+ * parent::find('all') to actually trigger the request and return the response
+ * from the API.
+ *
+ * In addition, if you try to fetch a timeline that supports paging, but you
+ * don't specify paging params, you really want all tweets in that timeline
+ * since time imemoriam. But twitter will only return a maximum of 200 per
+ * request. So, we make multiple calls to the API for 200 tweets at a go, for
+ * subsequent pages, then merge the results together before returning them.
+ *
+ * Twitter's API uses a count parameter where in CakePHP we'd normally use
+ * limit, so we also copy the limit value to count so we can use our familiar
+ * params.
+ *
+ * @param string $type
+ * @param array $options
+ * @return mixed
+ */
 	public function find($type, $options = array()) {
 		if (!empty($options['limit']) && empty($options['count'])) {
 			$options['count'] = $options['limit'];
@@ -160,13 +160,13 @@ class TwimFriendship extends TwimAppModel {
 		return parent::find('all', $options);
 	}
 
-	/**
-	 * Allows the authenticating users to follow the user specified in the ID parameter.
-	 *
-	 * @param mixed $data
-	 * @param mixed $validate
-	 * @return mixed
-	 */
+/**
+ * Allows the authenticating users to follow the user specified in the ID parameter.
+ *
+ * @param mixed $data
+ * @param mixed $validate
+ * @return mixed
+ */
 	public function create($data = null, $validate = true) {
 		$this->request = array(
 			'uri' => array(
@@ -188,13 +188,13 @@ class TwimFriendship extends TwimAppModel {
 		return $this->save($data, $validate);
 	}
 
-	/**
-	 * Allows one to enable or disable retweets and device notifications from the specified user.
-	 *
-	 * @param mixed $data
-	 * @param mixed $validate
-	 * @return mixed
-	 */
+/**
+ * Allows one to enable or disable retweets and device notifications from the specified user.
+ *
+ * @param mixed $data
+ * @param mixed $validate
+ * @return mixed
+ */
 	public function update($data = null, $validate = true) {
 		$this->request = array(
 			'uri' => array(
@@ -212,14 +212,14 @@ class TwimFriendship extends TwimAppModel {
 		return $this->save($data, $validate);
 	}
 
-	/**
-	 * Called by create or update
-	 *
-	 * @param mixed $data
-	 * @param mixed $validate
-	 * @param mixed $fieldList
-	 * @return mixed
-	 */
+/**
+ * Called by create or update
+ *
+ * @param mixed $data
+ * @param mixed $validate
+ * @param mixed $fieldList
+ * @return mixed
+ */
 	public function save($data = null, $validate = true, $fieldList = array()) {
 		$this->request['auth'] = true;
 		$result = $this->getDataSource()->create($this);
@@ -229,23 +229,23 @@ class TwimFriendship extends TwimAppModel {
 		return $result;
 	}
 
-	/**
-	 * alias of delete
-	 *
-	 * @param mixed $id user_id or screen_name or parameter array
-	 * @return array
-	 */
+/**
+ * alias of delete
+ *
+ * @param mixed $id user_id or screen_name or parameter array
+ * @return array
+ */
 	public function destroy($id) {
 		return $this->delete($id);
 	}
 
-	/**
-	 * Deletes a firendship
-	 *
-	 * @param mixed $id user_id or screen_name or parameter array
-	 * @param boolean $cascade
-	 * @return array
-	 */
+/**
+ * Deletes a firendship
+ *
+ * @param mixed $id user_id or screen_name or parameter array
+ * @param boolean $cascade
+ * @return array
+ */
 	public function delete($id, $cascade = false) {
 		$this->request = array(
 			'uri' => array(
@@ -265,14 +265,14 @@ class TwimFriendship extends TwimAppModel {
 		return $this->getDataSource()->delete($this);
 	}
 
-	/**
-	 * Test for the existence of friendship between two users. Will return true if user_a follows user_b, otherwise will return false.
-	 *
-	 * @param  string $user_id_a
-	 * @param  string $user_id_b
-	 * @return boolean True if such user_a follows user_b
-	 * @access public
-	 */
+/**
+ * Test for the existence of friendship between two users. Will return true if user_a follows user_b, otherwise will return false.
+ *
+ * @param  string $user_id_a
+ * @param  string $user_id_b
+ * @return boolean True if such user_a follows user_b
+ * @access public
+ */
 	public function exists($user_id_a, $user_id_b = null) {
 		if (is_null($user_id_b)) {
 

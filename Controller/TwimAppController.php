@@ -19,5 +19,5 @@
  * @since     File available since Release 1.0
  * */
 class TwimAppController extends AppController {
-	
+	//
 }

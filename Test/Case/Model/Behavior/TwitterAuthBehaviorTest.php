@@ -49,23 +49,11 @@ class TwitterAuthBehaviorTestModel extends Model {
  */
 class TwitterAuthBehaviorTest extends TwimConnectionTestCase {
 
-	/**
-	 * startTest method
-	 *
-	 * @access public
-	 * @return void
-	 */
 	public function setUp() {
 		parent::setUp();
 		$this->Model = ClassRegistry::init('TwitterAuthBehaviorTestModel');
 	}
 
-	/**
-	 * endTest method
-	 *
-	 * @access public
-	 * @return void
-	 */
 	public function tearDown() {
 		unset($this->Model);
 		parent::tearDown();

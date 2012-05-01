@@ -33,11 +33,11 @@ class TwimTrend extends TwimAppModel {
 
 	public $apiUrlBase = '1/trends/';
 
-	/**
-	 * Custom find types available on this model
-	 *
-	 * @var array
-	 */
+/**
+ * Custom find types available on this model
+ *
+ * @var array
+ */
 	public $findMethods = array(
 		'daily' => true,
 		'weekly' => true,
@@ -45,11 +45,11 @@ class TwimTrend extends TwimAppModel {
 		'woeid' => true,
 	);
 
-	/**
-	 * The options allowed by each of the custom find types
-	 *
-	 * @var array
-	 */
+/**
+ * The options allowed by each of the custom find types
+ *
+ * @var array
+ */
 	public $allowedFindOptions = array(
 		'daily' => array('exclude', 'date'),
 		'weekly' => array('exclude', 'date'),
@@ -57,12 +57,12 @@ class TwimTrend extends TwimAppModel {
 		'woeid' => array('woeid'),
 	);
 
-	/**
-	 *
-	 * @param mixed $type
-	 * @param array $options
-	 * @return array|false
-	 */
+/**
+ *
+ * @param mixed $type
+ * @param array $options
+ * @return array|false
+ */
 	public function find($type, $options = array()) {
 		if (method_exists($this, '_find' . Inflector::camelize($type))) {
 			return parent::find($type, $options);
@@ -77,13 +77,13 @@ class TwimTrend extends TwimAppModel {
 		return parent::find('all', $options);
 	}
 
-	/**
-	 *
-	 * @param string $state
-	 * @param array $query
-	 * @param array $results
-	 * @return mixed
-	 */
+/**
+ *
+ * @param string $state
+ * @param array $query
+ * @param array $results
+ * @return mixed
+ */
 	protected function _findWoeid($state, $query = array(), $results = array()) {
 		if ($state === 'before') {
 			if (empty($query['woeid'])) {
