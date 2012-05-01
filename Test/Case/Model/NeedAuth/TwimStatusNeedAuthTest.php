@@ -59,4 +59,8 @@ class TwimStatusNeedAuthTestCase extends TwimConnectionTestCase {
 		$this->assertTrue($this->Status->delete($this->Status->getLastInsertID()));
 	}
 
+	public function testHomeTimeline() {
+		$results = $this->Status->find('homeTimeline', array('limit' => 300));
+		$this->assertCount(300, $results);
+	}
 }
