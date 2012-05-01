@@ -207,6 +207,8 @@ class TwimStatus extends TwimAppModel {
 					if (isset($this->response['next_page'])) {
 						parse_str(parse_url($this->response['next_page'], PHP_URL_QUERY), $nextPage);
 						$options = am($options, $nextPage);
+					} elseif (in_array('max_id', $this->allowedFindOptions[$type])) {
+						$options['max_id'] = $page[count($page) - 1]['id'] - 1;
 					} else {
 						$options['page']++;
 					}

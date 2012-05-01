@@ -36,6 +36,7 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 	public function tearDown() {
 		unset($this->Status);
 		parent::tearDown();
+		ob_flush();
 	}
 
 	// =========================================================================
@@ -47,11 +48,16 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 		$this->assertSame(array('count' => 200, 'page' => 1), $this->Status->request['uri']['query']);
 	}
 
-	public function testHomeTimeline_with_pageCount() {
-		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('homeTimeline', array('page' => 2, 'count' => 100));
+	public function testHomeTimelinePagination() {
+		$this->Status->getDataSource()->expects($this->at(0))->method('request')
+			->will($this->returnValue(array(
+					array('id' => 18700688341, 'id_str' => '18700688341'),
+				)));
+		$this->Status->getDataSource()->expects($this->at(1))->method('request')
+			->will($this->returnValue(array()));
+		$this->Status->find('homeTimeline', array('count' => 100));
 		$this->assertSame('1/statuses/home_timeline', $this->Status->request['uri']['path']);
-		$this->assertSame(array('count' => 100, 'page' => 2), $this->Status->request['uri']['query']);
+		$this->assertSame(array('count' => 100, 'page' => 1, 'max_id' => 18700688340), $this->Status->request['uri']['query']);
 	}
 
 	// =========================================================================
