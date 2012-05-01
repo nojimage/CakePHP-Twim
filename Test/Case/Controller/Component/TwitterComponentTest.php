@@ -186,11 +186,11 @@ class TwitterComponentTest extends CakeTestCase {
 		$this->assertFalse($result);
 	}
 
-	/**
-	 *
-	 * @expectedException RuntimeException
-	 * @expectedExceptionMessage Invalid / expired Token
-	 */
+/**
+ *
+ * @expectedException RuntimeException
+ * @expectedExceptionMessage Invalid / expired Token
+ */
 	public function testGetAccessToken_invalid() {
 		$result = array();
 		$this->Controller->request->query['oauth_token'] = 'invalid token';

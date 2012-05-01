@@ -37,22 +37,22 @@ class TwitterAuthBehavior extends ModelBehavior {
 		'oauth_token_secret' => 'oauth_token_secret',
 	);
 
-	/**
-	 *
-	 * @param AppModel $model
-	 * @param array    $config
-	 */
+/**
+ *
+ * @param AppModel $model
+ * @param array    $config
+ */
 	public function setup($model, $config = array()) {
 		$this->settings[$model->alias] = Set::merge($this->default, $config);
 	}
 
-	/**
-	 * create save data
-	 *
-	 * @param  AppModel $model
-	 * @param  array    $token
-	 * @return array
-	 */
+/**
+ * create save data
+ *
+ * @param  AppModel $model
+ * @param  array    $token
+ * @return array
+ */
 	public function createSaveDataByToken($model, $token) {
 		$data = array(
 			$model->alias => array(

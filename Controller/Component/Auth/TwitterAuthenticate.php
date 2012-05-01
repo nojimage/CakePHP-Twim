@@ -34,12 +34,12 @@ class TwitterAuthenticate extends BaseAuthenticate {
 		'authorize' => false,
 	);
 
-	/**
-	 *
-	 * @param CakeRequest $request
-	 * @param CakeResponse $response
-	 * @return boolean
-	 */
+/**
+ *
+ * @param CakeRequest $request
+ * @param CakeResponse $response
+ * @return boolean
+ */
 	public function authenticate(CakeRequest $request, CakeResponse $response) {
 		$oauth = ClassRegistry::init('Twim.TwimOauth');
 		/* @var $oauth TwimOauth */
@@ -65,12 +65,12 @@ class TwitterAuthenticate extends BaseAuthenticate {
 		return false;
 	}
 
-	/**
-	 * save token to User model
-	 *
-	 * @param array $token
-	 * @return array User record
-	 */
+/**
+ * save token to User model
+ *
+ * @param array $token
+ * @return array User record
+ */
 	public function saveToModel(array $token) {
 		$model = ClassRegistry::init($this->settings['userModel']);
 		/* @var $model TwitterUser */

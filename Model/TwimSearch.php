@@ -31,61 +31,61 @@ App::uses('TwimAppModel', 'Twim.Model');
  */
 class TwimSearch extends TwimAppModel {
 
-	/**
-	 *
-	 * @var array
-	 */
+/**
+ *
+ * @var array
+ */
 	public $actsAs = array(
 		'Twim.ExpandTweetEntity' => array('expandHashtag' => false, 'expandUrl' => false),
 	);
 
-	/**
-	 * Custom find types available on this model
-	 *
-	 * @var array
-	 */
+/**
+ * Custom find types available on this model
+ *
+ * @var array
+ */
 	public $findMethods = array(
 		'search' => true,
 	);
 
-	/**
-	 * The options allowed by each of the custom find types
-	 *
-	 * @var array
-	 */
+/**
+ * The options allowed by each of the custom find types
+ *
+ * @var array
+ */
 	public $allowedFindOptions = array(
 		'search' => array('q', 'callback', 'geocode', 'lang', 'locale', 'page', 'result_type', 'rpp', 'show_user', 'until', 'since_id', 'max_id', 'include_entities'),
 	);
 
-	/**
-	 * Search API result data limit
-	 *
-	 * @var int
-	 */
+/**
+ * Search API result data limit
+ *
+ * @var int
+ */
 	public $resultLimit = 1500;
 
-	/**
-	 * Search API max number of rpp(result per page)
-	 *
-	 * @var int
-	 */
+/**
+ * Search API max number of rpp(result per page)
+ *
+ * @var int
+ */
 	public $maxRpp = 100;
 
-	/**
-	 * for search API
-	 *
-	 * @var array
-	 */
+/**
+ * for search API
+ *
+ * @var array
+ */
 	public $request = array(
 		'uri' => array('host' => 'search.twitter.com')
 	);
 
-	/**
-	 *
-	 * @param string $type
-	 * @param array $options
-	 * @return  array
-	 */
+/**
+ *
+ * @param string $type
+ * @param array $options
+ * @return  array
+ */
 	public function find($type, $options = array()) {
 		if (is_string($type) && empty($options)) {
 			$options = $type;
@@ -146,13 +146,13 @@ class TwimSearch extends TwimAppModel {
 		return $results;
 	}
 
-	/**
-	 * lookup user
-	 *
-	 * @param array $datas
-	 * @param mixed $fields
-	 * @return array
-	 */
+/**
+ * lookup user
+ *
+ * @param array $datas
+ * @param mixed $fields
+ * @return array
+ */
 	public function usersLookup(array $datas, $fields = true) {
 		if ($fields === true) {
 			$fields = array();

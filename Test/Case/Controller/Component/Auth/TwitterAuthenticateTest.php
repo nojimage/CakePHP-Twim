@@ -50,11 +50,11 @@ class TwitterAuthenticateTest extends TwimConnectionTestCase {
 
 	public $fixtures = array('plugin.twim.twitter_user');
 
-	/**
-	 * setup
-	 *
-	 * @return void
-	 */
+/**
+ * setup
+ *
+ * @return void
+ */
 	public function setUp() {
 		parent::setUp();
 		$this->Collection = $this->getMock('ComponentCollection');
@@ -73,22 +73,22 @@ class TwitterAuthenticateTest extends TwimConnectionTestCase {
 		ClassRegistry::addObject('TwitterUser', $this->TwitterUser);
 	}
 
-	/**
-	 * tearDown
-	 *
-	 * @return void
-	 */
+/**
+ * tearDown
+ *
+ * @return void
+ */
 	public function tearDown() {
 		unset($this->Collection, $this->auth, $this->response, $this->TwimOauth, $this->TwitterUser);
 		parent::tearDown();
 		ob_flush();
 	}
 
-	/**
-	 * test applying settings in the constructor
-	 *
-	 * @return void
-	 */
+/**
+ * test applying settings in the constructor
+ *
+ * @return void
+ */
 	public function testConstructor() {
 		$object = new TwitterAuthenticate($this->Collection, array(
 				'userModel' => 'SomeTwitterUser',
@@ -100,11 +100,11 @@ class TwitterAuthenticateTest extends TwimConnectionTestCase {
 		$this->assertEquals(true, $object->settings['authorize']);
 	}
 
-	/**
-	 * test applying settings in the constructor
-	 *
-	 * @return void
-	 */
+/**
+ * test applying settings in the constructor
+ *
+ * @return void
+ */
 	public function testConstructorDefault() {
 		$object = new TwitterAuthenticate($this->Collection, array());
 		$this->assertEquals(false, $object->settings['userModel']);
@@ -112,22 +112,22 @@ class TwitterAuthenticateTest extends TwimConnectionTestCase {
 		$this->assertEquals(false, $object->settings['authorize']);
 	}
 
-	/**
-	 * test the authenticate method
-	 *
-	 * @return void
-	 */
+/**
+ * test the authenticate method
+ *
+ * @return void
+ */
 	public function testAuthenticateNoData() {
 		$request = new CakeRequest('posts/index', false);
 		$request->data = array();
 		$this->assertFalse($this->auth->authenticate($request, $this->response));
 	}
 
-	/**
-	 * test the authenticate method
-	 *
-	 * @return void
-	 */
+/**
+ * test the authenticate method
+ *
+ * @return void
+ */
 	public function testAuthenticateLoginRequest() {
 		$request = new CakeRequest('posts/index', false);
 		$request->data = array('Twitter' => array('login' => true));
@@ -146,11 +146,11 @@ class TwitterAuthenticateTest extends TwimConnectionTestCase {
 		$this->assertFalse($this->auth->authenticate($request, $this->response));
 	}
 
-	/**
-	 * test the authenticate method
-	 *
-	 * @return void
-	 */
+/**
+ * test the authenticate method
+ *
+ * @return void
+ */
 	public function testAuthenticateGetAccessToken() {
 		$request = new CakeRequest('posts/index', false);
 		$request->query = array('oauth_token' => 'dummy_request_token', 'oauth_verifier' => 'dummy_verifier');

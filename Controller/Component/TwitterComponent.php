@@ -39,12 +39,11 @@ class TwitterComponent extends Component {
 		),
 	);
 
-	/**
-	 * default: 5min
-	 *
-	 * @var int
-	 */
-
+/**
+ * default: 5min
+ *
+ * @var int
+ */
 	CONST OAUTH_URL_EXPIRE = 300;
 
 	public function __construct(ComponentCollection $collection, $settings = array()) {
@@ -54,11 +53,11 @@ class TwitterComponent extends Component {
 		$this->TwimOauth->setDataSource($this->settings['datasource']);
 	}
 
-	/**
-	 *
-	 * @param AppController $controller
-	 * @param array         $settings
-	 */
+/**
+ *
+ * @param AppController $controller
+ * @param array         $settings
+ */
 	public function initialize($controller) {
 		$this->Controller = $controller;
 		if ($this->Controller->Components->attached('Auth')) {
@@ -78,30 +77,30 @@ class TwitterComponent extends Component {
 		}
 	}
 
-	/**
-	 *
-	 * @param AppController $controller
-	 */
+/**
+ *
+ * @param AppController $controller
+ */
 	public function startup($controller) {
 		$this->Controller = $controller;
 	}
 
-	/**
-	 * get DataSource Object
-	 *
-	 * @return TwimSource
-	 */
+/**
+ * get DataSource Object
+ *
+ * @return TwimSource
+ */
 	public function getTwimSource() {
 		return $this->TwimOauth->getDataSource();
 	}
 
-	/**
-	 * make OAuth Authorize URL
-	 *
-	 * @param string $callbackUrl
-	 * @param bool   $useCache
-	 * @return string authorize url
-	 */
+/**
+ * make OAuth Authorize URL
+ *
+ * @param string $callbackUrl
+ * @param bool   $useCache
+ * @return string authorize url
+ */
 	public function getAuthorizeUrl($callbackUrl = null, $useCache = false) {
 		// -- check Session
 		if ($useCache && $this->hasCachedUrl('authorize')) {
@@ -120,13 +119,13 @@ class TwitterComponent extends Component {
 		return $url;
 	}
 
-	/**
-	 * make OAuth Authenticate URL
-	 *
-	 * @param string $callbackUrl
-	 * @param bool   $useCache
-	 * @return string authorize_url
-	 */
+/**
+ * make OAuth Authenticate URL
+ *
+ * @param string $callbackUrl
+ * @param bool   $useCache
+ * @return string authorize_url
+ */
 	public function getAuthenticateUrl($callbackUrl = null, $useCache = false) {
 		// -- check Session
 		if ($useCache && $this->hasCachedUrl('authenticate')) {
@@ -144,9 +143,9 @@ class TwitterComponent extends Component {
 		return $url;
 	}
 
-	/**
-	 * redirect Twitter authorize page
-	 */
+/**
+ * redirect Twitter authorize page
+ */
 	public function connect() {
 		$dataSource = $authorize = false;
 
@@ -169,11 +168,11 @@ class TwitterComponent extends Component {
 		}
 	}
 
-	/**
-	 * get OAuth Access Token
-	 *
-	 * @return array|false
-	 */
+/**
+ * get OAuth Access Token
+ *
+ * @return array|false
+ */
 	public function getAccessToken() {
 		// remove authorize/authenticate url from session
 		$this->deleteCachedAuthorizeUrl();
@@ -190,13 +189,13 @@ class TwitterComponent extends Component {
 		return $accessToken;
 	}
 
-	/**
-	 * set OAuth Access Token
-	 *
-	 * @param mixed $token
-	 * @param string $secret
-	 * @return true|false
-	 */
+/**
+ * set OAuth Access Token
+ *
+ * @param mixed $token
+ * @param string $secret
+ * @return true|false
+ */
 	public function setToken($token, $secret = null) {
 		if (is_array($token) && !empty($token[$this->settings['fields']['oauth_token']]) && !empty($token[$this->settings['fields']['oauth_token_secret']])) {
 			$secret = $token[$this->settings['fields']['oauth_token_secret']];
@@ -206,11 +205,11 @@ class TwitterComponent extends Component {
 		return $this->TwimOauth->setToken($token, $secret);
 	}
 
-	/**
-	 * set OAuth Access Token by Authorized User
-	 *
-	 * @param  array $user
-	 */
+/**
+ * set OAuth Access Token by Authorized User
+ *
+ * @param  array $user
+ */
 	public function setTokenByUser($user = null) {
 		$modelName = 'User';
 
@@ -222,13 +221,13 @@ class TwitterComponent extends Component {
 		return $this->setToken($user[$modelName]);
 	}
 
-	/**
-	 * save token to User model
-	 *
-	 * @param array $token
-	 * @return array User record
-	 * @deprecated
-	 */
+/**
+ * save token to User model
+ *
+ * @param array $token
+ * @return array User record
+ * @deprecated
+ */
 	public function saveToUser($token) {
 		$model = $this->Controller->Auth->getModel();
 		/* @var $model TwitterUser */
@@ -248,29 +247,29 @@ class TwitterComponent extends Component {
 		throw new Exception(__d('twim', 'The user could not be saved'));
 	}
 
-	/**
-	 * delete Authorize/Authenticate url from Session
-	 */
+/**
+ * delete Authorize/Authenticate url from Session
+ */
 	public function deleteCachedAuthorizeUrl() {
 		$this->Session->delete($this->getCachedUrlSessionKey('authorize'));
 		$this->Session->delete($this->getCachedUrlSessionKey('authenticate'));
 		return $this;
 	}
 
-	/**
-	 *
-	 * @param string $type
-	 * @return string
-	 */
+/**
+ *
+ * @param string $type
+ * @return string
+ */
 	public function getCachedUrlSessionKey($type) {
 		return 'Twim.' . $this->TwimOauth->getDataSource()->configKeyName . '.' . $type;
 	}
 
-	/**
-	 *
-	 * @param string $type
-	 * @return bool
-	 */
+/**
+ *
+ * @param string $type
+ * @return bool
+ */
 	public function hasCachedUrl($type = 'authorize') {
 		$key = $this->getCachedUrlSessionKey($type);
 		if ($this->Session->check($key) && $this->Session->check($key . '.url') && time() <= $this->Session->read($key . '.expire')) {
@@ -279,11 +278,11 @@ class TwitterComponent extends Component {
 		return false;
 	}
 
-	/**
-	 *
-	 * @param string $type
-	 * @return string
-	 */
+/**
+ *
+ * @param string $type
+ * @return string
+ */
 	public function getCachedUrl($type = 'authorize') {
 		if ($this->hasCachedUrl($type)) {
 			return $this->Session->read($this->getCachedUrlSessionKey($type) . '.url');
@@ -291,12 +290,12 @@ class TwitterComponent extends Component {
 		return false;
 	}
 
-	/**
-	 *
-	 * @param string $type
-	 * @param string $url
-	 * @return string url
-	 */
+/**
+ *
+ * @param string $type
+ * @param string $url
+ * @return string url
+ */
 	public function setCachedUrl($type = 'authorize', $url = '') {
 		$key = $this->getCachedUrlSessionKey($type);
 		$this->Session->write($key . '.url', $url);

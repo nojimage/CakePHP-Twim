@@ -31,17 +31,17 @@ class OauthController extends AppController {
 
 	public $helpers = array('Js', 'Twim.Twitter');
 
-	/**
-	 *
-	 */
+/**
+ *
+ */
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('login', 'connect', 'callback');
 	}
 
-	/**
-	 * login action
-	 */
+/**
+ * login action
+ */
 	public function login() {
 		$linkOptions = array();
 
@@ -56,25 +56,28 @@ class OauthController extends AppController {
 		$this->set(compact('linkOptions'));
 	}
 
-	/**
-	 * redirect twitter authorize page
-	 */
+/**
+ * redirect twitter authorize page
+ */
 	public function connect() {
 		$this->Twitter->connect();
 	}
 
-	/**
-	 * logout action
-	 */
+/**
+ * logout action
+ */
 	public function logout() {
 		$this->Session->setFlash(__d('twim', 'Signed out'));
 		$this->Session->delete('TwitterAuth');
 		$this->redirect($this->Auth->logout());
 	}
 
-	/**
-	 * OAuth callback
-	 */
+/**
+ * OAuth callback
+ *
+ * @param string $dataSource
+ * @throws InvalidArgumentException
+ */
 	public function callback($dataSource = null) {
 		$this->Twitter->TwimOauth->setDataSource($dataSource);
 		$this->Twitter->deleteCachedAuthorizeUrl();
