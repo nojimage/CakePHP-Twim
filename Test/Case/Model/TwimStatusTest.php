@@ -40,22 +40,6 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 
 	// =========================================================================
 
-	public function testPublicTimeline() {
-		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('publicTimeline');
-		$this->assertSame('1/statuses/public_timeline', $this->Status->request['uri']['path']);
-		$this->assertSame(array(), $this->Status->request['uri']['query']);
-	}
-
-	public function testPublicTimeline_real() {
-		$this->Status->setDataSource($this->testDatasourceName);
-		$results = $this->Status->find('publicTimeline');
-		$this->assertCount(20, $results);
-		$this->assertCount(20, Set::extract('/text', $results));
-	}
-
-	// =========================================================================
-
 	public function testHomeTimeline() {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Status->find('homeTimeline');

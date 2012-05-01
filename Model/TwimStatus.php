@@ -18,9 +18,7 @@
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/public_timeline
  * @link      https://dev.twitter.com/docs/api/1/get/statuses/home_timeline
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/friends_timeline
  * @link      https://dev.twitter.com/docs/api/1/get/statuses/user_timeline
  * @link      https://dev.twitter.com/docs/api/1/get/statuses/mentions
  * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweeted_by_me
@@ -108,9 +106,7 @@ class TwimStatus extends TwimAppModel {
 	 * @var array
 	 */
 	public $findMethods = array(
-		'publicTimeline' => true,
 		'homeTimeline' => true,
-		'friendsTimeline' => true,
 		'userTimeline' => true,
 		'mentions' => true,
 		'retweetedByMe' => true,
@@ -129,7 +125,6 @@ class TwimStatus extends TwimAppModel {
 	 */
 	public $findMethodsRequiringAuth = array(
 		'homeTimeline',
-		'friendsTimeline',
 		'userTimeline',
 		'mentions',
 		'retweetedByMe',
@@ -146,9 +141,7 @@ class TwimStatus extends TwimAppModel {
 	 * @var array
 	 */
 	public $allowedFindOptions = array(
-		'publicTimeline' => array('trim_user', 'include_entities'),
 		'homeTimeline' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
-		'friendsTimeline' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
 		'userTimeline' => array('user_id', 'screen_name', 'since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
 		'mentions' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
 		'retweetedByMe' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
