@@ -19,12 +19,12 @@
  * @since     File available since Release 1.0
  *
  */
-App::uses('AppModel', 'Model');
+App::uses('Model', 'Model');
 
 /**
  * @property TwimSource $Source
  */
-class TwimAppModel extends AppModel {
+class TwimAppModel extends Model {
 
 /**
  * The datasource all models in the plugin use.

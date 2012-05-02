@@ -145,11 +145,11 @@ class TwitterHelper extends AppHelper {
 
 		$autoLink = TwimAutolink::create($value, $options);
 		// autolink
-		if ($options['hashtag']) {
-			$autoLink->setTweet($autoLink->addLinksToHashtags());
-		}
 		if ($options['url']) {
 			$autoLink->setTweet($autoLink->addLinksToURLs());
+		}
+		if ($options['hashtag']) {
+			$autoLink->setTweet($autoLink->addLinksToHashtags());
 		}
 		if ($options['username']) {
 			$autoLink->setTweet($autoLink->addLinksToUsernamesAndLists());
