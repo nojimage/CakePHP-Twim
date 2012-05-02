@@ -36,6 +36,7 @@ class TwitterHelperTest extends CakeTestCase {
 	public function tearDown() {
 		unset($this->Twitter);
 		parent::tearDown();
+		ob_flush();
 	}
 
 	// =========================================================================
