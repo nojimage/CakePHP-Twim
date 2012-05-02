@@ -275,14 +275,12 @@ class TwimFriendship extends TwimAppModel {
  */
 	public function exists($user_id_a, $user_id_b = null) {
 		if (is_null($user_id_b)) {
-
 			if ($this->getID() === false) {
 				return false;
 			}
 			$user_id_b = $user_id_a;
 			$user_id_a = $this->getID();
 		}
-
 
 		$_request = $this->request;
 
