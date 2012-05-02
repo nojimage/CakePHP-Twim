@@ -48,16 +48,30 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 		$this->assertSame(array('count' => 200, 'page' => 1), $this->Status->request['uri']['query']);
 	}
 
-	public function testHomeTimelinePagination() {
+	public function testHomeTimelineUsingMaxId() {
 		$this->Status->getDataSource()->expects($this->at(0))->method('request')
 			->will($this->returnValue(array(
 					array('id' => 18700688341, 'id_str' => '18700688341'),
 				)));
 		$this->Status->getDataSource()->expects($this->at(1))->method('request')
 			->will($this->returnValue(array()));
+
 		$this->Status->find('homeTimeline', array('count' => 100));
 		$this->assertSame('1/statuses/home_timeline', $this->Status->request['uri']['path']);
 		$this->assertSame(array('count' => 100, 'page' => 1, 'max_id' => 18700688340), $this->Status->request['uri']['query']);
+	}
+
+	public function testHomeTimelineUsingSinceId() {
+		$this->Status->getDataSource()->expects($this->at(0))->method('request')
+			->will($this->returnValue(array(
+					array('id' => 118700688341, 'id_str' => '118700688341'),
+				)));
+		$this->Status->getDataSource()->expects($this->at(1))->method('request')
+			->will($this->returnValue(array()));
+
+		$this->Status->find('homeTimeline', array('since_id' => '18700688341'));
+		$this->assertSame('1/statuses/home_timeline', $this->Status->request['uri']['path']);
+		$this->assertSame(array('count' => 200, 'since_id' => 118700688342, 'page' => 1), $this->Status->request['uri']['query']);
 	}
 
 	// =========================================================================
