@@ -53,9 +53,11 @@ class TwimDirectMessageNeedAuthTestCase extends TwimConnectionTestCase {
 		);
 
 		$result = $this->DirectMessage->save($data);
+		$this->assertEquals('https', $this->TwimSource->Http->request['uri']['scheme']);
 		$this->assertNotEmpty($result['TwimDirectMessage']);
 
 		$result = $this->DirectMessage->find('show', array('id' => $this->DirectMessage->getLastInsertID()));
+		$this->assertEquals('https', $this->TwimSource->Http->request['uri']['scheme']);
 		$this->assertSame($data['TwimDirectMessage']['text'], $result['text']);
 
 		$this->assertTrue($this->DirectMessage->delete($this->DirectMessage->getLastInsertID()));
