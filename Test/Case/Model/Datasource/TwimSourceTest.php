@@ -51,6 +51,7 @@ class TwimSourceTestCase extends TwimConnectionTestCase {
 			),
 		);
 		$results = $this->TwimSource->request($this->Model);
+		$this->assertEquals('http', $this->TwimSource->Http->request['uri']['scheme']);
 		$this->assertEquals(200, $this->TwimSource->Http->response['status']['code']);
 		$this->assertNotEmpty($results['results']);
 	}

@@ -176,6 +176,10 @@ class TwimSource extends RestSource {
 					$model->request['auth'][$oAuthParam] = $this->config[$oAuthParam];
 				}
 			}
+			// Set default uri scheme to https
+			if (!isset($model->request['uri']['scheme']) && extension_loaded('openssl')) {
+				$model->request['uri']['scheme'] = 'https';
+			}
 		}
 
 		// Set default host, N.B. some API calls use api.twitter.com, in which case

@@ -208,9 +208,17 @@ class TwimStatus extends TwimAppModel {
 						parse_str(parse_url($this->response['next_page'], PHP_URL_QUERY), $nextPage);
 						$options = am($options, $nextPage);
 					} elseif (in_array('since_id', $this->allowedFindOptions[$type]) && !empty($options['since_id'])) {
-						$options['since_id'] = $page[count($page) - 1]['id'] + 1;
+						if (PHP_INT_SIZE === 4 && extension_loaded('bcmath')) {
+							$options['since_id'] = bcadd($page[0]['id_str'], '1'); // for 32bit
+						} else {
+							$options['since_id'] = $page[0]['id'] + 1;
+						}
 					} elseif (in_array('max_id', $this->allowedFindOptions[$type])) {
-						$options['max_id'] = $page[count($page) - 1]['id'] - 1;
+						if (PHP_INT_SIZE === 4 && extension_loaded('bcmath')) {
+							$options['max_id'] = bcsub($page[count($page) - 1]['id_str'], '1'); // for 32bit
+						} else {
+							$options['max_id'] = $page[count($page) - 1]['id'] - 1;
+						}
 					} else {
 						$options['page']++;
 					}
