@@ -74,19 +74,21 @@ class TwimDirectMessageTestCase extends TwimConnectionTestCase {
 		$this->DirectMessage->getDataSource()->expects($this->at(0))->method('request')
 			->will($this->returnValue(array(
 					array('id' => 18700688341, 'id_str' => '18700688341'),
+					array('id' => 18700688340, 'id_str' => '18700688340'),
 				)));
 		$this->DirectMessage->getDataSource()->expects($this->at(1))->method('request')
 			->will($this->returnValue(array()));
 
 		$this->DirectMessage->find('sent', array('count' => 200));
 		$this->assertSame('1/direct_messages/sent', $this->DirectMessage->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'page' => 1, 'max_id' => 18700688340), $this->DirectMessage->request['uri']['query']);
+		$this->assertSame(array('count' => 200, 'page' => 1, 'max_id' => 18700688339), $this->DirectMessage->request['uri']['query']);
 	}
 
 	public function testFindSentUsingSinceId() {
 		$this->DirectMessage->getDataSource()->expects($this->at(0))->method('request')
 			->will($this->returnValue(array(
 					array('id' => 118700688341, 'id_str' => '118700688341'),
+					array('id' => 118700688340, 'id_str' => '118700688340'),
 				)));
 		$this->DirectMessage->getDataSource()->expects($this->at(1))->method('request')
 			->will($this->returnValue(array()));
