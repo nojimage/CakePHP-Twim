@@ -162,7 +162,11 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  * @return array
  */
 	public function expandUrl($model, $tweet = null, $override = false) {
-		return $this->_expand('_expandUrl', 'urls', $model, $tweet, $override);
+		$tweet = $this->_expand('_expandUrl', 'urls', $model, $tweet, $override);
+		if (isset($tweet['expanded_text'])) {
+			$tweet['text'] = $tweet['expanded_text'];
+		}
+		return $this->_expand('_expandUrl', 'media', $model, $tweet, $override);
 	}
 
 /**
@@ -174,7 +178,8 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  * @return array
  */
 	public function expandUrlString($model, $tweet = null, $override = false) {
-		return $this->_expand('_expandUrlString', 'urls', $model, $tweet, $override);
+		$tweet = $this->_expand('_expandUrlString', 'urls', $model, $tweet, $override);
+		return $this->_expand('_expandUrlString', 'media', $model, $tweet, $override);
 	}
 
 /**
@@ -231,7 +236,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
 		);
 		$hashtagLink = vsprintf('<a href="%s" title="%s" class="%s" rel="%s">%s</a>', $data);
 
-		return preg_replace('/(^|[\s^"])' . preg_quote($hash, '/') . '([\s^"]|$)/u', "$1{$hashtagLink}$2", $text, 1);
+		return preg_replace('/(^|[^"^>])' . preg_quote($hash, '/') . '([^"^<]|$)/u', "$1{$hashtagLink}$2", $text, 1);
 	}
 
 /**
@@ -257,8 +262,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
 			h($entity['display_url']),
 		);
 		$urlLink = vsprintf('<a href="%s" title="%s" class="%s" rel="%s">%s</a>', $data);
-
-		return preg_replace('/(^|[\s^"])' . preg_quote($entity['url'], '/') . '([\s^"]|$)/u', "$1{$urlLink}$2", $text, 1);
+		return preg_replace('/(^|[^"])' . preg_quote($entity['url'], '/') . '([^"]|$)/u', "$1{$urlLink}$2", $text, 1);
 	}
 
 /**
