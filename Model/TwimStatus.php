@@ -132,10 +132,10 @@ class TwimStatus extends TwimAppModel {
  * @var array
  */
 	public $allowedFindOptions = array(
-		'homeTimeline' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
-		'userTimeline' => array('user_id', 'screen_name', 'since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
-		'mentionsTimeline' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
-		'retweetsOfMe' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
+		'homeTimeline' => array('since_id', 'max_id', 'count', 'trim_user', 'include_entities'),
+		'userTimeline' => array('user_id', 'screen_name', 'since_id', 'max_id', 'count', 'trim_user', 'include_rts', 'include_entities'),
+		'mentionsTimeline' => array('since_id', 'max_id', 'count', 'trim_user', 'include_rts', 'include_entities'),
+		'retweetsOfMe' => array('since_id', 'max_id', 'count', 'trim_user', 'include_entities'),
 		'show' => array('id', 'trim_user', 'include_entities'),
 		'retweets' => array('id', 'count', 'trim_user', 'include_entities'),
 	);
@@ -186,7 +186,6 @@ class TwimStatus extends TwimAppModel {
 
 		if (empty($options['page'])
 			&& array_key_exists($type, $this->allowedFindOptions)
-			&& in_array('page', $this->allowedFindOptions[$type])
 			&& in_array('count', $this->allowedFindOptions[$type])) {
 			$options['page'] = 1;
 			$results = array();
@@ -213,8 +212,6 @@ class TwimStatus extends TwimAppModel {
 						} else {
 							$options['max_id'] = $page[count($page) - 1]['id'] - 1;
 						}
-					} else {
-						$options['page']++;
 					}
 					// adjust count
 					if (!empty($options['limit']) && $options['limit'] < count($results) + $options['count']) {
@@ -229,6 +226,7 @@ class TwimStatus extends TwimAppModel {
 			}
 			return $results;
 		}
+
 		if (method_exists($this, '_find' . Inflector::camelize($type))) {
 			return parent::find($type, $options);
 		}
