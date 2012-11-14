@@ -21,13 +21,8 @@
  * @link      https://dev.twitter.com/docs/api/1/get/statuses/home_timeline
  * @link      https://dev.twitter.com/docs/api/1/get/statuses/user_timeline
  * @link      https://dev.twitter.com/docs/api/1/get/statuses/mentions
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweeted_by_me
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweeted_to_me
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweets_of_me
  * @link      https://dev.twitter.com/docs/api/1/get/statuses/show/:id
  * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweets/:id
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/:id/retweeted_by
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/:id/retweeted_by/ids
  * @link      https://dev.twitter.com/docs/api/1/post/statuses/update
  * @link      https://dev.twitter.com/docs/api/1/post/statuses/retweet/:id
  * @link      https://dev.twitter.com/docs/api/1/post/statuses/destroy/:id
@@ -144,13 +139,9 @@ class TwimStatus extends TwimAppModel {
 		'homeTimeline' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
 		'userTimeline' => array('user_id', 'screen_name', 'since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
 		'mentions' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
-		'retweetedByMe' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
-		'retweetedToMe' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
 		'retweetsOfMe' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
 		'show' => array('id', 'trim_user', 'include_entities'),
 		'retweets' => array('id', 'count', 'trim_user', 'include_entities'),
-		'retweetedBy' => array('id', 'count', 'page', 'trim_user', 'include_entities'),
-		'retweetedByIds' => array('id', 'count', 'page', 'trim_user', 'include_entities'),
 	);
 
 /**
@@ -306,76 +297,6 @@ class TwimStatus extends TwimAppModel {
 			$this->request['uri']['path'] = $this->apiUrlBase . $type . '/' . $query['id'];
 			unset($this->request['uri']['query']['id']);
 			unset($query['id']);
-			return $query;
-		} else {
-			return $results;
-		}
-	}
-
-/**
- * Retweeted By
- * -------------
- *
- *     TwitterStatus::find('retweetedBy', $options)
- *
- * @param $state string 'before' or 'after'
- * @param $query array
- * @param $results array
- * @return mixed
- * @access protected
- * */
-	protected function _findRetweetedBy($state, $query = array(), $results = array()) {
-		if ($state === 'before') {
-			if (empty($query['id'])) {
-				return $query;
-			}
-
-			$type = 'retweetedBy';
-
-			if ($query['count'] > 100) {
-				$query['count'] = 100;
-			}
-			$this->_setupRequest($type, $query);
-
-			$this->request['uri']['path'] = $this->apiUrlBase . $query['id'] . '/retweeted_by';
-			unset($this->request['uri']['query']['id']);
-			unset($query['id']);
-
-			return $query;
-		} else {
-			return $results;
-		}
-	}
-
-/**
- * Retweeted By Ids
- * -------------
- *
- *     TwitterStatus::find('retweetedByIds', $options)
- *
- * @param $state string 'before' or 'after'
- * @param $query array
- * @param $results array
- * @return mixed
- * @access protected
- * */
-	protected function _findRetweetedByIds($state, $query = array(), $results = array()) {
-		if ($state === 'before') {
-			if (empty($query['id'])) {
-				return $query;
-			}
-
-			$type = 'retweetedByIds';
-
-			if ($query['count'] > 100) {
-				$query['count'] = 100;
-			}
-			$this->_setupRequest($type, $query);
-
-			$this->request['uri']['path'] = $this->apiUrlBase . $query['id'] . '/retweeted_by/ids';
-			unset($this->request['uri']['query']['id']);
-			unset($query['id']);
-
 			return $query;
 		} else {
 			return $results;

@@ -3,7 +3,7 @@
 /**
  * test TwimStatus
  *
- * CakePHP 2.0
+ * CakePHP 2.x
  * PHP version 5
  *
  * Copyright 2012, nojimage (http://php-tips.com/)
@@ -11,7 +11,7 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   2.0
+ * @version   2.1
  * @author    nojimage <nojimage at gmail.com>
  * @copyright 2012 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
@@ -96,24 +96,6 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 
 	// =========================================================================
 
-	public function testRetweetedByMe() {
-		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('retweetedByMe');
-		$this->assertSame('1/statuses/retweeted_by_me', $this->Status->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'page' => 1), $this->Status->request['uri']['query']);
-	}
-
-	// =========================================================================
-
-	public function testRetweetedToMe() {
-		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('retweetedToMe');
-		$this->assertSame('1/statuses/retweeted_to_me', $this->Status->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'page' => 1), $this->Status->request['uri']['query']);
-	}
-
-	// =========================================================================
-
 	public function testRetweetsOfMe() {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Status->find('retweetsOfMe');
@@ -137,24 +119,6 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 		$this->Status->find('retweets', array('id' => '1234567'));
 		$this->assertSame('1/statuses/retweets/1234567', $this->Status->request['uri']['path']);
 		$this->assertSame(array('count' => 100), $this->Status->request['uri']['query']);
-	}
-
-	// =========================================================================
-
-	public function testRetweetedBy() {
-		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('retweetedBy', array('id' => '1234567'));
-		$this->assertSame('1/statuses/1234567/retweeted_by', $this->Status->request['uri']['path']);
-		$this->assertSame(array('page' => 1, 'count' => 100), $this->Status->request['uri']['query']);
-	}
-
-	// =========================================================================
-
-	public function testRetweetedByIds() {
-		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('retweetedByIds', array('id' => '1234567'));
-		$this->assertSame('1/statuses/1234567/retweeted_by/ids', $this->Status->request['uri']['path']);
-		$this->assertSame(array('page' => 1, 'count' => 100), $this->Status->request['uri']['query']);
 	}
 
 	// =========================================================================
