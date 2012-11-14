@@ -63,4 +63,5 @@ class TwimStatusNeedAuthTestCase extends TwimConnectionTestCase {
 		$results = $this->Status->find('homeTimeline', array('limit' => 300));
 		$this->assertCount(300, $results);
 	}
+
 }

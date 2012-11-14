@@ -18,14 +18,16 @@
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/home_timeline
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/user_timeline
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/mentions
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/show/:id
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweets/:id
- * @link      https://dev.twitter.com/docs/api/1/post/statuses/update
- * @link      https://dev.twitter.com/docs/api/1/post/statuses/retweet/:id
- * @link      https://dev.twitter.com/docs/api/1/post/statuses/destroy/:id
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/mentions_timeline
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/retweets_of_me
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/retweets/%3Aid
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/show/%3Aid
+ * @link      https://dev.twitter.com/docs/api/1.1/post/statuses/update
+ * @link      https://dev.twitter.com/docs/api/1.1/post/statuses/retweet/%3Aid
+ * @link      https://dev.twitter.com/docs/api/1.1/post/statuses/destroy/%3Aid
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/oembed
  *
  */
 App::uses('TwimAppModel', 'Twim.Model');
@@ -38,7 +40,7 @@ App::uses('TwimAppModel', 'Twim.Model');
  */
 class TwimStatus extends TwimAppModel {
 
-	public $apiUrlBase = '1/statuses/';
+	public $apiUrlBase = '1.1/statuses/';
 
 /**
  * The model's schema. Used by FormHelper
@@ -104,13 +106,10 @@ class TwimStatus extends TwimAppModel {
 		'homeTimeline' => true,
 		'userTimeline' => true,
 		'mentions' => true,
-		'retweetedByMe' => true,
-		'retweetedToMe' => true,
+		'mentionsTimeline' => true,
 		'show' => true,
 		'retweetsOfMe' => true,
 		'retweets' => true,
-		'retweetedBy' => true,
-		'retweetedByIds' => true,
 	);
 
 /**
@@ -121,13 +120,10 @@ class TwimStatus extends TwimAppModel {
 	public $findMethodsRequiringAuth = array(
 		'homeTimeline',
 		'userTimeline',
-		'mentions',
-		'retweetedByMe',
-		'retweetedToMe',
+		'mentionsTimeline',
+		'show',
 		'retweetsOfMe',
 		'retweets',
-		'retweetedBy',
-		'retweetedByIds',
 	);
 
 /**
@@ -138,7 +134,7 @@ class TwimStatus extends TwimAppModel {
 	public $allowedFindOptions = array(
 		'homeTimeline' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
 		'userTimeline' => array('user_id', 'screen_name', 'since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
-		'mentions' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
+		'mentionsTimeline' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
 		'retweetsOfMe' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
 		'show' => array('id', 'trim_user', 'include_entities'),
 		'retweets' => array('id', 'count', 'trim_user', 'include_entities'),
@@ -174,6 +170,11 @@ class TwimStatus extends TwimAppModel {
  * @return mixed
  */
 	public function find($type, $options = array()) {
+		// change find type api 1.0 -> 1.1
+		if ($type === 'mentions') {
+			$type = 'mentionsTimeline';
+		}
+
 		if (in_array('count', $this->allowedFindOptions[$type])) {
 			$defaults = array('count' => $this->maxCount, 'strict' => false);
 			$options = array_merge($defaults, $options);
@@ -314,7 +315,7 @@ class TwimStatus extends TwimAppModel {
 	public function tweet($data = null, $validate = true, $fieldList = array()) {
 		$this->request = array(
 			'uri' => array(
-				'path' => '1/statuses/update',
+				'path' => $this->apiUrlBase . 'update',
 			),
 			'method' => 'POST',
 		);
@@ -350,7 +351,7 @@ class TwimStatus extends TwimAppModel {
 		}
 		$this->request = array(
 			'uri' => array(
-				'path' => '1/statuses/retweet/' . $id,
+				'path' => $this->apiUrlBase . 'retweet/' . $id,
 			),
 		);
 		$this->create();
@@ -386,7 +387,7 @@ class TwimStatus extends TwimAppModel {
 	public function delete($id = null, $cascade = true) {
 		$this->request = array(
 			'uri' => array(
-				'path' => '1/statuses/destroy/' . $id,
+				'path' => $this->apiUrlBase . 'destroy/' . $id,
 			),
 			'method' => 'POST',
 			'auth' => true,
