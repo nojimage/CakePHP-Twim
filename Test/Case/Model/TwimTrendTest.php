@@ -42,7 +42,7 @@ class TwimTrendTestCase extends TwimConnectionTestCase {
 
 	public function testPlace() {
 		$this->Trend->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Trend->find('place', array('id' => 1));
+		$this->Trend->find(TwimTrend::FINDTYPE_PLACE, array('id' => 1));
 		$this->assertSame('1.1/trends/place', $this->Trend->request['uri']['path']);
 		$this->assertSame(array('id' => 1), $this->Trend->request['uri']['query']);
 	}
@@ -51,7 +51,7 @@ class TwimTrendTestCase extends TwimConnectionTestCase {
 
 	public function testAvailable() {
 		$this->Trend->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Trend->find('available');
+		$this->Trend->find(TwimTrend::FINDTYPE_AVAILABLE);
 		$this->assertSame('1.1/trends/available', $this->Trend->request['uri']['path']);
 		$this->assertSame(array(), $this->Trend->request['uri']['query']);
 	}
@@ -60,7 +60,7 @@ class TwimTrendTestCase extends TwimConnectionTestCase {
 
 	public function testClosest() {
 		$this->Trend->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Trend->find('closest');
+		$this->Trend->find(TwimTrend::FINDTYPE_CLOSEST);
 		$this->assertSame('1.1/trends/closest', $this->Trend->request['uri']['path']);
 		$this->assertSame(array(), $this->Trend->request['uri']['query']);
 	}

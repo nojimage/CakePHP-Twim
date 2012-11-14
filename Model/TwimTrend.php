@@ -19,7 +19,7 @@
  * @since     File available since Release 1.0
  *
  * @link      https://dev.twitter.com/docs/api/1.1/get/trends/place
- * @link      https://dev.twitter.com/docs/api/1/get/trends/available
+ * @link      https://dev.twitter.com/docs/api/1.1/get/trends/available
  * @link      https://dev.twitter.com/docs/api/1.1/get/trends/closest
  *
  */
@@ -31,6 +31,15 @@ App::uses('TwimAppModel', 'Twim.Model');
 class TwimTrend extends TwimAppModel {
 
 	public $apiUrlBase = '1.1/trends/';
+
+/**
+ * Custom find type name
+ */
+	const FINDTYPE_PLACE = 'place';
+
+	const FINDTYPE_AVAILABLE = 'available';
+
+	const FINDTYPE_CLOSEST = 'closest';
 
 /**
  * Custom find types available on this model
