@@ -147,12 +147,12 @@ class TwimStatus extends TwimAppModel {
  * @var array
  */
 	public $allowedFindOptions = array(
-		'homeTimeline' => array('since_id', 'max_id', 'count', 'trim_user', 'include_entities'),
-		'userTimeline' => array('user_id', 'screen_name', 'since_id', 'max_id', 'count', 'trim_user', 'include_rts', 'include_entities'),
-		'mentionsTimeline' => array('since_id', 'max_id', 'count', 'trim_user', 'include_rts', 'include_entities'),
-		'retweetsOfMe' => array('since_id', 'max_id', 'count', 'trim_user', 'include_entities'),
-		'show' => array('id', 'trim_user', 'include_entities'),
-		'retweets' => array('id', 'count', 'trim_user', 'include_entities'),
+		'homeTimeline' => array('count', 'since_id', 'max_id', 'trim_user', 'exclude_replies', 'contributor_details', 'include_entities'),
+		'userTimeline' => array('user_id', 'screen_name', 'since_id', 'max_id', 'count', 'trim_user', 'exclude_replies', 'contributor_details', 'include_rts'),
+		'mentionsTimeline' => array('count', 'since_id', 'max_id', 'trim_user', 'contributor_details', 'include_entities'),
+		'retweetsOfMe' => array('since_id', 'max_id', 'count', 'trim_user', 'include_entities', 'include_user_entities'),
+		'show' => array('id', 'trim_user', 'include_my_retweet', 'include_entities'),
+		'retweets' => array('id', 'count', 'trim_user'),
 	);
 
 /**
@@ -269,8 +269,7 @@ class TwimStatus extends TwimAppModel {
 				return $query;
 			}
 
-			$type = 'show';
-
+			$type = self::FINDTYPE_SHOW;
 			$this->_setupRequest($type, $query);
 
 			$this->request['uri']['path'] = $this->apiUrlBase . $type . '/' . $query['id'];
@@ -301,7 +300,7 @@ class TwimStatus extends TwimAppModel {
 				return $query;
 			}
 
-			$type = 'retweets';
+			$type = self::FINDTYPE_RETWEETS;
 
 			if ($query['count'] > 100) {
 				$query['count'] = 100;
