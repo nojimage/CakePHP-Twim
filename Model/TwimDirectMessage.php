@@ -167,6 +167,7 @@ class TwimDirectMessage extends TwimAppModel {
 						$results = array_slice($results, 0, $options['limit']);
 						break;
 					}
+					// get next page
 					if (isset($this->response['next_page'])) {
 						parse_str(parse_url($this->response['next_page'], PHP_URL_QUERY), $nextPage);
 						$options = am($options, $nextPage);
@@ -185,6 +186,10 @@ class TwimDirectMessage extends TwimAppModel {
 					} else {
 						$options['page']++;
 					}
+					// adjust count
+					if (!empty($options['limit']) && $options['limit'] < count($results) + $options['count']) {
+						$options['count'] = $options['limit'] - count($results);
+					}
 				}
 			} catch (RuntimeException $e) {
 				if ($options['strict']) {
@@ -194,6 +199,7 @@ class TwimDirectMessage extends TwimAppModel {
 			}
 			return $results;
 		}
+
 		if (method_exists($this, '_find' . Inflector::camelize($type))) {
 			return parent::find($type, $options);
 		}

@@ -205,6 +205,7 @@ class TwimStatus extends TwimAppModel {
 						$results = array_slice($results, 0, $options['limit']);
 						break;
 					}
+					// get next page
 					if (isset($this->response['next_page'])) {
 						parse_str(parse_url($this->response['next_page'], PHP_URL_QUERY), $nextPage);
 						$options = am($options, $nextPage);
@@ -222,6 +223,10 @@ class TwimStatus extends TwimAppModel {
 						}
 					} else {
 						$options['page']++;
+					}
+					// adjust count
+					if (!empty($options['limit']) && $options['limit'] < count($results) + $options['count']) {
+						$options['count'] = $options['limit'] - count($results);
 					}
 				}
 			} catch (RuntimeException $e) {
