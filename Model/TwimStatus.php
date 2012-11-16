@@ -43,6 +43,21 @@ class TwimStatus extends TwimAppModel {
 	public $apiUrlBase = '1.1/statuses/';
 
 /**
+ * Custom find type name
+ */
+	const FINDTYPE_HOME_TIMELINE = 'homeTimeline';
+
+	const FINDTYPE_USER_TIMELINE = 'userTimeline';
+
+	const FINDTYPE_MENTIONS_TIMELINE = 'mentionsTimeline';
+
+	const FINDTYPE_SHOW = 'show';
+
+	const FINDTYPE_RETWEETS_OF_ME = 'retweetsOfMe';
+
+	const FINDTYPE_RETWEETS = 'retweets';
+
+/**
  * The model's schema. Used by FormHelper
  *
  * @var array
