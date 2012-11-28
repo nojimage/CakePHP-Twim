@@ -18,6 +18,8 @@
  * @package   Twim
  * @since     File available since Release 1.0
  * */
+App::uses('AppController', 'Controller');
+
 class TwimAppController extends AppController {
 	//
 }

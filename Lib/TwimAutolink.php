@@ -52,7 +52,7 @@ class TwimAutolink extends Twitter_Autolink {
 		$autoLink = new self($tweet, $options['escape'], $options['full_encode']);
 		$autoLink
 			->setURLClass($options['class_url'])
-			->setUsernameClass($options['class_url'])
+			->setUsernameClass($options['class_user'])
 			->setListClass($options['class_list'])
 			->setHashtagClass($options['class_hash'])
 			->setNoFollow($options['nofollow'])

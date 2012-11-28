@@ -18,6 +18,7 @@
  * @package   Twim
  * @since     File available since Release 1.0
  */
+App::uses('AppController', 'Controller');
 
 /**
  * @property AuthComponent $Auth
@@ -36,7 +37,9 @@ class OauthController extends AppController {
  */
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('login', 'connect', 'callback');
+		if ($this->Components->enabled('Auth')) {
+			$this->Auth->allow('login', 'connect', 'callback');
+		}
 	}
 
 /**
