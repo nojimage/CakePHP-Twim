@@ -48,6 +48,7 @@ class TwitterHelperTest extends CakeTestCase {
 			'content' => 'username',
 			'attributes' => array(
 				'href' => 'https://twitter.com/username',
+				'class' => 'username',
 			),
 			), $this->Twitter->linkify($value));
 		$this->assertSame($value, $this->Twitter->linkify($value, array('username' => false)));
@@ -85,6 +86,7 @@ class TwitterHelperTest extends CakeTestCase {
 			'content' => 'username',
 			'attributes' => array(
 				'href' => 'https://twitter.com/username',
+				'class' => 'username',
 			),
 			), $result);
 		$this->assertTag(array(
@@ -104,6 +106,7 @@ class TwitterHelperTest extends CakeTestCase {
 			'content' => 'username',
 			'attributes' => array(
 				'href' => 'https://twitter.com/username',
+				'class' => 'username',
 			),
 			), $result);
 		$this->assertTag(array(
