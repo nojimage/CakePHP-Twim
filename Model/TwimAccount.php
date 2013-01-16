@@ -18,17 +18,8 @@
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      https://dev.twitter.com/docs/api/1/get/account/rate_limit_status
- * @link      https://dev.twitter.com/docs/api/1/get/account/verify_credentials
- * @link      https://dev.twitter.com/docs/api/1/post/account/end_session
- * @link      https://dev.twitter.com/docs/api/1/post/account/update_delivery_device
- * @link      https://dev.twitter.com/docs/api/1/post/account/update_profile
- * @link      https://dev.twitter.com/docs/api/1/post/account/update_profile_background_image
- * @link      https://dev.twitter.com/docs/api/1/post/account/update_profile_colors
- * @link      https://dev.twitter.com/docs/api/1/post/account/update_profile_image
- * @link      https://dev.twitter.com/docs/api/1/get/account/totals
- * @link      https://dev.twitter.com/docs/api/1/get/account/settings
- * @link      https://dev.twitter.com/docs/api/1/post/account/settings
+ * @link      https://dev.twitter.com/docs/api/1.1/get/account/verify_credentials
+ * @link      https://dev.twitter.com/docs/api/1.1/get/account/settings
  * @todo support post methods
  * @todo find method (verifyCredentials. totals, settings) not test yet.
  */
@@ -39,7 +30,7 @@ App::uses('TwimAppModel', 'Twim.Model');
  */
 class TwimAccount extends TwimAppModel {
 
-	public $apiUrlBase = '1/account/';
+	public $apiUrlBase = '1.1/account/';
 
 /**
  * Custom find types available on this model
