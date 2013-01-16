@@ -19,6 +19,7 @@
  * @since     File available since Release 1.0
  *
  */
+App::uses('TwimAccount', 'Twim.Model');
 App::uses('TwimConnectionTestCase', 'Twim.TestSuite');
 
 /**
@@ -43,8 +44,17 @@ class TwimAccountTestCase extends TwimConnectionTestCase {
 
 	// =========================================================================
 
-	public function testConstruct() {
-		$this->markTestIncomplete();
+	public function testFindSettings() {
+		$result = $this->Account->find(TwimAccount::FINDTYPE_SETTINGS);
+		$this->assertArrayHasKey('screen_name', $result);
+		$this->assertArrayHasKey('language', $result);
+	}
+
+	public function testFindVerifyCredentials() {
+		$result = $this->Account->find(TwimAccount::FINDTYPE_VERIFY_CREDENTIALS);
+		$this->assertArrayHasKey('id', $result);
+		$this->assertArrayHasKey('screen_name', $result);
+		$this->assertArrayHasKey('lang', $result);
 	}
 
 }

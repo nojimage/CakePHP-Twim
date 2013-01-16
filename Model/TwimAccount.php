@@ -18,10 +18,9 @@
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      https://dev.twitter.com/docs/api/1.1/get/account/verify_credentials
  * @link      https://dev.twitter.com/docs/api/1.1/get/account/settings
+ * @link      https://dev.twitter.com/docs/api/1.1/get/account/verify_credentials
  * @todo support post methods
- * @todo find method (verifyCredentials. totals, settings) not test yet.
  */
 App::uses('TwimAppModel', 'Twim.Model');
 
@@ -33,13 +32,20 @@ class TwimAccount extends TwimAppModel {
 	public $apiUrlBase = '1.1/account/';
 
 /**
+ * Custom find type name
+ */
+	const FINDTYPE_SETTINGS = 'settings';
+
+	const FINDTYPE_VERIFY_CREDENTIALS = 'verifyCredentials';
+
+/**
  * Custom find types available on this model
  *
  * @var array
  */
 	public $findMethods = array(
-		'verifyCredentials' => true,
 		'settings' => true,
+		'verifyCredentials' => true,
 	);
 
 /**
@@ -48,8 +54,8 @@ class TwimAccount extends TwimAppModel {
  * @var array
  */
 	public $findMethodsRequiringAuth = array(
-		'verifyCredentials',
 		'settings',
+		'verifyCredentials',
 	);
 
 /**
@@ -58,8 +64,8 @@ class TwimAccount extends TwimAppModel {
  * @var array
  */
 	public $allowedFindOptions = array(
-		'verifyCredentials' => array('include_entities', 'skip_status'),
 		'settings' => array(),
+		'verifyCredentials' => array('include_entities', 'skip_status'),
 	);
 
 /**
