@@ -27,10 +27,12 @@ App::uses('TwimConnectionTestCase', 'Twim.TestSuite');
  */
 class TwimAccountTestCase extends TwimConnectionTestCase {
 
+	public $needAuth = true;
+
 	public function setUp() {
 		parent::setUp();
 		$this->Account = ClassRegistry::init('Twim.TwimAccount');
-		$this->Account->setDataSource($this->testDatasourceName);
+		$this->Account->setDataSource('twitter');
 	}
 
 	public function tearDown() {
@@ -41,25 +43,8 @@ class TwimAccountTestCase extends TwimConnectionTestCase {
 
 	// =========================================================================
 
-
-	public function testRateLimitStatus() {
-		$limit = $this->Account->find('rateLimitStatus');
-		$this->assertInternalType('integer', $limit['hourly_limit']);
-		$this->assertInternalType('integer', $limit['remaining_hits']);
-		$this->assertGreaterThan(time(), $limit['reset_time_in_seconds']);
-		$this->assertNotEmpty($limit['reset_time']);
-	}
-
-	// =========================================================================
-
-	public function testGetApiRemain() {
-		$this->assertGreaterThanOrEqual(0, $this->Account->getApiRemain());
-	}
-
-	// =========================================================================
-
-	public function testGetApiResetTime() {
-		$this->assertGreaterThan(time(), $this->Account->getApiResetTime());
+	public function testConstruct() {
+		$this->markTestIncomplete();
 	}
 
 }

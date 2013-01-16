@@ -38,9 +38,7 @@ class TwimAccount extends TwimAppModel {
  * @var array
  */
 	public $findMethods = array(
-		'rateLimitStatus' => true,
 		'verifyCredentials' => true,
-		'totals' => true,
 		'settings' => true,
 	);
 
@@ -51,7 +49,6 @@ class TwimAccount extends TwimAppModel {
  */
 	public $findMethodsRequiringAuth = array(
 		'verifyCredentials',
-		'totals',
 		'settings',
 	);
 
@@ -61,22 +58,8 @@ class TwimAccount extends TwimAppModel {
  * @var array
  */
 	public $allowedFindOptions = array(
-		'rateLimitStatus' => array(),
 		'verifyCredentials' => array('include_entities', 'skip_status'),
-		'totals' => array(),
 		'settings' => array(),
-	);
-
-/**
- * api limit data
- *
- * @var array
- */
-	protected $_limit = array(
-		'hourly_limit' => null,
-		'reset_time_in_seconds' => null,
-		'reset_time' => null,
-		'remaining_hits' => null,
 	);
 
 /**
@@ -109,32 +92,6 @@ class TwimAccount extends TwimAppModel {
 		$this->_setupRequest($type, $options);
 
 		return parent::find('all', $options);
-	}
-
-/**
- * get api call remaining
- *
- * @package bool $refresh
- * @return bool
- */
-	public function getApiRemain($refresh = true) {
-		if ($refresh || empty($this->_limit)) {
-			$this->_limit = $this->find('rateLimitStatus');
-		}
-		return $this->_limit['remaining_hits'];
-	}
-
-/**
- * get api limit refresh time (sec)
- *
- * @package bool $refresh
- * @return int
- */
-	public function getApiResetTime($refresh = true) {
-		if ($refresh || empty($this->_limit)) {
-			$this->_limit = $this->find('rateLimitStatus');
-		}
-		return $this->_limit['reset_time_in_seconds'];
 	}
 
 }
