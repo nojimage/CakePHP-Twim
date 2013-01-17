@@ -18,15 +18,13 @@
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      https://dev.twitter.com/docs/api/1/get/friendships/exists
- * @link      https://dev.twitter.com/docs/api/1/get/friendships/incoming
- * @link      https://dev.twitter.com/docs/api/1/get/friendships/outgoing
- * @link      https://dev.twitter.com/docs/api/1/get/friendships/show
- * @link      https://dev.twitter.com/docs/api/1/get/friendships/lookup
- * @link      https://dev.twitter.com/docs/api/1/get/friendships/no_retweet_ids
- * @link      https://dev.twitter.com/docs/api/1/post/friendships/create
- * @link      https://dev.twitter.com/docs/api/1/post/friendships/destroy
- * @link      https://dev.twitter.com/docs/api/1/post/friendships/update
+ * @link      https://dev.twitter.com/docs/api/1.1/get/friendships/incoming
+ * @link      https://dev.twitter.com/docs/api/1.1/get/friendships/outgoing
+ * @link      https://dev.twitter.com/docs/api/1.1/get/friendships/show
+ * @link      https://dev.twitter.com/docs/api/1.1/get/friendships/lookup
+ * @link      https://dev.twitter.com/docs/api/1.1/post/friendships/create
+ * @link      https://dev.twitter.com/docs/api/1.1/post/friendships/destroy
+ * @link      https://dev.twitter.com/docs/api/1.1/post/friendships/update
  *
  */
 App::uses('TwimAppModel', 'Twim.Model');
@@ -36,7 +34,18 @@ App::uses('TwimAppModel', 'Twim.Model');
  */
 class TwimFriendship extends TwimAppModel {
 
-	public $apiUrlBase = '1/friendships/';
+	public $apiUrlBase = '1.1/friendships/';
+
+/**
+ * Custom find type name
+ */
+	const FINDTYPE_INCOMING = 'incoming';
+
+	const FINDTYPE_OUTGOING = 'outgoing';
+
+	const FINDTYPE_LOOKUP = 'lookup';
+
+	const FINDTYPE_SHOW = 'show';
 
 /**
  * The model's schema. Used by FormHelper
@@ -78,12 +87,10 @@ class TwimFriendship extends TwimAppModel {
  * @var array
  */
 	public $findMethods = array(
-		'exists' => true,
 		'incoming' => true,
 		'outgoing' => true,
 		'show' => true,
 		'lookup' => true,
-		'noRetweetIds' => true,
 	);
 
 /**
@@ -94,8 +101,8 @@ class TwimFriendship extends TwimAppModel {
 	public $findMethodsRequiringAuth = array(
 		'incoming',
 		'outgoing',
+		'show',
 		'lookup',
-		'noRetweetIds',
 	);
 
 /**
@@ -104,12 +111,10 @@ class TwimFriendship extends TwimAppModel {
  * @var array
  */
 	public $allowedFindOptions = array(
-		'exists' => array('user_id_a', 'user_id_b', 'screen_name_a', 'screen_name_b'),
 		'incoming' => array('cursor', 'stringify_ids'),
 		'outgoing' => array('cursor', 'stringify_ids'),
 		'show' => array('source_id', 'target_id', 'source_screen_name', 'target_screen_name'),
 		'lookup' => array('screen_name', 'user_id'),
-		'noRetweetIds' => array('stringify_ids'),
 	);
 
 /**
@@ -138,19 +143,6 @@ class TwimFriendship extends TwimAppModel {
 		if (!empty($options['limit']) && empty($options['count'])) {
 			$options['count'] = $options['limit'];
 		}
-		if ((empty($options['page']) || empty($options['count']))
-			&& array_key_exists($type, $this->allowedFindOptions)
-			&& in_array('page', $this->allowedFindOptions[$type])
-			&& in_array('count', $this->allowedFindOptions[$type])) {
-			$options['page'] = 1;
-			$options['count'] = 200;
-			$results = array();
-			while (($page = $this->find($type, $options)) != false) {
-				$results = array_merge($results, $page);
-				$options['page']++;
-			}
-			return $results;
-		}
 		if (method_exists($this, '_find' . Inflector::camelize($type))) {
 			return parent::find($type, $options);
 		}
@@ -170,7 +162,7 @@ class TwimFriendship extends TwimAppModel {
 	public function create($data = null, $validate = true) {
 		$this->request = array(
 			'uri' => array(
-				'path' => '1/friendships/create',
+				'path' => '1.1/friendships/create',
 			),
 			'method' => 'POST',
 		);
@@ -198,7 +190,7 @@ class TwimFriendship extends TwimAppModel {
 	public function update($data = null, $validate = true) {
 		$this->request = array(
 			'uri' => array(
-				'path' => '1/friendships/update',
+				'path' => '1.1/friendships/update',
 			),
 			'method' => 'POST',
 		);
@@ -249,7 +241,7 @@ class TwimFriendship extends TwimAppModel {
 	public function delete($id, $cascade = false) {
 		$this->request = array(
 			'uri' => array(
-				'path' => '1/friendships/destroy',
+				'path' => '1.1/friendships/destroy',
 			),
 			'method' => 'POST',
 			'auth' => true,
@@ -268,18 +260,19 @@ class TwimFriendship extends TwimAppModel {
 /**
  * Test for the existence of friendship between two users. Will return true if user_a follows user_b, otherwise will return false.
  *
- * @param  string $user_id_a
- * @param  string $user_id_b
- * @return boolean True if such user_a follows user_b
+ * @param  string $source user_id or screen_name
+ * @param  string $target user_id or screen_name
+ * @return boolean True if such source follows target
  * @access public
+ * @deprecated since version 2.1.0
  */
-	public function exists($user_id_a, $user_id_b = null) {
-		if (is_null($user_id_b)) {
+	public function exists($source, $target = null) {
+		if (is_null($target)) {
 			if ($this->getID() === false) {
 				return false;
 			}
-			$user_id_b = $user_id_a;
-			$user_id_a = $this->getID();
+			$target = $source;
+			$source = $this->getID();
 		}
 
 		$_request = $this->request;
@@ -287,18 +280,19 @@ class TwimFriendship extends TwimAppModel {
 		$result = false;
 		$params = array();
 
-		if (empty($user_id_b)) {
-			$params = is_numeric($user_id_a) ? compact('user_id_a') : array('screen_name_a' => $user_id_a);
-		} else if (!is_numeric($user_id_a) && !is_numeric($user_id_b)) {
-			$params = array('screen_name_a' => $user_id_a, 'screen_name_b' => $user_id_b);
+		if (!is_numeric($source) && !is_numeric($target)) {
+			$params = array('source_screen_name' => $source, 'target_screen_name' => $target);
 		} else {
-			$params = compact('user_id_a', 'user_id_b');
+			$params = array('source_id' => $source, 'target_id' => $target);
 		}
-		$result = $this->find('exists', $params);
+		$response = $this->find('show', $params);
 
 		$this->exists_request = $this->request;
 		$this->request = $_request;
 
+		if (isset($response['relationship']['source']['following'])) {
+			$result = $response['relationship']['source']['following'];
+		}
 		return $result;
 	}
 
