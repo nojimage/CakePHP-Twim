@@ -25,7 +25,7 @@ App::uses('TwimConnectionTestCase', 'Twim.TestSuite');
  *
  * @property TwimTrend $Trend
  */
-class TwimTrendTestCase extends TwimConnectionTestCase {
+class TwimTrendNeedAuthTestCase extends TwimConnectionTestCase {
 
 	public function setUp() {
 		parent::setUp();
