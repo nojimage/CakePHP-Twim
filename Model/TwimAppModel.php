@@ -3,17 +3,17 @@
 /**
  * Twim Base Model
  *
- * CakePHP 2.0
+ * CakePHP 2.x
  * PHP version 5
  *
- * Copyright 2012, nojimage (http://php-tips.com/)
+ * Copyright 2013, nojimage (http://php-tips.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   2.0
+ * @version   2.1
  * @author    nojimage <nojimage at gmail.com>
- * @copyright 2012 nojimage (http://php-tips.com/)
+ * @copyright 2013 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   Twim
  * @since     File available since Release 1.0
@@ -64,13 +64,6 @@ class TwimAppModel extends Model {
  * @var string
  */
 	public $apiUrlBase = '';
-
-/**
- * The custom find types that require authentication
- *
- * @var array
- */
-	public $findMethodsRequiringAuth = array();
 
 /**
  * The options allowed by each of the custom find types
@@ -165,9 +158,7 @@ class TwimAppModel extends Model {
 			$this->request['uri']['query'] = array_intersect_key($options, array_flip($this->allowedFindOptions[$type]));
 		}
 
-		if (in_array($type, $this->findMethodsRequiringAuth)) {
-			$this->request['auth'] = true;
-		}
+		$this->request['auth'] = true; // api 1.1 always require auth
 
 		if (isset($this->request['body'])) {
 			unset($this->request['body']);

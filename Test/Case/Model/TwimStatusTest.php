@@ -3,17 +3,17 @@
 /**
  * test TwimStatus
  *
- * CakePHP 2.0
+ * CakePHP 2.x
  * PHP version 5
  *
- * Copyright 2012, nojimage (http://php-tips.com/)
+ * Copyright 2013, nojimage (http://php-tips.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   2.0
+ * @version   2.1
  * @author    nojimage <nojimage at gmail.com>
- * @copyright 2012 nojimage (http://php-tips.com/)
+ * @copyright 2013 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   Twim
  * @since     File available since Release 1.0
@@ -43,9 +43,9 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 
 	public function testHomeTimeline() {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('homeTimeline');
-		$this->assertSame('1/statuses/home_timeline', $this->Status->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'page' => 1), $this->Status->request['uri']['query']);
+		$this->Status->find(TwimStatus::FINDTYPE_HOME_TIMELINE);
+		$this->assertSame('1.1/statuses/home_timeline', $this->Status->request['uri']['path']);
+		$this->assertSame(array('count' => 200), $this->Status->request['uri']['query']);
 	}
 
 	public function testHomeTimelineUsingMaxId() {
@@ -57,9 +57,9 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 		$this->Status->getDataSource()->expects($this->at(1))->method('request')
 			->will($this->returnValue(array()));
 
-		$this->Status->find('homeTimeline', array('count' => 100));
-		$this->assertSame('1/statuses/home_timeline', $this->Status->request['uri']['path']);
-		$this->assertEquals(array('count' => 100, 'page' => 1, 'max_id' => '18700688339'), $this->Status->request['uri']['query']);
+		$this->Status->find(TwimStatus::FINDTYPE_HOME_TIMELINE, array('count' => 100));
+		$this->assertSame('1.1/statuses/home_timeline', $this->Status->request['uri']['path']);
+		$this->assertEquals(array('count' => 100, 'max_id' => '18700688339'), $this->Status->request['uri']['query']);
 	}
 
 	public function testHomeTimelineUsingSinceId() {
@@ -71,18 +71,18 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 		$this->Status->getDataSource()->expects($this->at(1))->method('request')
 			->will($this->returnValue(array()));
 
-		$this->Status->find('homeTimeline', array('since_id' => '18700688341'));
-		$this->assertSame('1/statuses/home_timeline', $this->Status->request['uri']['path']);
-		$this->assertEquals(array('count' => 200, 'since_id' => '118700688342', 'page' => 1), $this->Status->request['uri']['query']);
+		$this->Status->find(TwimStatus::FINDTYPE_HOME_TIMELINE, array('since_id' => '18700688341'));
+		$this->assertSame('1.1/statuses/home_timeline', $this->Status->request['uri']['path']);
+		$this->assertEquals(array('count' => 200, 'since_id' => '118700688342'), $this->Status->request['uri']['query']);
 	}
 
 	// =========================================================================
 
 	public function testUserTimeline() {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('userTimeline');
-		$this->assertSame('1/statuses/user_timeline', $this->Status->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'page' => 1), $this->Status->request['uri']['query']);
+		$this->Status->find(TwimStatus::FINDTYPE_USER_TIMELINE);
+		$this->assertSame('1.1/statuses/user_timeline', $this->Status->request['uri']['path']);
+		$this->assertSame(array('count' => 200), $this->Status->request['uri']['query']);
 	}
 
 	// =========================================================================
@@ -90,43 +90,32 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 	public function testMentions() {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Status->find('mentions');
-		$this->assertSame('1/statuses/mentions', $this->Status->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'page' => 1), $this->Status->request['uri']['query']);
+		$this->assertSame('1.1/statuses/mentions_timeline', $this->Status->request['uri']['path']);
+		$this->assertSame(array('count' => 200), $this->Status->request['uri']['query']);
 	}
 
-	// =========================================================================
-
-	public function testRetweetedByMe() {
+	public function testMentionsTimeline() {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('retweetedByMe');
-		$this->assertSame('1/statuses/retweeted_by_me', $this->Status->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'page' => 1), $this->Status->request['uri']['query']);
-	}
-
-	// =========================================================================
-
-	public function testRetweetedToMe() {
-		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('retweetedToMe');
-		$this->assertSame('1/statuses/retweeted_to_me', $this->Status->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'page' => 1), $this->Status->request['uri']['query']);
+		$this->Status->find(TwimStatus::FINDTYPE_MENTIONS_TIMELINE);
+		$this->assertSame('1.1/statuses/mentions_timeline', $this->Status->request['uri']['path']);
+		$this->assertSame(array('count' => 200), $this->Status->request['uri']['query']);
 	}
 
 	// =========================================================================
 
 	public function testRetweetsOfMe() {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('retweetsOfMe');
-		$this->assertSame('1/statuses/retweets_of_me', $this->Status->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'page' => 1), $this->Status->request['uri']['query']);
+		$this->Status->find(TwimStatus::FINDTYPE_RETWEETS_OF_ME);
+		$this->assertSame('1.1/statuses/retweets_of_me', $this->Status->request['uri']['path']);
+		$this->assertSame(array('count' => 200), $this->Status->request['uri']['query']);
 	}
 
 	// =========================================================================
 
 	public function testShow() {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('show', array('id' => '1234567'));
-		$this->assertSame($this->Status->request['uri']['path'], '1/statuses/show/1234567');
+		$this->Status->find(TwimStatus::FINDTYPE_SHOW, array('id' => '1234567'));
+		$this->assertSame($this->Status->request['uri']['path'], '1.1/statuses/show/1234567');
 		$this->assertSame($this->Status->request['uri']['query'], array());
 	}
 
@@ -134,27 +123,9 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 
 	public function testRetweets() {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('retweets', array('id' => '1234567'));
-		$this->assertSame('1/statuses/retweets/1234567', $this->Status->request['uri']['path']);
+		$this->Status->find(TwimStatus::FINDTYPE_RETWEETS, array('id' => '1234567'));
+		$this->assertSame('1.1/statuses/retweets/1234567', $this->Status->request['uri']['path']);
 		$this->assertSame(array('count' => 100), $this->Status->request['uri']['query']);
-	}
-
-	// =========================================================================
-
-	public function testRetweetedBy() {
-		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('retweetedBy', array('id' => '1234567'));
-		$this->assertSame('1/statuses/1234567/retweeted_by', $this->Status->request['uri']['path']);
-		$this->assertSame(array('page' => 1, 'count' => 100), $this->Status->request['uri']['query']);
-	}
-
-	// =========================================================================
-
-	public function testRetweetedByIds() {
-		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
-		$this->Status->find('retweetedByIds', array('id' => '1234567'));
-		$this->assertSame('1/statuses/1234567/retweeted_by/ids', $this->Status->request['uri']['path']);
-		$this->assertSame(array('page' => 1, 'count' => 100), $this->Status->request['uri']['query']);
 	}
 
 	// =========================================================================
@@ -167,7 +138,7 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 			),
 		);
 		$this->Status->tweet($data);
-		$this->assertSame('1/statuses/update', $this->Status->request['uri']['path']);
+		$this->assertSame('1.1/statuses/update', $this->Status->request['uri']['path']);
 		$this->assertSame('POST', $this->Status->request['method']);
 		$this->assertSame(array('status' => 'test tweet'), $this->Status->request['body']);
 	}
@@ -176,7 +147,7 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$data = 'test tweet';
 		$this->Status->tweet($data);
-		$this->assertSame('1/statuses/update', $this->Status->request['uri']['path']);
+		$this->assertSame('1.1/statuses/update', $this->Status->request['uri']['path']);
 		$this->assertSame('POST', $this->Status->request['method']);
 		$this->assertSame(array('status' => 'test tweet'), $this->Status->request['body']);
 	}
@@ -187,7 +158,7 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 			'text' => 'test tweet',
 		);
 		$this->Status->tweet($data);
-		$this->assertSame('1/statuses/update', $this->Status->request['uri']['path']);
+		$this->assertSame('1.1/statuses/update', $this->Status->request['uri']['path']);
 		$this->assertSame('POST', $this->Status->request['method']);
 		$this->assertSame(array('status' => 'test tweet'), $this->Status->request['body']);
 	}
@@ -199,7 +170,7 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 			'in_reply_to_status_id' => '1234567890',
 		);
 		$this->Status->tweet($data);
-		$this->assertSame('1/statuses/update', $this->Status->request['uri']['path']);
+		$this->assertSame('1.1/statuses/update', $this->Status->request['uri']['path']);
 		$this->assertSame('POST', $this->Status->request['method']);
 		$this->assertEquals(array('in_reply_to_status_id' => '1234567890', 'status' => 'test tweet'), $this->Status->request['body']);
 	}
@@ -209,7 +180,7 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 	public function testRetweet() {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Status->retweet('1234567');
-		$this->assertSame('1/statuses/retweet/1234567', $this->Status->request['uri']['path']);
+		$this->assertSame('1.1/statuses/retweet/1234567', $this->Status->request['uri']['path']);
 		$this->assertSame('POST', $this->Status->request['method']);
 	}
 
@@ -232,8 +203,17 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 	public function testDelete() {
 		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
 		$this->Status->delete('1234567');
-		$this->assertSame('1/statuses/destroy/1234567', $this->Status->request['uri']['path']);
+		$this->assertSame('1.1/statuses/destroy/1234567', $this->Status->request['uri']['path']);
 		$this->assertSame('POST', $this->Status->request['method']);
+	}
+
+	// =========================================================================
+
+	public function testOembed() {
+		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
+		$result = $this->Status->find('oembed', array('id' => '1234567'));
+		$this->assertSame('1.1/statuses/oembed', $this->Status->request['uri']['path']);
+		$this->assertSame(array('id' => '1234567'), $this->Status->request['uri']['query']);
 	}
 
 }

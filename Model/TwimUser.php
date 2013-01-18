@@ -3,31 +3,30 @@
 /**
  * for Users API
  *
- * CakePHP 2.0
+ * CakePHP 2.x
  * PHP version 5
  *
- * Copyright 2012, nojimage (http://php-tips.com/)
+ * Copyright 2013, nojimage (http://php-tips.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   2.0
+ * @version   2.1
  * @author    nojimage <nojimage at gmail.com>
- * @copyright 2012 nojimage (http://php-tips.com/)
+ * @copyright 2013 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      https://dev.twitter.com/docs/api/1/get/users/lookup
- * @link      https://dev.twitter.com/docs/api/1/get/users/profile_image/%3Ascreen_name
- * @link      https://dev.twitter.com/docs/api/1/get/users/search
- * @link      https://dev.twitter.com/docs/api/1/get/users/show
- * @link      https://dev.twitter.com/docs/api/1/get/users/contributees
- * @link      https://dev.twitter.com/docs/api/1/get/users/contributors
- * @link      https://dev.twitter.com/docs/api/1/get/users/suggestions
- * @link      https://dev.twitter.com/docs/api/1/get/users/suggestions/%3Aslug
- * @link      https://dev.twitter.com/docs/api/1/get/users/suggestions/%3Aslug/members
- *
+ * @link      https://dev.twitter.com/docs/api/1.1/get/users/lookup
+ * @link      https://dev.twitter.com/docs/api/1.1/get/users/search
+ * @link      https://dev.twitter.com/docs/api/1.1/get/users/show
+ * @link      https://dev.twitter.com/docs/api/1.1/get/users/contributees
+ * @link      https://dev.twitter.com/docs/api/1.1/get/users/contributors
+ * @link      https://dev.twitter.com/docs/api/1.1/get/users/suggestions
+ * @link      https://dev.twitter.com/docs/api/1.1/get/users/suggestions/%3Aslug
+ * @link      https://dev.twitter.com/docs/api/1.1/get/users/suggestions/%3Aslug/members
+ * @link      https://dev.twitter.com/docs/api/1.1/get/users/profile_banner
  */
 App::uses('TwimAppModel', 'Twim.Model');
 
@@ -36,7 +35,20 @@ App::uses('TwimAppModel', 'Twim.Model');
  */
 class TwimUser extends TwimAppModel {
 
-	public $apiUrlBase = '1/users/';
+	public $apiUrlBase = '1.1/users/';
+
+/**
+ * Custom find type name
+ */
+	const FINDTYPE_LOOKUP = 'lookup';
+
+	const FINDTYPE_SEARCH = 'search';
+
+	const FINDTYPE_SHOW = 'show';
+
+	const FINDTYPE_CONTRIBUTEES = 'contributees';
+
+	const FINDTYPE_CONTRIBUTORS = 'contributors';
 
 /**
  * Custom find types available on this model
@@ -45,7 +57,6 @@ class TwimUser extends TwimAppModel {
  */
 	public $findMethods = array(
 		'lookup' => true,
-		'profileImage' => true,
 		'search' => true,
 		'show' => true,
 		'contributees' => true,
@@ -53,15 +64,8 @@ class TwimUser extends TwimAppModel {
 		# TODO: support suggestions api
 		# 'suggestions' => true,
 		# 'suggestionsMembers' => true,
-	);
-
-/**
- * The custom find types that require authentication
- *
- * @var array
- */
-	public $findMethodsRequiringAuth = array(
-		'search',
+		# TODO support profile_banner api
+		# 'profileBanner' => true,
 	);
 
 /**
@@ -71,8 +75,7 @@ class TwimUser extends TwimAppModel {
  */
 	public $allowedFindOptions = array(
 		'lookup' => array('screen_name', 'user_id', 'include_entities'),
-		'profileImage' => array('screen_name', 'size'),
-		'search' => array('q', 'page', 'per_page', 'include_entities'),
+		'search' => array('q', 'page', 'count', 'include_entities'),
 		'show' => array('user_id', 'screen_name', 'include_entities'),
 		'contributees' => array('user_id', 'screen_name', 'include_entities', 'skip_status'),
 		'contributors' => array('user_id', 'screen_name', 'include_entities', 'skip_status'),
@@ -129,26 +132,27 @@ class TwimUser extends TwimAppModel {
  *
  * @param array $options
  *  screen_name: string<br />
- *  size: string (bigger or normal or mini or original)
+ *  size: string (bigger or normal or mini or original)<br />
+ *  https: boolean (if true return https url, default is false.)
  * @return string
+ * @deprecated since version 2.1.0
  */
 	public function profileImage($options) {
-		$this->_setupRequest('profileImage', $options);
-
-		$ds = $this->getDataSource();
-		try {
-			$ds->read($this);
-		} catch (RuntimeException $e) {
-			if ($ds->Http->response['status']['code'] != 302) {
-				throw $e;
-			}
-		}
-
-		if (!isset($ds->Http->response['header']['Location'])) {
+		$defaults = array('size' => 'normal', 'https' => false);
+		$options = array_merge($defaults, $options);
+		$user = $this->find('show', $options);
+		if (!isset($user['profile_image_url'])) {
 			return false;
 		}
+		$url = $user['profile_image_url'];
+		if ($options['https']) {
+			$url = $user['profile_image_url_https'];
+		}
+		if ($options['size'] !== 'normal') {
+			$url = preg_replace('/_normal\./', "_{$options['size']}.", $url);
+		}
 
-		return $ds->Http->response['header']['Location'];
+		return $url;
 	}
 
 /**

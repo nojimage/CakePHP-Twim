@@ -3,17 +3,17 @@
 /**
  * test TwimSource
  *
- * CakePHP 2.0
+ * CakePHP 2.x
  * PHP version 5
  *
- * Copyright 2012, nojimage (http://php-tips.com/)
+ * Copyright 2013, nojimage (http://php-tips.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   2.0
+ * @version   2.1
  * @author    nojimage <nojimage at gmail.com>
- * @copyright 2012 nojimage (http://php-tips.com/)
+ * @copyright 2013 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   Twim
  * @since     File available since Release 1.0
@@ -28,9 +28,11 @@ App::uses('TwimConnectionTestCase', 'Twim.TestSuite');
  */
 class TwimSourceTestCase extends TwimConnectionTestCase {
 
+	public $needAuth = true;
+
 	public function setUp() {
 		parent::setUp();
-		$this->TwimSource = ConnectionManager::getDataSource($this->testDatasourceName);
+		$this->TwimSource = ConnectionManager::getDataSource('twitter');
 		$this->Model = new stdClass();
 	}
 
@@ -44,35 +46,38 @@ class TwimSourceTestCase extends TwimConnectionTestCase {
 
 	public function testRequest() {
 		$this->Model->request = array(
+			'method' => 'GET',
 			'uri' => array(
-				'host' => 'search.twitter.com',
-				'path' => 'search',
+				'host' => 'api.twitter.com',
+				'path' => '1.1/search/tweets',
 				'query' => array('q' => 'twitter'),
 			),
+			'auth' => true,
 		);
 		$results = $this->TwimSource->request($this->Model);
-		$this->assertEquals('http', $this->TwimSource->Http->request['uri']['scheme']);
+		$this->assertEquals('https', $this->TwimSource->Http->request['uri']['scheme']);
 		$this->assertEquals(200, $this->TwimSource->Http->response['status']['code']);
-		$this->assertNotEmpty($results['results']);
+		$this->assertNotEmpty($results['statuses']);
 	}
 
 	// =========================================================================
 
 	public function testGetRatelimit() {
 		$this->Model->request = array(
+			'method' => 'GET',
 			'uri' => array(
 				'host' => 'api.twitter.com',
-				'path' => '1/statuses/public_timeline',
+				'path' => '1.1/statuses/home_timeline',
 			),
+			'auth' => true,
 		);
 		$results = $this->TwimSource->request($this->Model);
 		$this->assertEquals(200, $this->TwimSource->Http->response['status']['code']);
 
 		$limit = $this->TwimSource->getRatelimit();
-		$this->assertEquals('api', $limit['X-RateLimit-Class']);
-		$this->assertEquals('150', $limit['X-RateLimit-Limit']);
-		$this->assertGreaterThan(0, $limit['X-RateLimit-Remaining']);
-		$this->assertGreaterThan(time(), $limit['X-RateLimit-Reset']);
+		$this->assertEquals('15', $limit['X-Rate-Limit-Limit']);
+		$this->assertGreaterThan(0, $limit['X-Rate-Limit-Remaining']);
+		$this->assertGreaterThan(time(), $limit['X-Rate-Limit-Reset']);
 	}
 
 }

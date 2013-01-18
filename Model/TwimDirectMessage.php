@@ -3,26 +3,26 @@
 /**
  * for DirectMessage API
  *
- * CakePHP 2.0
+ * CakePHP 2.x
  * PHP version 5
  *
- * Copyright 2012, nojimage (http://php-tips.com/)
+ * Copyright 2013, nojimage (http://php-tips.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   2.0
+ * @version   2.1
  * @author    nojimage <nojimage at gmail.com>
- * @copyright 2012 nojimage (http://php-tips.com/)
+ * @copyright 2013 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   Twim
  * @since     File available since Release 2.0
  *
- * @link      https://dev.twitter.com/docs/api/1/get/direct_messages
- * @link      https://dev.twitter.com/docs/api/1/get/direct_messages/sent
- * @link      https://dev.twitter.com/docs/api/1/get/direct_messages/show/%3Aid
- * @link      https://dev.twitter.com/docs/api/1/post/direct_messages/destroy/%3Aid
- * @link      https://dev.twitter.com/docs/api/1/post/direct_messages/new
+ * @link      https://dev.twitter.com/docs/api/1.1/get/direct_messages
+ * @link      https://dev.twitter.com/docs/api/1.1/get/direct_messages/sent
+ * @link      https://dev.twitter.com/docs/api/1.1/get/direct_messages/show
+ * @link      https://dev.twitter.com/docs/api/1.1/post/direct_messages/destroy
+ * @link      https://dev.twitter.com/docs/api/1.1/post/direct_messages/new
  *
  */
 App::uses('TwimAppModel', 'Twim.Model');
@@ -32,7 +32,16 @@ App::uses('TwimAppModel', 'Twim.Model');
  */
 class TwimDirectMessage extends TwimAppModel {
 
-	public $apiUrlBase = '1/direct_messages/';
+	public $apiUrlBase = '1.1/direct_messages/';
+
+/**
+ * Custom find type name
+ */
+	const FINDTYPE_RECEIPT = 'receipt';
+
+	const FINDTYPE_SENT = 'sent';
+
+	const FINDTYPE_SHOW = 'show';
 
 /**
  * The model's schema. Used by FormHelper
@@ -90,23 +99,12 @@ class TwimDirectMessage extends TwimAppModel {
 	);
 
 /**
- * The custom find types that require authentication
- *
- * @var array
- */
-	public $findMethodsRequiringAuth = array(
-		'receipt',
-		'sent',
-		'show',
-	);
-
-/**
  * The options allowed by each of the custom find types
  *
  * @var array
  */
 	public $allowedFindOptions = array(
-		'receipt' => array('since_id', 'max_id', 'count', 'page', 'include_entities'),
+		'receipt' => array('since_id', 'max_id', 'count', 'page', 'include_entities', 'skip_status'),
 		'sent' => array('since_id', 'max_id', 'count', 'page', 'include_entities'),
 		'show' => array('id'),
 	);
@@ -139,6 +137,7 @@ class TwimDirectMessage extends TwimAppModel {
  * @param string $type
  * @param array $options
  * @return mixed
+ * @throws RuntimeException
  */
 	public function find($type, $options = array()) {
 		if ($type === 'all') {
@@ -206,7 +205,7 @@ class TwimDirectMessage extends TwimAppModel {
 
 		$this->_setupRequest($type, $options);
 		if (in_array($type, array('all', 'receipt'))) {
-			$this->request['uri']['path'] = '1/direct_messages';
+			$this->request['uri']['path'] = '1.1/direct_messages';
 		}
 
 		return parent::find('all', $options);
@@ -228,7 +227,7 @@ class TwimDirectMessage extends TwimAppModel {
 		if ($state === 'before') {
 			$type = 'receipt';
 			$this->_setupRequest($type, $query);
-			$this->request['uri']['path'] = '1/direct_messages';
+			$this->request['uri']['path'] = '1.1/direct_messages';
 			return $query;
 		} else {
 			return $results;
@@ -310,7 +309,7 @@ class TwimDirectMessage extends TwimAppModel {
 
 		$this->request = array(
 			'uri' => array(
-				'path' => '1/direct_messages/new',
+				'path' => '1.1/direct_messages/new',
 			),
 			'method' => 'POST',
 			'auth' => true,
@@ -333,7 +332,7 @@ class TwimDirectMessage extends TwimAppModel {
 	public function delete($id = null, $cascade = true) {
 		$this->request = array(
 			'uri' => array(
-				'path' => '1/direct_messages/destroy/' . $id,
+				'path' => '1.1/direct_messages/destroy/' . $id,
 			),
 			'method' => 'POST',
 			'auth' => true,

@@ -3,22 +3,22 @@
 /**
  * for Search API
  *
- * CakePHP 2.0
+ * CakePHP 2.x
  * PHP version 5
  *
- * Copyright 2012, nojimage (http://php-tips.com/)
+ * Copyright 2013, nojimage (http://php-tips.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   2.0
+ * @version   2.1
  * @author    nojimage <nojimage at gmail.com>
- * @copyright 2012 nojimage (http://php-tips.com/)
+ * @copyright 2013 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      https://dev.twitter.com/docs/api/1/get/search
+ * @link      https://dev.twitter.com/docs/api/1.1/get/search/tweets
  *
  */
 App::uses('TwimAppModel', 'Twim.Model');
@@ -30,6 +30,8 @@ App::uses('TwimAppModel', 'Twim.Model');
  * @method array expandUrl()
  */
 class TwimSearch extends TwimAppModel {
+
+	public $apiUrlBase = '1.1/search/';
 
 /**
  *
@@ -45,7 +47,7 @@ class TwimSearch extends TwimAppModel {
  * @var array
  */
 	public $findMethods = array(
-		'search' => true,
+		'tweets' => true,
 	);
 
 /**
@@ -54,7 +56,7 @@ class TwimSearch extends TwimAppModel {
  * @var array
  */
 	public $allowedFindOptions = array(
-		'search' => array('q', 'callback', 'geocode', 'lang', 'locale', 'page', 'result_type', 'rpp', 'show_user', 'until', 'since_id', 'max_id', 'include_entities'),
+		'tweets' => array('q', 'geocode', 'lang', 'locale', 'result_type', 'count', 'until', 'since_id', 'max_id', 'include_entities', 'callback'),
 	);
 
 /**
@@ -69,27 +71,22 @@ class TwimSearch extends TwimAppModel {
  *
  * @var int
  */
-	public $maxRpp = 100;
-
-/**
- * for search API
- *
- * @var array
- */
-	public $request = array(
-		'uri' => array('host' => 'search.twitter.com')
-	);
+	public $maxCount = 100;
 
 /**
  *
  * @param string $type
  * @param array $options
- * @return  array
+ * @return array
+ * @throws InvalidArgumentException
  */
 	public function find($type, $options = array()) {
 		if (is_string($type) && empty($options)) {
 			$options = $type;
-			$type = 'search';
+			$type = 'tweets';
+		}
+		if ($type === 'search') {
+			$type = 'tweets';
 		}
 
 		if (is_string($options)) {
@@ -100,28 +97,44 @@ class TwimSearch extends TwimAppModel {
 			throw new InvalidArgumentException(__d('twim', 'You must enter a query.'));
 		}
 
-		$defaults = array('rpp' => $this->maxRpp, 'limit' => $this->resultLimit, 'users_lookup' => false, 'strict' => false);
+		$defaults = array('count' => $this->maxCount, 'limit' => $this->resultLimit, 'strict' => false);
 
 		$options = array_merge($defaults, $options);
 
-		if (!empty($options['limit']) && $options['limit'] <= $this->maxRpp) {
-			$options['rpp'] = $options['limit'];
+		if (!empty($options['limit']) && $options['limit'] <= $this->maxCount) {
+			$options['count'] = $options['limit'];
 		}
 
 		if (empty($options['page'])) {
 			$options['page'] = 1;
 			$results = array();
 			try {
-				while ($pageData = $this->find($type, $options)) {
-					$results = array_merge($results, array_slice($pageData, 0, $options['limit'] - count($results)));
-					if (isset($this->response['next_page'])) {
-						parse_str(parse_url($this->response['next_page'], PHP_URL_QUERY), $nextPage);
-						$options = am($options, $nextPage);
-					} else {
-						$options['page']++;
-					}
-					if ($options['rpp'] * $options['page'] > $this->resultLimit || count($results) >= $options['limit'] || empty($this->response['next_page'])) {
+				while (($page = $this->find($type, $options)) != false) {
+					$results = array_merge($results, $page);
+					if (!empty($options['limit']) && count($results) >= $options['limit']) {
+						$results = array_slice($results, 0, $options['limit']);
 						break;
+					}
+					// get next page
+					if (isset($this->response['search_metadata']['next_results'])) {
+						parse_str(parse_url($this->response['search_metadata']['next_results'], PHP_URL_QUERY), $nextPage);
+						$options = am($options, $nextPage);
+					} elseif (in_array('since_id', $this->allowedFindOptions[$type]) && !empty($options['since_id'])) {
+						if (PHP_INT_SIZE === 4 && extension_loaded('bcmath')) {
+							$options['since_id'] = bcadd($page[0]['id_str'], '1'); // for 32bit
+						} else {
+							$options['since_id'] = $page[0]['id'] + 1;
+						}
+					} elseif (in_array('max_id', $this->allowedFindOptions[$type])) {
+						if (PHP_INT_SIZE === 4 && extension_loaded('bcmath')) {
+							$options['max_id'] = bcsub($page[count($page) - 1]['id_str'], '1'); // for 32bit
+						} else {
+							$options['max_id'] = $page[count($page) - 1]['id'] - 1;
+						}
+					}
+					// adjust count
+					if (!empty($options['limit']) && $options['limit'] < count($results) + $options['count']) {
+						$options['count'] = $options['limit'] - count($results);
 					}
 				}
 			} catch (RuntimeException $e) {
@@ -137,51 +150,9 @@ class TwimSearch extends TwimAppModel {
 
 		$results = parent::find('all', $options);
 
-		$results = isset($results['results']) ? $results['results'] : $results;
-
-		if ($options['users_lookup']) {
-			$results = $this->usersLookup($results, $options['users_lookup']);
-		}
+		$results = isset($results['statuses']) ? $results['statuses'] : $results;
 
 		return $results;
-	}
-
-/**
- * lookup user
- *
- * @param array $datas
- * @param mixed $fields
- * @return array
- */
-	public function usersLookup(array $datas, $fields = true) {
-		if ($fields === true) {
-			$fields = array();
-		} else if (is_scalar($fields)) {
-			$fields = array($fields);
-		}
-		$fields = array_flip($fields);
-
-		//
-		$screenNames = array_unique(Set::extract('/from_user', $datas));
-		$sets = array_chunk($screenNames, 100);
-
-		$users = array();
-
-		foreach ($sets as $screenNames) {
-			$result = $this->User->find('lookup', array('screen_name' => $screenNames));
-			foreach ($result as $user) {
-				$users[$user['screen_name']] = !empty($fields) ? array_intersect_key($user, $fields) : $user;
-			}
-		}
-
-		//
-		for ($i = 0; $i < count($datas); $i++) {
-			if (isset($users[$datas[$i]['from_user']])) {
-				$datas[$i]['user'] = $users[$datas[$i]['from_user']];
-			}
-		}
-
-		return $datas;
 	}
 
 }

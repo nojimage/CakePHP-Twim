@@ -3,17 +3,17 @@
 /**
  * ExpandTweetEntityBehavior
  *
- * CakePHP 2.0
+ * CakePHP 2.x
  * PHP version 5
  *
- * Copyright 2012, nojimage (http://php-tips.com/)
+ * Copyright 2013, nojimage (http://php-tips.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   2.0
+ * @version   2.1
  * @author    nojimage <nojimage at gmail.com>
- * @copyright 2012 nojimage (http://php-tips.com/)
+ * @copyright 2013 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   Twim
  * @since     File available since Release 1.0
@@ -111,7 +111,9 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
 		$override = $this->settings[$model->name]['overrideText'];
 
 		if ($this->settings[$model->name]['expandHashtag']) {
-			if (!empty($results['results'])) {
+			if (!empty($results['statuses'])) {
+				$results['statuses'] = array_map(array($this, 'expandHashtag'), $results['statuses'], array_fill(0, count($results['statuses']), $override));
+			} else if (!empty($results['results'])) {
 				$results['results'] = array_map(array($this, 'expandHashtag'), $results['results'], array_fill(0, count($results['results']), $override));
 			} else if (Set::numeric(array_keys($results))) {
 				$results = array_map(array($this, 'expandHashtag'), $results, array_fill(0, count($results), $override));
@@ -121,7 +123,9 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
 		}
 
 		if ($this->settings[$model->name]['expandUrl'] === 'string') {
-			if (!empty($results['results'])) {
+			if (!empty($results['statuses'])) {
+				$results['statuses'] = array_map(array($this, 'expandUrlString'), $results['statuses'], array_fill(0, count($results['statuses']), $override));
+			} else if (!empty($results['results'])) {
 				$results['results'] = array_map(array($this, 'expandUrlString'), $results['results'], array_fill(0, count($results['results']), $override));
 			} else if (Set::numeric(array_keys($results))) {
 				$results = array_map(array($this, 'expandUrlString'), $results, array_fill(0, count($results), $override));
@@ -129,7 +133,9 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
 				$results = $this->expandUrlString($results, $override);
 			}
 		} else {
-			if (!empty($results['results'])) {
+			if (!empty($results['statuses'])) {
+				$results['statuses'] = array_map(array($this, 'expandUrl'), $results['statuses'], array_fill(0, count($results['statuses']), $override));
+			} else if (!empty($results['results'])) {
 				$results['results'] = array_map(array($this, 'expandUrl'), $results['results'], array_fill(0, count($results['results']), $override));
 			} else if (Set::numeric(array_keys($results))) {
 				$results = array_map(array($this, 'expandUrl'), $results, array_fill(0, count($results), $override));

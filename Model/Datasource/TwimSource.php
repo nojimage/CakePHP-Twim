@@ -3,17 +3,17 @@
 /**
  * Twitter API Datasource
  *
- * CakePHP 2.0
+ * CakePHP 2.x
  * PHP version 5
  *
- * Copyright 2012, nojimage (http://php-tips.com/)
+ * Copyright 2013, nojimage (http://php-tips.com/)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   2.0
+ * @version   2.1
  * @author    nojimage <nojimage at gmail.com>
- * @copyright 2012 nojimage (http://php-tips.com/)
+ * @copyright 2013 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   Twim
  * @since     File available since Release 1.0
@@ -135,10 +135,15 @@ class TwimSource extends RestSource {
 		}
 
 		$headers = array(
+			// for api 1.0
 			'X-RateLimit-Class' => true,
 			'X-RateLimit-Remaining' => true,
 			'X-RateLimit-Limit' => true,
 			'X-RateLimit-Reset' => true,
+			// for api 1.1
+			'X-Rate-Limit-Remaining' => true,
+			'X-Rate-Limit-Limit' => true,
+			'X-Rate-Limit-Reset' => true,
 		);
 
 		return array_intersect_key($this->Http->response['header'], $headers);
@@ -189,7 +194,8 @@ class TwimSource extends RestSource {
 		}
 
 		// Append '.json' to path if not already got an extension
-		if (strpos($model->request['uri']['path'], '.') === false && !preg_match('!oauth/!i', $model->request['uri']['path'])) {
+		if (!preg_match('/\.(?:json|xml)$/', $model->request['uri']['path'])
+			&& !preg_match('!oauth/!i', $model->request['uri']['path'])) {
 			$model->request['uri']['path'] .= '.json';
 		}
 
