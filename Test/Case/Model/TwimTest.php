@@ -30,7 +30,7 @@ class TwimTestCase extends TwimConnectionTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->Twim = ClassRegistry::init('Twim.Twim');
-		$this->Twim->Search->setDataSource($this->testDatasourceName);
+		$this->Twim->Search->setDataSource($this->mockDatasourceName);
 	}
 
 	public function tearDown() {
@@ -39,11 +39,12 @@ class TwimTestCase extends TwimConnectionTestCase {
 	}
 
 	public function testSerach() {
+		$this->Twim->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('statuses' => array())));
 		$q = 'test';
 		$limit = 100;
 		$results = $this->Twim->Search->find('search', compact('q', 'limit'));
-		$this->assertNotEmpty($results);
-		$this->assertCount(100, $results);
+		$this->assertSame('1.1/search/tweets', $this->Twim->Search->request['uri']['path']);
+		$this->assertEquals(array('q' => 'test', 'count' => 100), $this->Twim->Search->request['uri']['query']);
 	}
 
 }
