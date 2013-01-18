@@ -51,15 +51,6 @@ class TwimSearch extends TwimAppModel {
 	);
 
 /**
- * The custom find types that require authentication
- *
- * @var array
- */
-	public $findMethodsRequiringAuth = array(
-		'tweets',
-	);
-
-/**
  * The options allowed by each of the custom find types
  *
  * @var array

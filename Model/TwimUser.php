@@ -69,19 +69,6 @@ class TwimUser extends TwimAppModel {
 	);
 
 /**
- * The custom find types that require authentication
- *
- * @var array
- */
-	public $findMethodsRequiringAuth = array(
-		'lookup',
-		'search',
-		'show',
-		'contributees',
-		'contributors',
-	);
-
-/**
  * The options allowed by each of the custom find types
  *
  * @var array

@@ -128,20 +128,6 @@ class TwimStatus extends TwimAppModel {
 	);
 
 /**
- * The custom find types that require authentication
- *
- * @var array
- */
-	public $findMethodsRequiringAuth = array(
-		'homeTimeline',
-		'userTimeline',
-		'mentionsTimeline',
-		'show',
-		'retweetsOfMe',
-		'retweets',
-	);
-
-/**
  * The options allowed by each of the custom find types
  *
  * @var array
@@ -183,6 +169,7 @@ class TwimStatus extends TwimAppModel {
  * @param string $type
  * @param array $options
  * @return mixed
+ * @throws RuntimeException
  */
 	public function find($type, $options = array()) {
 		// change find type api 1.0 -> 1.1

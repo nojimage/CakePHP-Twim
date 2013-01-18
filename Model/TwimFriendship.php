@@ -94,18 +94,6 @@ class TwimFriendship extends TwimAppModel {
 	);
 
 /**
- * The custom find types that require authentication
- *
- * @var array
- */
-	public $findMethodsRequiringAuth = array(
-		'incoming',
-		'outgoing',
-		'show',
-		'lookup',
-	);
-
-/**
  * The options allowed by each of the custom find types
  *
  * @var array

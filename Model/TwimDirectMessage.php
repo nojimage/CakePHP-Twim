@@ -99,17 +99,6 @@ class TwimDirectMessage extends TwimAppModel {
 	);
 
 /**
- * The custom find types that require authentication
- *
- * @var array
- */
-	public $findMethodsRequiringAuth = array(
-		'receipt',
-		'sent',
-		'show',
-	);
-
-/**
  * The options allowed by each of the custom find types
  *
  * @var array

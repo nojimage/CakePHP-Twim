@@ -49,16 +49,6 @@ class TwimAccount extends TwimAppModel {
 	);
 
 /**
- * The custom find types that require authentication
- *
- * @var array
- */
-	public $findMethodsRequiringAuth = array(
-		'settings',
-		'verifyCredentials',
-	);
-
-/**
  * The options allowed by each of the custom find types
  *
  * @var array
