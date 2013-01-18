@@ -207,4 +207,13 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 		$this->assertSame('POST', $this->Status->request['method']);
 	}
 
+	// =========================================================================
+
+	public function testOembed() {
+		$this->Status->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array()));
+		$result = $this->Status->find('oembed', array('id' => '1234567'));
+		$this->assertSame('1.1/statuses/oembed', $this->Status->request['uri']['path']);
+		$this->assertSame(array('id' => '1234567'), $this->Status->request['uri']['query']);
+	}
+
 }

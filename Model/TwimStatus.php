@@ -125,6 +125,7 @@ class TwimStatus extends TwimAppModel {
 		'show' => true,
 		'retweetsOfMe' => true,
 		'retweets' => true,
+		'oembed' => true,
 	);
 
 /**
@@ -139,6 +140,7 @@ class TwimStatus extends TwimAppModel {
 		'retweetsOfMe' => array('since_id', 'max_id', 'count', 'trim_user', 'include_entities', 'include_user_entities'),
 		'show' => array('id', 'trim_user', 'include_my_retweet', 'include_entities'),
 		'retweets' => array('id', 'count', 'trim_user'),
+		'oembed' => array('id', 'url', 'maxwidth', 'hide_media', 'hide_thread', 'omit_script', 'align', 'related', 'lang'),
 	);
 
 /**
