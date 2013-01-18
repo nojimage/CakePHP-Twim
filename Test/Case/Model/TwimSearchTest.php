@@ -45,7 +45,7 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 		$q = 'test';
 		$page = 1;
 		$limit = 50;
-		$this->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('results' => array())));
+		$this->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('statuses' => array())));
 
 		$this->Search->find('tweets', compact('q', 'limit', 'page'));
 
@@ -54,19 +54,19 @@ class TwimSearchTestCase extends TwimConnectionTestCase {
 	}
 
 	public function testSerach_call2() {
-		$this->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('results' => array())));
+		$this->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('statuses' => array())));
 		$this->Search->find('search', 'test');
 		$this->assertEquals(array('q' => 'test', 'count' => 100), $this->Search->request['uri']['query']);
 	}
 
 	public function testSerach_call3() {
-		$this->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('results' => array())));
+		$this->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('statuses' => array())));
 		$this->Search->find('test');
 		$this->assertEquals(array('q' => 'test', 'count' => 100), $this->Search->request['uri']['query']);
 	}
 
 	public function testSerach_get_empty_results() {
-		$this->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('results' => array())));
+		$this->Search->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(array('statuses' => array())));
 		$result = $this->Search->find('nwoghwiot20gflanvowigiwoagnla;424ty9agfjpoafacdj4#eqpwkp');
 		$this->assertSame(array(), $result);
 	}
