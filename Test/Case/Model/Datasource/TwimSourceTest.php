@@ -28,9 +28,11 @@ App::uses('TwimConnectionTestCase', 'Twim.TestSuite');
  */
 class TwimSourceTestCase extends TwimConnectionTestCase {
 
+	public $needAuth = true;
+
 	public function setUp() {
 		parent::setUp();
-		$this->TwimSource = ConnectionManager::getDataSource($this->testDatasourceName);
+		$this->TwimSource = ConnectionManager::getDataSource('twitter');
 		$this->Model = new stdClass();
 	}
 
@@ -44,35 +46,38 @@ class TwimSourceTestCase extends TwimConnectionTestCase {
 
 	public function testRequest() {
 		$this->Model->request = array(
+			'method' => 'GET',
 			'uri' => array(
-				'host' => 'search.twitter.com',
-				'path' => 'search',
+				'host' => 'api.twitter.com',
+				'path' => '1.1/search/tweets',
 				'query' => array('q' => 'twitter'),
 			),
+			'auth' => true,
 		);
 		$results = $this->TwimSource->request($this->Model);
-		$this->assertEquals('http', $this->TwimSource->Http->request['uri']['scheme']);
+		$this->assertEquals('https', $this->TwimSource->Http->request['uri']['scheme']);
 		$this->assertEquals(200, $this->TwimSource->Http->response['status']['code']);
-		$this->assertNotEmpty($results['results']);
+		$this->assertNotEmpty($results['statuses']);
 	}
 
 	// =========================================================================
 
 	public function testGetRatelimit() {
 		$this->Model->request = array(
+			'method' => 'GET',
 			'uri' => array(
 				'host' => 'api.twitter.com',
-				'path' => '1/statuses/public_timeline',
+				'path' => '1.1/statuses/home_timeline',
 			),
+			'auth' => true,
 		);
 		$results = $this->TwimSource->request($this->Model);
 		$this->assertEquals(200, $this->TwimSource->Http->response['status']['code']);
 
 		$limit = $this->TwimSource->getRatelimit();
-		$this->assertEquals('api', $limit['X-RateLimit-Class']);
-		$this->assertEquals('150', $limit['X-RateLimit-Limit']);
-		$this->assertGreaterThan(0, $limit['X-RateLimit-Remaining']);
-		$this->assertGreaterThan(time(), $limit['X-RateLimit-Reset']);
+		$this->assertEquals('15', $limit['X-Rate-Limit-Limit']);
+		$this->assertGreaterThan(0, $limit['X-Rate-Limit-Remaining']);
+		$this->assertGreaterThan(time(), $limit['X-Rate-Limit-Reset']);
 	}
 
 }
