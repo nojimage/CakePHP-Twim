@@ -135,10 +135,15 @@ class TwimSource extends RestSource {
 		}
 
 		$headers = array(
+			// for api 1.0
 			'X-RateLimit-Class' => true,
 			'X-RateLimit-Remaining' => true,
 			'X-RateLimit-Limit' => true,
 			'X-RateLimit-Reset' => true,
+			// for api 1.1
+			'X-Rate-Limit-Remaining' => true,
+			'X-Rate-Limit-Limit' => true,
+			'X-Rate-Limit-Reset' => true,
 		);
 
 		return array_intersect_key($this->Http->response['header'], $headers);
@@ -189,7 +194,8 @@ class TwimSource extends RestSource {
 		}
 
 		// Append '.json' to path if not already got an extension
-		if (strpos($model->request['uri']['path'], '.') === false && !preg_match('!oauth/!i', $model->request['uri']['path'])) {
+		if (!preg_match('/\.(?:json|xml)$/', $model->request['uri']['path'])
+			&& !preg_match('!oauth/!i', $model->request['uri']['path'])) {
 			$model->request['uri']['path'] .= '.json';
 		}
 

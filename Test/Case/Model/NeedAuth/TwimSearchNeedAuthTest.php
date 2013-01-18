@@ -1,7 +1,7 @@
 <?php
 
 /**
- * test TwimAccount
+ * test TwimSearch
  *
  * CakePHP 2.0
  * PHP version 5
@@ -19,42 +19,48 @@
  * @since     File available since Release 1.0
  *
  */
-App::uses('TwimAccount', 'Twim.Model');
 App::uses('TwimConnectionTestCase', 'Twim.TestSuite');
 
 /**
  *
- * @property TwimAccount $Account
+ * @property TwimSearch $Search
  */
-class TwimAccountTestCase extends TwimConnectionTestCase {
+class TwimSearchNeedAuthTestCase extends TwimConnectionTestCase {
 
 	public $needAuth = true;
 
 	public function setUp() {
 		parent::setUp();
-		$this->Account = ClassRegistry::init('Twim.TwimAccount');
-		$this->Account->setDataSource('twitter');
+		$this->Search = ClassRegistry::init('Twim.TwimSearch');
+		$this->Search->setDataSource('twitter');
 	}
 
 	public function tearDown() {
-		unset($this->Account);
+		unset($this->Search);
 		parent::tearDown();
 		ob_flush();
 	}
 
 	// =========================================================================
 
-	public function testFindSettings() {
-		$result = $this->Account->find(TwimAccount::FINDTYPE_SETTINGS);
-		$this->assertArrayHasKey('screen_name', $result);
-		$this->assertArrayHasKey('language', $result);
+/**
+ * @expectedException InvalidArgumentException
+ * @expectedExceptionMessage You must enter a query.
+ */
+	public function testSerach_noquery() {
+		$this->Search->find('');
 	}
 
-	public function testFindVerifyCredentials() {
-		$result = $this->Account->find(TwimAccount::FINDTYPE_VERIFY_CREDENTIALS);
-		$this->assertArrayHasKey('id', $result);
-		$this->assertArrayHasKey('screen_name', $result);
-		$this->assertArrayHasKey('lang', $result);
+	public function testSerach_get_all_results() {
+		$results = $this->Search->find('test');
+		$this->assertGreaterThan(100, count($results));
+	}
+
+/**
+ * @depends testSerach_get_all_results
+ */
+	public function testSerach_limitation_results() {
+		$this->assertSame(255, count($this->Search->find('search', array('q' => 'test', 'limit' => 255))));
 	}
 
 }

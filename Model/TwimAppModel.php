@@ -66,13 +66,6 @@ class TwimAppModel extends Model {
 	public $apiUrlBase = '';
 
 /**
- * The custom find types that require authentication
- *
- * @var array
- */
-	public $findMethodsRequiringAuth = array();
-
-/**
  * The options allowed by each of the custom find types
  *
  * @var array
@@ -165,9 +158,7 @@ class TwimAppModel extends Model {
 			$this->request['uri']['query'] = array_intersect_key($options, array_flip($this->allowedFindOptions[$type]));
 		}
 
-		if (in_array($type, $this->findMethodsRequiringAuth)) {
-			$this->request['auth'] = true;
-		}
+		$this->request['auth'] = true; // api 1.1 always require auth
 
 		if (isset($this->request['body'])) {
 			unset($this->request['body']);

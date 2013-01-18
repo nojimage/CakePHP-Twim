@@ -3,7 +3,7 @@
 /**
  * test TwimStatus (need Auth)
  *
- * CakePHP 2.0
+ * CakePHP 2.x
  * PHP version 5
  *
  * Copyright 2012, nojimage (http://php-tips.com/)
@@ -11,7 +11,7 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   2.0
+ * @version   2.1
  * @author    nojimage <nojimage at gmail.com>
  * @copyright 2012 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
@@ -63,4 +63,10 @@ class TwimStatusNeedAuthTestCase extends TwimConnectionTestCase {
 		$results = $this->Status->find('homeTimeline', array('limit' => 300));
 		$this->assertCount(300, $results);
 	}
+
+	public function testMentionsTimeline() {
+		$results = $this->Status->find('mentionsTimeline', array('limit' => 300));
+		$this->assertCount(300, $results);
+	}
+
 }

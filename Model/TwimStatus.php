@@ -3,7 +3,7 @@
 /**
  * for Status API
  *
- * CakePHP 2.0
+ * CakePHP 2.x
  * PHP version 5
  *
  * Copyright 2012, nojimage (http://php-tips.com/)
@@ -11,26 +11,23 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @version   2.0
+ * @version   2.1
  * @author    nojimage <nojimage at gmail.com>
  * @copyright 2012 nojimage (http://php-tips.com/)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/home_timeline
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/user_timeline
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/mentions
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweeted_by_me
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweeted_to_me
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweets_of_me
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/show/:id
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/retweets/:id
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/:id/retweeted_by
- * @link      https://dev.twitter.com/docs/api/1/get/statuses/:id/retweeted_by/ids
- * @link      https://dev.twitter.com/docs/api/1/post/statuses/update
- * @link      https://dev.twitter.com/docs/api/1/post/statuses/retweet/:id
- * @link      https://dev.twitter.com/docs/api/1/post/statuses/destroy/:id
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/mentions_timeline
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/user_timeline
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/retweets_of_me
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/retweets/%3Aid
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/show/%3Aid
+ * @link      https://dev.twitter.com/docs/api/1.1/post/statuses/update
+ * @link      https://dev.twitter.com/docs/api/1.1/post/statuses/retweet/%3Aid
+ * @link      https://dev.twitter.com/docs/api/1.1/post/statuses/destroy/%3Aid
+ * @link      https://dev.twitter.com/docs/api/1.1/get/statuses/oembed
  *
  */
 App::uses('TwimAppModel', 'Twim.Model');
@@ -43,7 +40,22 @@ App::uses('TwimAppModel', 'Twim.Model');
  */
 class TwimStatus extends TwimAppModel {
 
-	public $apiUrlBase = '1/statuses/';
+	public $apiUrlBase = '1.1/statuses/';
+
+/**
+ * Custom find type name
+ */
+	const FINDTYPE_HOME_TIMELINE = 'homeTimeline';
+
+	const FINDTYPE_USER_TIMELINE = 'userTimeline';
+
+	const FINDTYPE_MENTIONS_TIMELINE = 'mentionsTimeline';
+
+	const FINDTYPE_SHOW = 'show';
+
+	const FINDTYPE_RETWEETS_OF_ME = 'retweetsOfMe';
+
+	const FINDTYPE_RETWEETS = 'retweets';
 
 /**
  * The model's schema. Used by FormHelper
@@ -109,30 +121,10 @@ class TwimStatus extends TwimAppModel {
 		'homeTimeline' => true,
 		'userTimeline' => true,
 		'mentions' => true,
-		'retweetedByMe' => true,
-		'retweetedToMe' => true,
+		'mentionsTimeline' => true,
 		'show' => true,
 		'retweetsOfMe' => true,
 		'retweets' => true,
-		'retweetedBy' => true,
-		'retweetedByIds' => true,
-	);
-
-/**
- * The custom find types that require authentication
- *
- * @var array
- */
-	public $findMethodsRequiringAuth = array(
-		'homeTimeline',
-		'userTimeline',
-		'mentions',
-		'retweetedByMe',
-		'retweetedToMe',
-		'retweetsOfMe',
-		'retweets',
-		'retweetedBy',
-		'retweetedByIds',
 	);
 
 /**
@@ -141,16 +133,12 @@ class TwimStatus extends TwimAppModel {
  * @var array
  */
 	public $allowedFindOptions = array(
-		'homeTimeline' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
-		'userTimeline' => array('user_id', 'screen_name', 'since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
-		'mentions' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_rts', 'include_entities'),
-		'retweetedByMe' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
-		'retweetedToMe' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
-		'retweetsOfMe' => array('since_id', 'max_id', 'count', 'page', 'trim_user', 'include_entities'),
-		'show' => array('id', 'trim_user', 'include_entities'),
-		'retweets' => array('id', 'count', 'trim_user', 'include_entities'),
-		'retweetedBy' => array('id', 'count', 'page', 'trim_user', 'include_entities'),
-		'retweetedByIds' => array('id', 'count', 'page', 'trim_user', 'include_entities'),
+		'homeTimeline' => array('count', 'since_id', 'max_id', 'trim_user', 'exclude_replies', 'contributor_details', 'include_entities'),
+		'userTimeline' => array('user_id', 'screen_name', 'since_id', 'max_id', 'count', 'trim_user', 'exclude_replies', 'contributor_details', 'include_rts'),
+		'mentionsTimeline' => array('count', 'since_id', 'max_id', 'trim_user', 'contributor_details', 'include_entities'),
+		'retweetsOfMe' => array('since_id', 'max_id', 'count', 'trim_user', 'include_entities', 'include_user_entities'),
+		'show' => array('id', 'trim_user', 'include_my_retweet', 'include_entities'),
+		'retweets' => array('id', 'count', 'trim_user'),
 	);
 
 /**
@@ -181,8 +169,14 @@ class TwimStatus extends TwimAppModel {
  * @param string $type
  * @param array $options
  * @return mixed
+ * @throws RuntimeException
  */
 	public function find($type, $options = array()) {
+		// change find type api 1.0 -> 1.1
+		if ($type === 'mentions') {
+			$type = 'mentionsTimeline';
+		}
+
 		if (in_array('count', $this->allowedFindOptions[$type])) {
 			$defaults = array('count' => $this->maxCount, 'strict' => false);
 			$options = array_merge($defaults, $options);
@@ -194,7 +188,6 @@ class TwimStatus extends TwimAppModel {
 
 		if (empty($options['page'])
 			&& array_key_exists($type, $this->allowedFindOptions)
-			&& in_array('page', $this->allowedFindOptions[$type])
 			&& in_array('count', $this->allowedFindOptions[$type])) {
 			$options['page'] = 1;
 			$results = array();
@@ -221,8 +214,6 @@ class TwimStatus extends TwimAppModel {
 						} else {
 							$options['max_id'] = $page[count($page) - 1]['id'] - 1;
 						}
-					} else {
-						$options['page']++;
 					}
 					// adjust count
 					if (!empty($options['limit']) && $options['limit'] < count($results) + $options['count']) {
@@ -237,6 +228,7 @@ class TwimStatus extends TwimAppModel {
 			}
 			return $results;
 		}
+
 		if (method_exists($this, '_find' . Inflector::camelize($type))) {
 			return parent::find($type, $options);
 		}
@@ -264,8 +256,7 @@ class TwimStatus extends TwimAppModel {
 				return $query;
 			}
 
-			$type = 'show';
-
+			$type = self::FINDTYPE_SHOW;
 			$this->_setupRequest($type, $query);
 
 			$this->request['uri']['path'] = $this->apiUrlBase . $type . '/' . $query['id'];
@@ -296,7 +287,7 @@ class TwimStatus extends TwimAppModel {
 				return $query;
 			}
 
-			$type = 'retweets';
+			$type = self::FINDTYPE_RETWEETS;
 
 			if ($query['count'] > 100) {
 				$query['count'] = 100;
@@ -306,76 +297,6 @@ class TwimStatus extends TwimAppModel {
 			$this->request['uri']['path'] = $this->apiUrlBase . $type . '/' . $query['id'];
 			unset($this->request['uri']['query']['id']);
 			unset($query['id']);
-			return $query;
-		} else {
-			return $results;
-		}
-	}
-
-/**
- * Retweeted By
- * -------------
- *
- *     TwitterStatus::find('retweetedBy', $options)
- *
- * @param $state string 'before' or 'after'
- * @param $query array
- * @param $results array
- * @return mixed
- * @access protected
- * */
-	protected function _findRetweetedBy($state, $query = array(), $results = array()) {
-		if ($state === 'before') {
-			if (empty($query['id'])) {
-				return $query;
-			}
-
-			$type = 'retweetedBy';
-
-			if ($query['count'] > 100) {
-				$query['count'] = 100;
-			}
-			$this->_setupRequest($type, $query);
-
-			$this->request['uri']['path'] = $this->apiUrlBase . $query['id'] . '/retweeted_by';
-			unset($this->request['uri']['query']['id']);
-			unset($query['id']);
-
-			return $query;
-		} else {
-			return $results;
-		}
-	}
-
-/**
- * Retweeted By Ids
- * -------------
- *
- *     TwitterStatus::find('retweetedByIds', $options)
- *
- * @param $state string 'before' or 'after'
- * @param $query array
- * @param $results array
- * @return mixed
- * @access protected
- * */
-	protected function _findRetweetedByIds($state, $query = array(), $results = array()) {
-		if ($state === 'before') {
-			if (empty($query['id'])) {
-				return $query;
-			}
-
-			$type = 'retweetedByIds';
-
-			if ($query['count'] > 100) {
-				$query['count'] = 100;
-			}
-			$this->_setupRequest($type, $query);
-
-			$this->request['uri']['path'] = $this->apiUrlBase . $query['id'] . '/retweeted_by/ids';
-			unset($this->request['uri']['query']['id']);
-			unset($query['id']);
-
 			return $query;
 		} else {
 			return $results;
@@ -393,7 +314,7 @@ class TwimStatus extends TwimAppModel {
 	public function tweet($data = null, $validate = true, $fieldList = array()) {
 		$this->request = array(
 			'uri' => array(
-				'path' => '1/statuses/update',
+				'path' => $this->apiUrlBase . 'update',
 			),
 			'method' => 'POST',
 		);
@@ -429,7 +350,7 @@ class TwimStatus extends TwimAppModel {
 		}
 		$this->request = array(
 			'uri' => array(
-				'path' => '1/statuses/retweet/' . $id,
+				'path' => $this->apiUrlBase . 'retweet/' . $id,
 			),
 		);
 		$this->create();
@@ -465,7 +386,7 @@ class TwimStatus extends TwimAppModel {
 	public function delete($id = null, $cascade = true) {
 		$this->request = array(
 			'uri' => array(
-				'path' => '1/statuses/destroy/' . $id,
+				'path' => $this->apiUrlBase . 'destroy/' . $id,
 			),
 			'method' => 'POST',
 			'auth' => true,

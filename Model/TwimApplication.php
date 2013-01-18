@@ -1,7 +1,7 @@
 <?php
 
 /**
- * for Account API
+ * for Application API
  *
  * CakePHP 2.0
  * PHP version 5
@@ -18,25 +18,21 @@
  * @package   Twim
  * @since     File available since Release 1.0
  *
- * @link      https://dev.twitter.com/docs/api/1.1/get/account/settings
- * @link      https://dev.twitter.com/docs/api/1.1/get/account/verify_credentials
- * @todo support post methods
+ * @link      https://dev.twitter.com/docs/api/1.1/get/application/rate_limit_status
  */
 App::uses('TwimAppModel', 'Twim.Model');
 
 /**
  *
  */
-class TwimAccount extends TwimAppModel {
+class TwimApplication extends TwimAppModel {
 
-	public $apiUrlBase = '1.1/account/';
+	public $apiUrlBase = '1.1/application/';
 
 /**
  * Custom find type name
  */
-	const FINDTYPE_SETTINGS = 'settings';
-
-	const FINDTYPE_VERIFY_CREDENTIALS = 'verifyCredentials';
+	const FINDTYPE_RATE_LIMIT_STATUS = 'rateLimitStatus';
 
 /**
  * Custom find types available on this model
@@ -44,8 +40,7 @@ class TwimAccount extends TwimAppModel {
  * @var array
  */
 	public $findMethods = array(
-		'settings' => true,
-		'verifyCredentials' => true,
+		'rateLimitStatus' => true,
 	);
 
 /**
@@ -54,8 +49,7 @@ class TwimAccount extends TwimAppModel {
  * @var array
  */
 	public $allowedFindOptions = array(
-		'settings' => array(),
-		'verifyCredentials' => array('include_entities', 'skip_status'),
+		'rateLimitStatus' => array('resources'),
 	);
 
 /**
@@ -88,6 +82,56 @@ class TwimAccount extends TwimAppModel {
 		$this->_setupRequest($type, $options);
 
 		return parent::find('all', $options);
+	}
+
+/**
+ * get rate limit
+ *
+ * @param mixed $resources
+ * @return mixed
+ * @throws RuntimeException
+ */
+	public function getRateLimit($resources = null) {
+		$options = array();
+		if (!empty($resources)) {
+			$options = array('resources' => $this->_buildRequestResources($resources));
+		}
+
+		$statuses = $this->find(self::FINDTYPE_RATE_LIMIT_STATUS, $options);
+
+		if (empty($statuses['resources'])) {
+			throw new RuntimeException(__d('twim', 'Can\'t get rate limit status response data'));
+		}
+
+		// format
+		$statuses = $statuses['resources'];
+		$result = array();
+		foreach ($statuses as $group => $groupStatus) {
+			foreach ($groupStatus as $name => $stats) {
+				$result[$name] = $stats['remaining'];
+			}
+		}
+
+		// return single value
+		if (is_string($resources) && isset($result['/' . trim($resources, '/')])) {
+			return $result['/' . trim($resources, '/')];
+		}
+
+		return $result;
+	}
+
+/**
+ * 
+ * @param mixed $resources
+ * @return string
+ */
+	protected function _buildRequestResources($resources) {
+		if (is_string($resources)) {
+			$resources = array_map('trim', explode(',', $resources));
+		}
+		$resources = preg_replace('!^[/]*([^/]+).*$!', '$1', $resources);
+		$resources = array_unique($resources);
+		return join(',', $resources);
 	}
 
 }

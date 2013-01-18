@@ -376,45 +376,4 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 		$this->assertSame($ok, $tweet['expanded_text']);
 	}
 
-	// =========================================================================
-
-	public function testAfterFind() {
-		$this->Search->setExpandHashtag()->setExpandUrl()->setDataSource($this->testDatasourceName);
-
-		$results = $this->Search->find('search', array('q' => '#cakephp http://', 'limit' => 20));
-		$this->assertRegExp('/class="twitter-timeline-link" rel="external nofollow"/', $results[0]['expanded_text']);
-		$this->assertRegExp('/ class="twitter-hashtag" rel="external nofollow"/', $results[0]['expanded_text']);
-	}
-
-	public function testAfterFind_with_media() {
-		$this->Search->setExpandHashtag()->setExpandUrl()->setDataSource($this->testDatasourceName);
-
-		$results = $this->Search->find('search', array('q' => 'pic.twitter.com', 'limit' => 20));
-		$this->assertRegExp('/class="twitter-timeline-link" rel="external nofollow"/', $results[0]['expanded_text']);
-	}
-
-	public function testAfterFind_Status() {
-		$this->Status->setExpandHashtag()->setExpandUrl()->setDataSource($this->testDatasourceName);
-
-		$results = $this->Status->find('show', array('id' => '121055461549158400'));
-		$this->assertRegExp('/class="twitter-timeline-link" rel="external nofollow"/', $results['expanded_text']);
-		$this->assertRegExp('/ class="twitter-hashtag" rel="external nofollow"/', $results['expanded_text']);
-	}
-
-	public function testAfterFind_Status_urlString() {
-		$this->Status->setExpandHashtag()->setExpandUrl('string')->setDataSource($this->testDatasourceName);
-
-		$results = $this->Status->find('show', array('id' => '121055461549158400'));
-		$this->assertNotRegExp('/class="twitter-timeline-link" rel="external nofollow"/', $results['expanded_text']);
-		$this->assertRegExp('!http://ask.cakephp.org/s/1yu!', $results['expanded_text']);
-	}
-
-	public function testAfterFind_overrideText() {
-		$this->Search->setExpandHashtag()->setExpandUrl()->setOverrideText()->setDataSource($this->testDatasourceName);
-
-		$results = $this->Search->find('search', array('q' => '#cakephp http://', 'limit' => 20));
-		$this->assertRegExp('/class="twitter-timeline-link" rel="external nofollow"/', $results[0]['text']);
-		$this->assertRegExp('/ class="twitter-hashtag" rel="external nofollow"/', $results[0]['text']);
-	}
-
 }
