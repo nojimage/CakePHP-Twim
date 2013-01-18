@@ -43,15 +43,11 @@ class OauthControllerTest extends ControllerTestCase {
 				'redirect'
 			),)
 		);
+		if ($c->Components->enabled('Auth')) {
+			$c->Auth->loginAction = '/';
+		}
 
-		$c->expects($this->once())
-			->method('redirect')
-			->with(array(
-				'plugin' => 'twim',
-				'controller' => 'oauth',
-				'action' => 'login',
-				'admin' => false,
-			));
+		$c->expects($this->once())->method('redirect')->with('/');
 
 		$this->testAction('/twim/oauth/callback', array(
 			'method' => 'get',

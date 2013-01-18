@@ -86,7 +86,8 @@ class OauthController extends AppController {
 		$this->Twitter->deleteCachedAuthorizeUrl();
 
 		if (isset($this->request->query['denied'])) {
-			$this->redirect($this->Auth->loginAction);
+			$redirect = isset($this->Auth->loginAction) ? $this->Auth->loginAction : '/';
+			$this->redirect($redirect);
 			return;
 		}
 
