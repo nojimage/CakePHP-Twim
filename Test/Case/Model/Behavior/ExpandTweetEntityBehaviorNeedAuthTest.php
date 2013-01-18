@@ -57,7 +57,7 @@ class ExpandTweetEntityBehaviorNeedAuthTest extends TwimConnectionTestCase {
 
 	public function testAfterFind_with_media() {
 		$this->Search->setExpandUrl()->setExpandHashtag();
-		$results = $this->Search->find('search', array('q' => 'pic.twitter.com', 'limit' => 20));
+		$results = $this->Search->find('search', array('q' => 'pic.twitter.com -RT', 'limit' => 20));
 		$this->assertRegExp('/class="twitter-timeline-link" rel="external nofollow"/', $results[0]['expanded_text']);
 	}
 
