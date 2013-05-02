@@ -162,6 +162,9 @@ class TwimDirectMessage extends TwimAppModel {
 			try {
 				while (($page = $this->find($type, $options)) != false) {
 					$results = array_merge($results, $page);
+					if (count($page) < $options['count']) {
+						break;
+					}
 					if (!empty($options['limit']) && count($results) >= $options['limit']) {
 						$results = array_slice($results, 0, $options['limit']);
 						break;
