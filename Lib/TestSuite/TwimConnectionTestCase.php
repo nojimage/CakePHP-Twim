@@ -62,6 +62,7 @@ class TwimConnectionTestCase extends ControllerTestCase {
 		$this->skip();
 		if (!class_exists('MockTwimSource')) {
 			$this->getMock('TwimSource', array('request'), array(), 'MockTwimSource');
+			App::uses('MockTwimSource', 'Twim.Model/Datasource');
 		}
 		$this->_createTestDatasource();
 		$this->_createMockDatasource();
@@ -98,7 +99,7 @@ class TwimConnectionTestCase extends ControllerTestCase {
 		$sources = ConnectionManager::enumConnectionObjects();
 		if (!isset($sources[$dataSourceName])) {
 			ConnectionManager::create($dataSourceName, array(
-				'datasource' => 'MockTwimSource',
+				'datasource' => 'Twim.MockTwimSource',
 			));
 		}
 	}

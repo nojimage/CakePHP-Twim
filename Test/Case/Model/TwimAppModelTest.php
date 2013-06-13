@@ -37,8 +37,9 @@ class TwimTestOauth extends TestTwimAppModel {
 
 }
 
+App::uses('TestTwimAppModelTwimSource', 'Twim.Model/Datasource');
 class TestTwimAppModelTwimSource extends TwimSource {
-	
+	//
 }
 
 /**
@@ -87,7 +88,8 @@ class TwimAppModelTestCase extends TwimConnectionTestCase {
 	}
 
 	public function testConstruct_with_ds() {
-		$this->Twim = ClassRegistry::init(array('class' => 'TestTwimAppModel', 'ds' => 'test_twitter2'));
+		ClassRegistry::flush();
+		$this->Twim = ClassRegistry::init(array('class' => 'TestTwimAppModel', 'ds' => 'test_twitter2', 'testing' => false));
 		$this->assertInstanceOf('TestTwimAppModelTwimSource', $this->Twim->getDataSource());
 		$this->assertSame('testConsumerKey', $this->Twim->getDataSource()->config['oauth_consumer_key']);
 	}
