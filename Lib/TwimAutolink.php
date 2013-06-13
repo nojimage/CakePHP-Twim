@@ -18,7 +18,9 @@
  * @package   Twim
  * @since     File available since Release 2.0
  */
-require_once dirname(dirname(__FILE__)) . '/Vendor/twitter-text-php/lib/Twitter/Autolink.php';
+if (!class_exists('Twitter_Autolink')) {
+	require_once dirname(dirname(__FILE__)) . '/Vendor/twitter-text-php/lib/Twitter/Autolink.php';
+}
 
 class TwimAutolink extends Twitter_Autolink {
 
