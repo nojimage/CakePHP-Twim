@@ -48,32 +48,39 @@ class TwimStatusTestCase extends TwimConnectionTestCase {
 		$this->assertSame(array('count' => 200), $this->Status->request['uri']['query']);
 	}
 
+/**
+ * create dummy response
+ *
+ * @return array
+ */
+	protected function _timelineDummyData($base, $count = 100) {
+		$response = array();
+		for ($i = 0; $i < $count; $i++) {
+			$response[] = array('id' => $base - $i, 'id_str' => ($base - $i) . '');
+		}
+		return $response;
+	}
+
 	public function testHomeTimelineUsingMaxId() {
 		$this->Status->getDataSource()->expects($this->at(0))->method('request')
-			->will($this->returnValue(array(
-					array('id' => 18700688341, 'id_str' => '18700688341'),
-					array('id' => 18700688340, 'id_str' => '18700688340'),
-				)));
+			->will($this->returnValue($this->_timelineDummyData(18700688200, 100)));
 		$this->Status->getDataSource()->expects($this->at(1))->method('request')
 			->will($this->returnValue(array()));
 
 		$this->Status->find(TwimStatus::FINDTYPE_HOME_TIMELINE, array('count' => 100));
 		$this->assertSame('1.1/statuses/home_timeline', $this->Status->request['uri']['path']);
-		$this->assertEquals(array('count' => 100, 'max_id' => '18700688339'), $this->Status->request['uri']['query']);
+		$this->assertEquals(array('count' => 100, 'max_id' => '18700688100'), $this->Status->request['uri']['query']);
 	}
 
 	public function testHomeTimelineUsingSinceId() {
 		$this->Status->getDataSource()->expects($this->at(0))->method('request')
-			->will($this->returnValue(array(
-					array('id' => 118700688341, 'id_str' => '118700688341'),
-					array('id' => 118700688340, 'id_str' => '118700688340'),
-				)));
+			->will($this->returnValue($this->_timelineDummyData(18700688200, 200)));
 		$this->Status->getDataSource()->expects($this->at(1))->method('request')
 			->will($this->returnValue(array()));
 
-		$this->Status->find(TwimStatus::FINDTYPE_HOME_TIMELINE, array('since_id' => '18700688341'));
+		$this->Status->find(TwimStatus::FINDTYPE_HOME_TIMELINE, array('since_id' => '18700688001'));
 		$this->assertSame('1.1/statuses/home_timeline', $this->Status->request['uri']['path']);
-		$this->assertEquals(array('count' => 200, 'since_id' => '118700688342'), $this->Status->request['uri']['query']);
+		$this->assertEquals(array('count' => 200, 'since_id' => '18700688201'), $this->Status->request['uri']['query']);
 	}
 
 	// =========================================================================

@@ -135,18 +135,12 @@ class TwimSource extends RestSource {
 		}
 
 		$headers = array(
-			// for api 1.0
-			'X-RateLimit-Class' => true,
-			'X-RateLimit-Remaining' => true,
-			'X-RateLimit-Limit' => true,
-			'X-RateLimit-Reset' => true,
-			// for api 1.1
-			'X-Rate-Limit-Remaining' => true,
-			'X-Rate-Limit-Limit' => true,
-			'X-Rate-Limit-Reset' => true,
+			'x-rate-limit-remaining' => true,
+			'x-rate-limit-limit' => true,
+			'x-rate-limit-reset' => true,
 		);
 
-		return array_intersect_key($this->Http->response['header'], $headers);
+		return array_intersect_key(array_change_key_case($this->Http->response['header'], CASE_LOWER), $headers);
 	}
 
 /**

@@ -224,8 +224,10 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 	// =========================================================================
 
 	public function testExpandUrl() {
+		$text = 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question';
+		$expaneded = 'How can I submit my app to the bakery (recently baked?) <a href="http://t.co/VKUESCJp" title="http://ask.cakephp.org/s/1yu" class="twitter-timeline-link" rel="external nofollow">ask.cakephp.org/s/1yu</a>  #cakephp #question';
 		$tweet = array(
-			'text' => 'How can I submit my app to the bakery (recently baked?) http://t.co/VKUESCJp  #cakephp #question',
+			'text' => $text,
 			'entities' => array(
 				'hashtags' => array(
 					array(
@@ -247,10 +249,14 @@ class ExpandTweetEntityBehaviorTest extends TwimConnectionTestCase {
 				),
 			),
 		);
-		$ok = 'How can I submit my app to the bakery (recently baked?) <a href="http://t.co/VKUESCJp" title="http://ask.cakephp.org/s/1yu" class="twitter-timeline-link" rel="external nofollow">ask.cakephp.org/s/1yu</a>  #cakephp #question';
 
-		$tweet = $this->Search->expandUrl($tweet);
-		$this->assertSame($ok, $tweet['expanded_text']);
+		$result = $this->Search->expandUrl($tweet);
+		$this->assertSame($text, $result['text']);
+		$this->assertSame($expaneded, $result['expanded_text']);
+
+		// override
+		$result = $this->Search->expandUrl($tweet, true);
+		$this->assertSame($expaneded, $result['text']);
 	}
 
 	public function testExpandUrl_entities_with_medea() {

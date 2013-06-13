@@ -20,3 +20,9 @@
  *
  */
 CakePlugin::load('Rest');
+
+// read composer autoload file
+$autoloadFile = dirname(dirname(__FILE__)) . DS . 'Vendor' . DS . 'autoload.php';
+if (is_file($autoloadFile)) {
+	require $autoloadFile;
+}

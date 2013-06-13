@@ -71,32 +71,39 @@ class TwimDirectMessageTestCase extends TwimConnectionTestCase {
 		$this->assertSame(array('count' => 200, 'page' => 1), $this->DirectMessage->request['uri']['query']);
 	}
 
+/**
+ * create dummy response
+ *
+ * @return array
+ */
+	protected function _dmSentDummyData($base, $count = 200) {
+		$response = array();
+		for ($i = 0; $i < $count; $i++) {
+			$response[] = array('id' => $base - $i, 'id_str' => ($base - $i) . '');
+		}
+		return $response;
+	}
+
 	public function testFindSentUsingMaxId() {
 		$this->DirectMessage->getDataSource()->expects($this->at(0))->method('request')
-			->will($this->returnValue(array(
-					array('id' => 18700688341, 'id_str' => '18700688341'),
-					array('id' => 18700688340, 'id_str' => '18700688340'),
-				)));
+			->will($this->returnValue($this->_dmSentDummyData(18700688200, 200)));
 		$this->DirectMessage->getDataSource()->expects($this->at(1))->method('request')
 			->will($this->returnValue(array()));
 
 		$this->DirectMessage->find('sent', array('count' => 200));
 		$this->assertSame('1.1/direct_messages/sent', $this->DirectMessage->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'page' => 1, 'max_id' => 18700688339), $this->DirectMessage->request['uri']['query']);
+		$this->assertSame(array('count' => 200, 'page' => 1, 'max_id' => 18700688000), $this->DirectMessage->request['uri']['query']);
 	}
 
 	public function testFindSentUsingSinceId() {
 		$this->DirectMessage->getDataSource()->expects($this->at(0))->method('request')
-			->will($this->returnValue(array(
-					array('id' => 118700688341, 'id_str' => '118700688341'),
-					array('id' => 118700688340, 'id_str' => '118700688340'),
-				)));
+			->will($this->returnValue($this->_dmSentDummyData(18700688200, 200)));
 		$this->DirectMessage->getDataSource()->expects($this->at(1))->method('request')
 			->will($this->returnValue(array()));
 
-		$this->DirectMessage->find('sent', array('count' => 200, 'since_id' => 18700688341));
+		$this->DirectMessage->find('sent', array('count' => 200, 'since_id' => 18700688001));
 		$this->assertSame('1.1/direct_messages/sent', $this->DirectMessage->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'since_id' => 118700688342, 'page' => 1), $this->DirectMessage->request['uri']['query']);
+		$this->assertSame(array('count' => 200, 'since_id' => 18700688201, 'page' => 1), $this->DirectMessage->request['uri']['query']);
 	}
 
 	// =========================================================================

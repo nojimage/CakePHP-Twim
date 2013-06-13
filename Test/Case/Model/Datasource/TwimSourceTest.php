@@ -75,9 +75,9 @@ class TwimSourceTestCase extends TwimConnectionTestCase {
 		$this->assertEquals(200, $this->TwimSource->Http->response['status']['code']);
 
 		$limit = $this->TwimSource->getRatelimit();
-		$this->assertEquals('15', $limit['X-Rate-Limit-Limit']);
-		$this->assertGreaterThan(0, $limit['X-Rate-Limit-Remaining']);
-		$this->assertGreaterThan(time(), $limit['X-Rate-Limit-Reset']);
+		$this->assertEquals('15', $limit['x-rate-limit-limit']);
+		$this->assertGreaterThan(0, $limit['x-rate-limit-remaining']);
+		$this->assertGreaterThan(time(), $limit['x-rate-limit-reset']);
 	}
 
 }

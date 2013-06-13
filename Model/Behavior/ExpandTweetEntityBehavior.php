@@ -169,9 +169,6 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  */
 	public function expandUrl($model, $tweet = null, $override = false) {
 		$tweet = $this->_expand('_expandUrl', 'urls', $model, $tweet, $override);
-		if (isset($tweet['expanded_text'])) {
-			$tweet['text'] = $tweet['expanded_text'];
-		}
 		return $this->_expand('_expandUrl', 'media', $model, $tweet, $override);
 	}
 
