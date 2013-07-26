@@ -31,7 +31,7 @@ class TwitterAuthenticate extends BaseAuthenticate {
 	public $settings = array(
 		'userModel' => false,
 		'datasource' => 'twitter',
-		'authorize' => false,
+		'authenticate' => false,
 	);
 
 /**
@@ -47,7 +47,7 @@ class TwitterAuthenticate extends BaseAuthenticate {
 		if (!empty($request->data['Twitter']['login'])) {
 			// redirect to twitter
 			$requestToken = $oauth->getRequestToken();
-			$redirectUrl = $this->settings['authorize'] ? $oauth->getAuthorizeUrl($requestToken) : $oauth->getAuthenticateUrl($requestToken);
+			$redirectUrl = $this->settings['authenticate'] ? $oauth->getAuthenticateUrl($requestToken) : $oauth->getAuthorizeUrl($requestToken);
 			$response->header('Location', $redirectUrl);
 		} elseif (isset($request->query['oauth_token']) && isset($request->query['oauth_verifier'])) {
 			// get access token
