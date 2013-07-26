@@ -169,14 +169,14 @@ class TwitterComponentTest extends CakeTestCase {
 
 	public function testConnect() {
 		$this->Controller->Twitter->connect();
-		$this->assertRegExp('!https://api\.twitter\.com/oauth/authenticate\?oauth_token=.+!', $this->Controller->redirectUrl);
+		$this->assertRegExp('!https://api\.twitter\.com/oauth/authorize\?oauth_token=.+!', $this->Controller->redirectUrl);
 	}
 
 	public function testConnect_authorize() {
 		$request = new CakeRequest();
-		$this->Controller->request->named = array('authorize' => 'true');
+		$this->Controller->request->named = array('authenticate' => 'true');
 		$this->Controller->Twitter->connect();
-		$this->assertRegExp('!https://api\.twitter\.com/oauth/authorize\?oauth_token=.+!', $this->Controller->redirectUrl);
+		$this->assertRegExp('!https://api\.twitter\.com/oauth/authenticate\?oauth_token=.+!', $this->Controller->redirectUrl);
 	}
 
 	// =========================================================================

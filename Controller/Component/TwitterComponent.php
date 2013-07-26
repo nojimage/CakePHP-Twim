@@ -147,10 +147,15 @@ class TwitterComponent extends Component {
  * redirect Twitter authorize page
  */
 	public function connect() {
-		$dataSource = $authorize = false;
+		$authorize = true;
+		$dataSource = $authenticate = false;
 
 		if (!empty($this->Controller->request->named['datasource'])) {
 			$dataSource = $this->Controller->request->named['datasource'];
+		}
+
+		if (!empty($this->Controller->request->named['authenticate'])) {
+			$authenticate = $this->Controller->request->named['authenticate'];
 		}
 
 		if (!empty($this->Controller->request->named['authorize'])) {
@@ -161,10 +166,10 @@ class TwitterComponent extends Component {
 			$this->TwimOauth->setDataSource($dataSource);
 		}
 
-		if ($authorize) {
-			$this->Controller->redirect($this->getAuthorizeUrl());
-		} else {
+		if ($authenticate || !$authorize) {
 			$this->Controller->redirect($this->getAuthenticateUrl());
+		} else {
+			$this->Controller->redirect($this->getAuthorizeUrl());
 		}
 	}
 

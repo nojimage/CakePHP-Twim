@@ -61,7 +61,7 @@ class TwitterAuthenticateTest extends TwimConnectionTestCase {
 		$this->auth = new TwitterAuthenticate($this->Collection, array(
 				'userModel' => 'TwitterUser',
 				'datasource' => $this->testDatasourceName,
-				'authorize' => false,
+				'authenticate' => false,
 			));
 		$this->response = $this->getMock('CakeResponse');
 
@@ -93,11 +93,11 @@ class TwitterAuthenticateTest extends TwimConnectionTestCase {
 		$object = new TwitterAuthenticate($this->Collection, array(
 				'userModel' => 'SomeTwitterUser',
 				'datasource' => $this->mockDatasourceName,
-				'authorize' => true,
+				'authenticate' => true,
 			));
 		$this->assertEquals('SomeTwitterUser', $object->settings['userModel']);
 		$this->assertEquals($this->mockDatasourceName, $object->settings['datasource']);
-		$this->assertEquals(true, $object->settings['authorize']);
+		$this->assertEquals(true, $object->settings['authenticate']);
 	}
 
 /**
@@ -109,7 +109,7 @@ class TwitterAuthenticateTest extends TwimConnectionTestCase {
 		$object = new TwitterAuthenticate($this->Collection, array());
 		$this->assertEquals(false, $object->settings['userModel']);
 		$this->assertEquals('twitter', $object->settings['datasource']);
-		$this->assertEquals(false, $object->settings['authorize']);
+		$this->assertEquals(false, $object->settings['authenticate']);
 	}
 
 /**
@@ -141,7 +141,7 @@ class TwitterAuthenticateTest extends TwimConnectionTestCase {
 				)));
 		$this->response->expects($this->once())
 			->method('header')
-			->with('Location', 'https://api.twitter.com/oauth/authenticate?oauth_token=dummy_token&oauth_token_secret=dummy_secret&oauth_callback_confirmed=true');
+			->with('Location', 'https://api.twitter.com/oauth/authorize?oauth_token=dummy_token&oauth_token_secret=dummy_secret&oauth_callback_confirmed=true');
 
 		$this->assertFalse($this->auth->authenticate($request, $this->response));
 	}
