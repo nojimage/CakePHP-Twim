@@ -34,7 +34,7 @@ class TwimAutolink extends Twitter_Autolink {
  *
  * @return  TwimAutolink
  */
-	public static function create($tweet, $options = array()) {
+	public static function create($tweet = null, $options = array()) {
 		$defaults = array(
 			'escape' => false,
 			'full_encode' => false,
