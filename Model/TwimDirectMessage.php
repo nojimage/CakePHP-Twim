@@ -139,7 +139,7 @@ class TwimDirectMessage extends TwimAppModel {
  * @return mixed
  * @throws RuntimeException
  */
-	public function find($type, $options = array()) {
+	public function find($type = 'first', $options = array()) {
 		if ($type === 'all') {
 			$type = 'receipt';
 		}
@@ -349,7 +349,7 @@ class TwimDirectMessage extends TwimAppModel {
  * @return boolean True if such a status exists
  * @access public
  */
-	public function exists() {
+	public function exists($id = null) {
 		if ($this->getID() === false) {
 			return false;
 		}
