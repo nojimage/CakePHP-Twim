@@ -42,7 +42,7 @@ class TwitterAuthBehavior extends ModelBehavior {
  * @param AppModel $model
  * @param array    $config
  */
-	public function setup($model, $config = array()) {
+	public function setup(Model $model, $config = array()) {
 		$this->settings[$model->alias] = Set::merge($this->default, $config);
 	}
 
@@ -53,7 +53,7 @@ class TwitterAuthBehavior extends ModelBehavior {
  * @param  array    $token
  * @return array
  */
-	public function createSaveDataByToken($model, $token) {
+	public function createSaveDataByToken(Model $model, $token) {
 		$data = array(
 			$model->alias => array(
 				$this->settings[$model->alias]['user_id'] => $token['user_id'],

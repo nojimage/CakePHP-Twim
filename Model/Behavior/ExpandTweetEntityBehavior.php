@@ -39,7 +39,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  * @param TwimAppModel $model
  * @param array    $config
  */
-	public function setup($model, $config = array()) {
+	public function setup(Model $model, $config = array()) {
 		$this->settings[$model->name] = Set::merge($this->defaults, $config);
 	}
 
@@ -50,7 +50,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  * @param bool $flag
  * @return TwimAppModel
  */
-	public function setExpandHashtag($model, $flag = true) {
+	public function setExpandHashtag(Model $model, $flag = true) {
 		$this->settings[$model->name]['expandHashtag'] = $flag;
 		return $model;
 	}
@@ -62,7 +62,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  * @param mixed $flag true|false|'string'
  * @return TwimAppModel
  */
-	public function setExpandUrl($model, $flag = true) {
+	public function setExpandUrl(Model $model, $flag = true) {
 		$this->settings[$model->name]['expandUrl'] = $flag;
 		return $model;
 	}
@@ -74,7 +74,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  * @param mixed $flag true|false
  * @return TwimAppModel
  */
-	public function setOverrideText($model, $flag = true) {
+	public function setOverrideText(Model $model, $flag = true) {
 		$this->settings[$model->name]['overrideText'] = $flag;
 		return $model;
 	}
@@ -86,7 +86,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  * @param array $query
  * @return array
  */
-	public function beforeFind($model, $query) {
+	public function beforeFind(Model $model, $query) {
 		if (!isset($query['include_entities'])
 			&& ($this->settings[$model->name]['expandHashtag'] || $this->settings[$model->name]['expandUrl'])) {
 			$model->request['uri']['query']['include_entities'] = true;
@@ -103,7 +103,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  * @param bool $primary
  * @return array
  */
-	public function afterFind($model, $results, $primary) {
+	public function afterFind(Model $model, $results, $primary) {
 		if (empty($results)) {
 			return $results;
 		}
@@ -112,35 +112,35 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
 
 		if ($this->settings[$model->name]['expandHashtag']) {
 			if (!empty($results['statuses'])) {
-				$results['statuses'] = array_map(array($this, 'expandHashtag'), $results['statuses'], array_fill(0, count($results['statuses']), $override));
+				$results['statuses'] = array_map(array($model, 'expandHashtag'), $results['statuses'], array_fill(0, count($results['statuses']), $override));
 			} else if (!empty($results['results'])) {
-				$results['results'] = array_map(array($this, 'expandHashtag'), $results['results'], array_fill(0, count($results['results']), $override));
+				$results['results'] = array_map(array($model, 'expandHashtag'), $results['results'], array_fill(0, count($results['results']), $override));
 			} else if (Set::numeric(array_keys($results))) {
-				$results = array_map(array($this, 'expandHashtag'), $results, array_fill(0, count($results), $override));
+				$results = array_map(array($model, 'expandHashtag'), $results, array_fill(0, count($results), $override));
 			} else if (!empty($results)) {
-				$results = $this->expandHashtag($results, $override);
+				$results = $this->expandHashtag($model, $results, $override);
 			}
 		}
 
 		if ($this->settings[$model->name]['expandUrl'] === 'string') {
 			if (!empty($results['statuses'])) {
-				$results['statuses'] = array_map(array($this, 'expandUrlString'), $results['statuses'], array_fill(0, count($results['statuses']), $override));
+				$results['statuses'] = array_map(array($model, 'expandUrlString'), $results['statuses'], array_fill(0, count($results['statuses']), $override));
 			} else if (!empty($results['results'])) {
-				$results['results'] = array_map(array($this, 'expandUrlString'), $results['results'], array_fill(0, count($results['results']), $override));
+				$results['results'] = array_map(array($model, 'expandUrlString'), $results['results'], array_fill(0, count($results['results']), $override));
 			} else if (Set::numeric(array_keys($results))) {
-				$results = array_map(array($this, 'expandUrlString'), $results, array_fill(0, count($results), $override));
+				$results = array_map(array($model, 'expandUrlString'), $results, array_fill(0, count($results), $override));
 			} else if (!empty($results)) {
-				$results = $this->expandUrlString($results, $override);
+				$results = $this->expandUrlString($model, $results, $override);
 			}
 		} else {
 			if (!empty($results['statuses'])) {
-				$results['statuses'] = array_map(array($this, 'expandUrl'), $results['statuses'], array_fill(0, count($results['statuses']), $override));
+				$results['statuses'] = array_map(array($model, 'expandUrl'), $results['statuses'], array_fill(0, count($results['statuses']), $override));
 			} else if (!empty($results['results'])) {
-				$results['results'] = array_map(array($this, 'expandUrl'), $results['results'], array_fill(0, count($results['results']), $override));
+				$results['results'] = array_map(array($model, 'expandUrl'), $results['results'], array_fill(0, count($results['results']), $override));
 			} else if (Set::numeric(array_keys($results))) {
-				$results = array_map(array($this, 'expandUrl'), $results, array_fill(0, count($results), $override));
+				$results = array_map(array($model, 'expandUrl'), $results, array_fill(0, count($results), $override));
 			} else if (!empty($results)) {
-				$results = $this->expandUrl($results, $override);
+				$results = $this->expandUrl($model, $results, $override);
 			}
 		}
 
@@ -155,7 +155,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  * @param bool $override
  * @return array
  */
-	public function expandHashtag($model, $tweet = null, $override = false) {
+	public function expandHashtag(Model $model, $tweet = null, $override = false) {
 		return $this->_expand('_expandHashtag', 'hashtags', $model, $tweet, $override);
 	}
 
@@ -167,7 +167,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  * @param bool $override
  * @return array
  */
-	public function expandUrl($model, $tweet = null, $override = false) {
+	public function expandUrl(Model $model, $tweet = null, $override = false) {
 		$tweet = $this->_expand('_expandUrl', 'urls', $model, $tweet, $override);
 		return $this->_expand('_expandUrl', 'media', $model, $tweet, $override);
 	}
@@ -180,7 +180,7 @@ class ExpandTweetEntityBehavior extends ModelBehavior {
  * @param bool $override
  * @return array
  */
-	public function expandUrlString($model, $tweet = null, $override = false) {
+	public function expandUrlString(Model $model, $tweet = null, $override = false) {
 		$tweet = $this->_expand('_expandUrlString', 'urls', $model, $tweet, $override);
 		return $this->_expand('_expandUrlString', 'media', $model, $tweet, $override);
 	}
