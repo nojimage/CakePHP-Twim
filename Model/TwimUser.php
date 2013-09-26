@@ -112,7 +112,7 @@ class TwimUser extends TwimAppModel {
  * @param array $options
  * @return mixed
  */
-	public function find($type, $options = array()) {
+	public function find($type = 'first', $options = array()) {
 		if (Inflector::camelize($type) === 'ProfileImage') {
 			return $this->profileImage($options);
 		}

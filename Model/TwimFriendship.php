@@ -127,7 +127,7 @@ class TwimFriendship extends TwimAppModel {
  * @param array $options
  * @return mixed
  */
-	public function find($type, $options = array()) {
+	public function find($type = 'first', $options = array()) {
 		if (!empty($options['limit']) && empty($options['count'])) {
 			$options['count'] = $options['limit'];
 		}
@@ -226,7 +226,7 @@ class TwimFriendship extends TwimAppModel {
  * @param boolean $cascade
  * @return array
  */
-	public function delete($id, $cascade = false) {
+	public function delete($id = null, $cascade = true) {
 		$this->request = array(
 			'uri' => array(
 				'path' => '1.1/friendships/destroy',
@@ -254,7 +254,8 @@ class TwimFriendship extends TwimAppModel {
  * @access public
  * @deprecated since version 2.1.0
  */
-	public function exists($source, $target = null) {
+	public function exists($id = null) {
+		list($source, $target) = func_get_args() + array(null, null);
 		if (is_null($target)) {
 			if ($this->getID() === false) {
 				return false;

@@ -80,7 +80,7 @@ class TwimSearch extends TwimAppModel {
  * @return array
  * @throws InvalidArgumentException
  */
-	public function find($type, $options = array()) {
+	public function find($type = 'first', $options = array()) {
 		if (is_string($type) && empty($options)) {
 			$options = $type;
 			$type = 'tweets';

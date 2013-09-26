@@ -73,7 +73,7 @@ class TwimHelp extends TwimAppModel {
  * @param array $options
  * @return mixed
  */
-	public function find($type, $options = array()) {
+	public function find($type = 'first', $options = array()) {
 		if (method_exists($this, '_find' . Inflector::camelize($type))) {
 			return parent::find($type, $options);
 		}

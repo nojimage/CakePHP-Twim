@@ -108,7 +108,7 @@ class TwimAppModel extends Model {
 		return ConnectionManager::getDataSource($this->useDbConfig);
 	}
 
-	public function setDataSource($dataSource) {
+	public function setDataSource($dataSource = null) {
 		parent::setDataSource($dataSource);
 		return $this;
 	}
