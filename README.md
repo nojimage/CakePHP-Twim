@@ -5,6 +5,8 @@ In addition, provides Controller/Component for Auth, Helper and Behaviors.
 
 for CakePHP 2.x and PHP 5.3 later
 
+[![Build Status](https://travis-ci.org/nojimage/CakePHP-Twim.png?branch=master)](https://travis-ci.org/nojimage/CakePHP-Twim)
+
 ## Requirements
 
 This plugin require CakePHP-ReST-DataSource-Plugin for CakePHP 2.x.
@@ -46,7 +48,9 @@ and move to plugin directory, install twitter-text-php.
 
 ## Usage
 
-It is not yet written. Please see test cases ;)
+[ドキュメント(日本語)](https://github.com/nojimage/CakePHP-Twim/wiki "Home · nojimage/CakePHP-Twim Wiki")
+
+and Please see test cases ;)
 
 ## License
 
