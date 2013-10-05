@@ -92,7 +92,7 @@ class TwimDirectMessageTestCase extends TwimConnectionTestCase {
 
 		$this->DirectMessage->find('sent', array('count' => 200));
 		$this->assertSame('1.1/direct_messages/sent', $this->DirectMessage->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'page' => 1, 'max_id' => 18700688000), $this->DirectMessage->request['uri']['query']);
+		$this->assertEquals(array('count' => 200, 'page' => 1, 'max_id' => 18700688000), $this->DirectMessage->request['uri']['query']);
 	}
 
 	public function testFindSentUsingSinceId() {
@@ -103,7 +103,7 @@ class TwimDirectMessageTestCase extends TwimConnectionTestCase {
 
 		$this->DirectMessage->find('sent', array('count' => 200, 'since_id' => 18700688001));
 		$this->assertSame('1.1/direct_messages/sent', $this->DirectMessage->request['uri']['path']);
-		$this->assertSame(array('count' => 200, 'since_id' => 18700688201, 'page' => 1), $this->DirectMessage->request['uri']['query']);
+		$this->assertEquals(array('count' => 200, 'since_id' => 18700688201, 'page' => 1), $this->DirectMessage->request['uri']['query']);
 	}
 
 	// =========================================================================

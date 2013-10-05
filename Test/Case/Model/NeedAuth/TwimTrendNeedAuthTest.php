@@ -27,6 +27,8 @@ App::uses('TwimConnectionTestCase', 'Twim.TestSuite');
  */
 class TwimTrendNeedAuthTestCase extends TwimConnectionTestCase {
 
+	public $needAuth = true;
+
 	public function setUp() {
 		parent::setUp();
 		$this->Trend = ClassRegistry::init('Twim.TwimTrend');

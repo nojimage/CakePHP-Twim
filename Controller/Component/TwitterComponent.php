@@ -58,7 +58,7 @@ class TwitterComponent extends Component {
  * @param AppController $controller
  * @param array         $settings
  */
-	public function initialize($controller) {
+	public function initialize(Controller $controller) {
 		$this->Controller = $controller;
 		if ($this->Controller->Components->attached('Auth')) {
 			$url = array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'login');
@@ -81,7 +81,7 @@ class TwitterComponent extends Component {
  *
  * @param AppController $controller
  */
-	public function startup($controller) {
+	public function startup(Controller $controller) {
 		$this->Controller = $controller;
 	}
 

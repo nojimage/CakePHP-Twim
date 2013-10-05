@@ -165,7 +165,7 @@ class TwitterAuthenticateTest extends TwimConnectionTestCase {
 				)));
 
 		$result = $this->auth->authenticate($request, $this->response);
-		$this->assertSame(12345, $result['id']);
+		$this->assertEquals(12345, $result['id']);
 		$this->assertSame('dummy_name', $result['username']);
 		$this->assertSame('dummy_access_token', $result['oauth_token']);
 		$this->assertSame('dummy_secret', $result['oauth_token_secret']);

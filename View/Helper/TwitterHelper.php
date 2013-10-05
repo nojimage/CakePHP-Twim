@@ -20,6 +20,9 @@
  */
 App::uses('AppHelper', 'View/Helper');
 App::uses('TwimAutolink', 'Twim.Lib');
+if (!class_exists('Twitter_Extractor')) {
+	require_once dirname(dirname(dirname(__FILE__))) . '/Vendor/twitter-text-php/lib/Twitter/Extractor.php';
+}
 
 /**
  * @property HtmlHelper $Html
@@ -143,19 +146,24 @@ class TwitterHelper extends AppHelper {
 		);
 		$options = am($default, $options);
 
-		$autoLink = TwimAutolink::create($value, $options);
+		$extractor = Twitter_Extractor::create($value);
+		$linker = TwimAutolink::create($value, $options);
+		$entities = array();
+
 		// autolink
 		if ($options['url']) {
-			$autoLink->setTweet($autoLink->addLinksToURLs());
+			$entities = am($entities, $extractor->extractURLWithoutProtocol(false)->extractURLsWithIndices());
 		}
 		if ($options['hashtag']) {
-			$autoLink->setTweet($autoLink->addLinksToHashtags());
+			$entities = am($entities, $extractor->extractHashtagsWithIndices());
 		}
 		if ($options['username']) {
-			$autoLink->setTweet($autoLink->addLinksToUsernamesAndLists());
+			$entities = am($entities, $extractor->extractMentionsOrListsWithIndices());
 		}
+		$entities = $extractor->removeOverlappingEntities($entities);
 
-		return $autoLink->getTweet();
+		$tweet = $linker->autoLinkEntities($value, $entities);
+		return $tweet;
 	}
 
 	/**
