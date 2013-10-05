@@ -24,7 +24,7 @@ App::uses('TwimSource', 'Twim.Model/Datasource');
 /**
  * for plugin test
  */
-class TwimConnectionTestCase extends ControllerTestCase {
+abstract class TwimConnectionTestCase extends ControllerTestCase {
 
 	public $connectionCheck = true;
 
