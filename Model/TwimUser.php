@@ -74,9 +74,9 @@ class TwimUser extends TwimAppModel {
  * @var array
  */
 	public $allowedFindOptions = array(
-		'lookup' => array('screen_name', 'user_id', 'include_entities'),
-		'search' => array('q', 'page', 'count', 'include_entities'),
-		'show' => array('user_id', 'screen_name', 'include_entities'),
+		'lookup' => array('screen_name', 'user_id', 'include_user_entities'),
+		'search' => array('q', 'page', 'count', 'include_user_entities'),
+		'show' => array('user_id', 'screen_name', 'include_user_entities'),
 		'contributees' => array('user_id', 'screen_name', 'include_entities', 'skip_status'),
 		'contributors' => array('user_id', 'screen_name', 'include_entities', 'skip_status'),
 		'suggestions' => array('slug', 'lang'),
