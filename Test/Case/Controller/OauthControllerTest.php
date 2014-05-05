@@ -28,6 +28,8 @@ class OauthControllerTest extends ControllerTestCase {
 
 	public function setUp() {
 		parent::setUp();
+		Router::$routes = array();
+		include CAKE . 'Config' . DS . 'routes.php';
 	}
 
 	public function tearDown() {
@@ -43,13 +45,10 @@ class OauthControllerTest extends ControllerTestCase {
 				'redirect'
 			),)
 		);
-		if ($c->Components->enabled('Auth')) {
-			$c->Auth->loginAction = '/';
-		}
 
-		$c->expects($this->once())->method('redirect')->with('/');
+		$c->expects($this->once())->method('redirect');
 
-		$this->testAction('/twim/oauth/callback', array(
+		$this->_testAction('/twim/oauth/callback', array(
 			'method' => 'get',
 			'data' => array('denied' => 'somekey'),
 		));
