@@ -10,18 +10,24 @@ php:
   - 5.5
 
 env:
-  - CAKE_VERSION=2.2.9
   - CAKE_VERSION=2.3.10
-  - CAKE_VERSION=master
+  - CAKE_VERSION=2.4.9
+  - CAKE_VERSION=2.5.0-RC2
 
-before_script:
-  - composer install
-  - sh -c "mysql -e 'CREATE DATABASE cakephp_test;'"
+install:
   - git clone git://github.com/cakephp/cakephp ../cakephp && cd ../cakephp && git checkout $CAKE_VERSION
   - mv ../CakePHP-Twim plugins/Twim
   - git clone https://github.com/nojimage/CakePHP-ReST-DataSource-Plugin.git plugins/Rest
-  - mkdir -m 0777 ../cakephp/app/tmp/cache/twitter
-  - chmod -R 777 ../cakephp/app/tmp
+  - mkdir -m 0777 app/tmp/cache/twitter
+  - chmod -R 777 app/tmp
+  - sh -c "composer global require 'phpunit/phpunit=3.7.33'"
+  - sh -c "ln -s ~/.composer/vendor/phpunit/phpunit/PHPUnit PHPUnit"
+  - cd plugins/Twim
+  - composer install
+  - cd ../../
+
+before_script:
+  - sh -c "mysql -e 'CREATE DATABASE cakephp_test;'"
   - echo "
     Configure::write('Security.salt', 'travistestcakephp');
     Configure::write('Security.cipherSeed', '176859309657453542496749683645');
