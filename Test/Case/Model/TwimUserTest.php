@@ -74,6 +74,14 @@ class TwimUserTestCase extends TwimConnectionTestCase {
 		$this->assertSame(array('screen_name' => 'abcd,efgh,ijkl'), $this->User->request['uri']['query']);
 	}
 
+	public function testLookup_use_post() {
+		$this->User->getDataSource()->expects($this->once())->method('request')->will($this->returnValue(false));
+		$this->User->find('lookup', array('screen_name' => array('abcd', 'efgh', 'ijkl'), 'post' => true));
+		$this->assertSame('1.1/users/lookup', $this->User->request['uri']['path']);
+		$this->assertSame('POST', $this->User->request['method']);
+		$this->assertSame(array('screen_name' => 'abcd,efgh,ijkl'), $this->User->request['body']);
+	}
+
 	// =========================================================================
 
 	public function testProfileImage() {
