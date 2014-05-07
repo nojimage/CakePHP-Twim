@@ -164,11 +164,22 @@ class TwimAppModel extends Model {
 			unset($this->request['body']);
 		}
 
+		if (!empty($options['post'])) {
+			if (isset($this->request['uri']['query'])) {
+				$this->request['body'] = $this->request['uri']['query'];
+				unset($this->request['uri']['query']);
+			}
+		}
+
 		return $this;
 	}
 
 	public function beforeFind($queryData) {
 		$this->request['method'] = 'GET';
+		if (!empty($queryData['post'])) {
+			$this->request['method'] = 'POST';
+		}
+
 		return true;
 	}
 
