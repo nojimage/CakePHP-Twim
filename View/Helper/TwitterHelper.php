@@ -106,7 +106,7 @@ class TwitterHelper extends AppHelper {
 		$options = am($default, $options);
 
 		$login = $options['login'];
-		unset($login);
+		unset($options['login']);
 
 		// create connect url
 		$url = array('plugin' => 'twim', 'controller' => 'oauth', 'action' => 'connect');
@@ -125,7 +125,7 @@ class TwitterHelper extends AppHelper {
 			}
 		}
 
-		return $this->Html->link($options['login'], $url, $options);
+		return $this->Html->link($login, $url, $options);
 	}
 
 	/**
