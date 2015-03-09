@@ -21,7 +21,7 @@
 App::uses('AppHelper', 'View/Helper');
 App::uses('TwimAutolink', 'Twim.Lib');
 if (!class_exists('Twitter_Extractor')) {
-	require_once dirname(dirname(dirname(__FILE__))) . '/Vendor/twitter-text-php/lib/Twitter/Extractor.php';
+	App::import('Vendor', 'Twitter_Extractor', array('file' => 'nojimage/twitter-text-php/lib/Extractor.php'));
 }
 
 /**
